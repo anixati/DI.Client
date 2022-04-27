@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "projects": {
+    "di-boards": "apps/di-boards",
+    "di-boards-e2e": "apps/di-boards-e2e",
+    "di-controls": "libs/di-controls",
+    "di-core": "libs/di-core",
+    "di-shell": "libs/di-shell"
+  }
+}

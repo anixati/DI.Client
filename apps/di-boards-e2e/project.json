@@ -1,0 +1,28 @@
+{
+  "root": "apps/di-boards-e2e",
+  "sourceRoot": "apps/di-boards-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/di-boards-e2e/cypress.json",
+        "devServerTarget": "di-boards:serve"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "di-boards:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/di-boards-e2e/**/*.{js,ts}"]
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["di-boards"]
+}

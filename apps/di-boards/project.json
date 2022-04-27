@@ -1,0 +1,73 @@
+{
+  "root": "apps/di-boards",
+  "sourceRoot": "apps/di-boards/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "compiler": "babel",
+        "outputPath": "dist/apps/di-boards",
+        "index": "apps/di-boards/src/index.html",
+        "baseHref": "/",
+        "main": "apps/di-boards/src/main.tsx",
+        "polyfills": "apps/di-boards/src/polyfills.ts",
+        "tsConfig": "apps/di-boards/tsconfig.app.json",
+        "assets": [
+          "apps/di-boards/src/favicon.ico",
+          "apps/di-boards/src/assets"
+        ],
+        "styles": ["apps/di-boards/src/styles.scss"],
+        "scripts": [],
+        "webpackConfig": "@nrwl/react/plugins/webpack"
+      },
+      "configurations": {
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/di-boards/src/environments/environment.ts",
+              "with": "apps/di-boards/src/environments/environment.prod.ts"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/web:dev-server",
+      "options": {
+        "buildTarget": "di-boards:build",
+        "hmr": true
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "di-boards:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/di-boards/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/di-boards"],
+      "options": {
+        "jestConfig": "apps/di-boards/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

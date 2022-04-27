@@ -1,0 +1,23 @@
+{
+  "root": "libs/di-controls",
+  "sourceRoot": "libs/di-controls/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/di-controls/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/di-controls"],
+      "options": {
+        "jestConfig": "libs/di-controls/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  }
+}

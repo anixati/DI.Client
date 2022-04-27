@@ -1,0 +1,109 @@
+{
+    "logo": "DOTARS - Boards",
+    "navigation": [
+        {
+            "route": "/boards",
+            "label": "Boards",
+            "links": [
+                {
+                    "route": "/dashboard",
+                    "label": "Dashboard"
+                },
+                {
+                    "route": "/boards",
+                    "label": "Active boards",
+                    "links": [
+                        {
+                            "route": "/active",
+                            "label": "Boards"
+                        },
+                        {
+                            "route": "/vacancies",
+                            "label": "Vacancies"
+                        },
+                        {
+                            "route": "/upcoming",
+                            "label": "Upcoming Vacancies"
+                        }
+                    ]
+                },
+                {
+                    "route": "/appointees",
+                    "label": "Appointees"
+                },
+                {
+                    "route": "/events",
+                    "label": "Events"
+                }
+            ]
+        },
+        {
+            "route": "/reports",
+            "label": "Reports",
+            "links": [
+                {
+                    "route": "/dashboard",
+                    "label": "Dashboard"
+                },
+                {
+                    "route": "",
+                    "label": "Current Reports",
+                    "links": [
+                        {
+                            "route": "/gender",
+                            "label": "Gender Report"
+                        },
+                        {
+                            "route": "/report1",
+                            "label": "Report 1"
+                        },
+                        {
+                            "route": "/report2",
+                            "label": "Report 2"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "route": "/admin",
+            "label": "Admin",
+            "links": [
+                {
+                    "route": "/options",
+                    "label": "Option sets"
+                },
+                {
+                    "route": "/settings",
+                    "label": "Settings"
+                },
+                {
+                    "route": "/users",
+                    "label": "Users"
+                },
+                {
+                    "label": "Reference Data",
+                    "links": [
+                        {
+                            "route": "/portfolios",
+                            "label": "Portfolios"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "footer": {
+        "label": "boards",
+        "links": [
+            {
+                "route": "/privacy",
+                "label": "Privacy"
+            },
+            {
+                "route": "/terms",
+                "label": "Terms & conditions"
+            }
+        ]
+    }
+}

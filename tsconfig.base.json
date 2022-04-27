@@ -1,0 +1,25 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2017", "dom"],
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@dotars/di-controls": ["libs/di-controls/src/index.ts"],
+      "@dotars/di-core": ["libs/di-core/src/index.ts"],
+      "@dotars/di-shell": ["libs/di-shell/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}

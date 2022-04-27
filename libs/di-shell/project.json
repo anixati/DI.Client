@@ -1,0 +1,23 @@
+{
+  "root": "libs/di-shell",
+  "sourceRoot": "libs/di-shell/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/di-shell/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/di-shell"],
+      "options": {
+        "jestConfig": "libs/di-shell/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  }
+}
