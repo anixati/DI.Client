@@ -1,6 +1,7 @@
 
 
 export type AppSettings = {
+    baseApiurl:string;
     baseName?: string;
     clientBase: string;
     oidc_authority: string;

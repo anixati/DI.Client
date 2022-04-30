@@ -7,6 +7,7 @@ export function App() {
   SiteUi.Initialize(data);
   //setActive('/boards');
   const appSettings = {
+    baseApiurl:'https://localhost:44320/brds/v1',
     oidc_authority: 'http://localhost:6964',
     clientBase: 'http://localhost:4200',
     oidc_clientId: 'dotars_boards',

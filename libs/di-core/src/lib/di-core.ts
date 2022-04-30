@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 //--- error handling
 type ErrorMessage = {
   message: string;
@@ -27,8 +29,8 @@ export interface IComponent {
   error?: Error;
 }
 
-export interface ITitleProps {
+export interface IViewProps {
   title: string;
-  icon: string;
+  icon?: ReactNode;
   desc: string;
 }

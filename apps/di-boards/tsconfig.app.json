@@ -17,7 +17,8 @@
     "./src/app/pages/admin/UsersPage.tsx",
     "./src/app/pages/admin/PortfoliosPage.tsx",
     "./src/app/pages/admin/SettingsPage.tsx",
-    "./src/app/pages/admin/OptionsPage.tsx"
+    "src/app/pages/admin/options/OptionsPag,
+    "./src/app/pages/admin/options/OptionDetail.tsx"e.tsx"
   ],
   "exclude": [
     "**/*.spec.ts",

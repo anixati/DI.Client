@@ -8,7 +8,10 @@
     "../../node_modules/@nrwl/react/typings/cssmodule.d.ts",
     "../../node_modules/@nrwl/react/typings/image.d.ts",
     "./src/lib/panels/TitledPanel.tsx",
-    "./src/lib/panels/CenterPanel.ts"
+    "./src/lib/panels/CenterPanel.ts",
+    "./src/lib/data/RenderTable.tsx",
+    "src/lib/data/EntityView.tsx",
+    "./src/lib/data/pnlBarStyles.tsx"
   ],
   "exclude": [
     "**/*.spec.ts",

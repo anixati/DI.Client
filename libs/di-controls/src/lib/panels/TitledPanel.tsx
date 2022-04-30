@@ -1,11 +1,4 @@
-import {
-  createStyles,
-  Paper,
-  Title,
-  Text,
-  Container,
-  Center,
-} from '@mantine/core';
+import { Container, createStyles, Title } from '@mantine/core';
 import { CenterPanel } from './CenterPanel';
 
 const useStyles = createStyles((theme) => ({
@@ -13,7 +6,7 @@ const useStyles = createStyles((theme) => ({
     fontSize: 26,
     fontWeight: 900,
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
-    marginBottom:20,
+    marginBottom: 20,
   },
 
   controls: {
@@ -42,7 +35,7 @@ export const TitledPanel: React.FC<TitledPanelProps> = (rx) => {
       <Title className={classes.title} align="center">
         {rx.title}
       </Title>
-      <CenterPanel title={rx.desc} desc=""     >
+      <CenterPanel title={rx.desc} desc="">
         {rx.children}
       </CenterPanel>
     </Container>

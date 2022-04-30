@@ -14,6 +14,7 @@
     "./src/lib/site/NavLink.ts",
     "./src/lib/site/SiteSettings.ts",
     "./src/lib/site/SiteUi.ts",
+    "./src/lib/data/IEntityContext.ts",
   
   ],
   "exclude": [
