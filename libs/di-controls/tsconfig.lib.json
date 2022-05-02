@@ -9,8 +9,8 @@
     "../../node_modules/@nrwl/react/typings/image.d.ts",
     "./src/lib/panels/TitledPanel.tsx",
     "./src/lib/panels/CenterPanel.ts",
-    "./src/lib/data/RenderTable.tsx",
-    "src/lib/data/EntityView.tsx",
+    "src/lib/data/tables/RenderTable.tsx",
+    "src/lib/data/forms/EntityView.tsx",
     "./src/lib/data/pnlBarStyles.tsx"
   ],
   "exclude": [

@@ -43,6 +43,15 @@ export interface IDataListResponse {
   result: IDataList | null;
 }
 
+export interface IGenericListResponse<T extends IEntity> {
+  reason: number;
+  failed: boolean;
+  messages: Array<string> | null;
+  result?: IPagedList<T>;
+}
+export interface IPagedList<T extends IEntity> extends IListResponse {
+  items: Array<T>;
+}
 
 
 export interface IChangeRequest {
@@ -53,6 +62,7 @@ export interface IChangeRequest {
 }
 
 export interface IDomainResponse {
+  item: unknown;
   reason: number;
   changeCode: number;
   message: string;

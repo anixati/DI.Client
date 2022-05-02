@@ -1,6 +1,6 @@
 import { createStyles } from '@mantine/core';
 
-export const pnlBarStyles = createStyles((theme) => ({
+export const dataUiStyles = createStyles((theme) => ({
   card: {
     backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
     height: '90vh',
@@ -33,6 +33,11 @@ export const pnlBarStyles = createStyles((theme) => ({
       borderBottom: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[3] : theme.colors.gray[2]}`,
     },
   },
+  tableicon: {
+    width: 21,
+    height: 21,
+    borderRadius: 21,
+  },
   rowSelected: {
     backgroundColor: theme.colorScheme === 'dark' ? theme.fn.rgba(theme.colors[theme.primaryColor][7], 0.2) : theme.colors[theme.primaryColor][0],
   },
@@ -46,4 +51,8 @@ export const pnlBarStyles = createStyles((theme) => ({
     border: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[3] : theme.colors.gray[2]}`,
     height: '90vh',
   },
+  form:{
+    padding:8,
+    borderBottom: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[3] : theme.colors.gray[2]}`,
+  }
 }));

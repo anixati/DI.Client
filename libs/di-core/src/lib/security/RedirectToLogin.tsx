@@ -1,10 +1,10 @@
-import Async from 'react-async';
-import React, { useCallback, useEffect, useState } from 'react';
-import { SecurityCtx } from './types';
-import { AuthLoader } from './AuthLoader';
-import { X } from 'tabler-icons-react';
 import { Notification } from '@mantine/core';
+import React, { useCallback, useState } from 'react';
+import Async from 'react-async';
+import { X } from 'tabler-icons-react';
 import { getErrorMsg } from '../di-core';
+import { AuthLoader } from './AuthLoader';
+import { SecurityCtx } from './types';
 
 export const RedirectToLogin: React.FC<SecurityCtx> = (rx) => {
   const [err, SetErr] = useState<string>('');

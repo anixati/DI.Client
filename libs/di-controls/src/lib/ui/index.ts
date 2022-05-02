@@ -1,1 +1,1 @@
-export * from '../data/EntityBar';
+export * from './controls';

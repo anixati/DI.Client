@@ -20,6 +20,7 @@
     "axios": "^0.27.2",
     "core-js": "^3.6.5",
     "dayjs": "^1.11.0",
+    "fast-json-patch": "^3.1.1",
     "jotai": "^1.6.4",
     "oidc-client": "^1.11.5",
     "react": "18.0.0",
@@ -29,6 +30,7 @@
     "react-router-dom": "^6.3.0",
     "react-table": "^7.7.0",
     "regenerator-runtime": "0.13.7",
+    "rfc6902": "^5.0.1",
     "tabler-icons-react": "^1.44.0",
     "tslib": "^2.0.0",
     "use-bus": "^2.5.0"

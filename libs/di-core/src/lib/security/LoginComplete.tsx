@@ -6,6 +6,7 @@ import { LogoutPage } from './Logout';
 import { AuthLoader } from './AuthLoader';
 
 export const LoginComplete: React.FC<SecurityCtx> = (rx) => {
+  
   const redirectTo = localStorage.getItem(REDIRECT_URL_KEY) || '/';
 
   const completeLogin = useCallback(async () => {
@@ -16,6 +17,7 @@ export const LoginComplete: React.FC<SecurityCtx> = (rx) => {
     await rx.manager.storeUser(user);
     return user;
   }, [rx.manager]);
+
   return (
     <Async promiseFn={completeLogin}>
       <Async.Loading>

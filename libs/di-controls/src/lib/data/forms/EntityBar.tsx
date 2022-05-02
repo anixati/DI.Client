@@ -3,6 +3,9 @@ import { Button, createStyles, Group } from '@mantine/core';
 import axios from 'axios';
 import { useAsyncCallback } from 'react-async-hook';
 import { dispatch } from 'use-bus';
+import { showNotification } from '@mantine/notifications';
+import { AlertOctagon } from 'tabler-icons-react';
+
 const useStyles = createStyles((theme) => ({
   button: {
     borderRadius: 0,
@@ -42,12 +45,43 @@ export const EntityBar: React.FC<EntityToolbarProps> = (rx) => {
     const data = resp.data;
     if (data.failed) {
       console.log(data);
+      showNotification({ autoClose: 5000, title: 'Failed to change state', message: `${data.messages}`, color: 'red', icon: <AlertOctagon /> });
     } else {
-      const disMsg = request.action === 6 ? 'ONDELETE' : 'RELOAD';
-      dispatch(disMsg);
+      Notify(request.action,data);
     }
     return data;
   };
+
+  const Notify = (action: number, data: IApiResponse) => {
+    let title='';
+    let notifyMsg='RELOAD';
+    switch (action) {
+      case 2: {
+        title='Enabled Sucessfully!';
+        break;
+      }
+      case 3: {
+        title='Disabled Sucessfully!';
+        break;
+      }
+      case 4: {
+        title='Locked Sucessfully!';
+        break;
+      }
+      case 5: {
+        title='Unlocked Sucessfully!';
+        break;
+      }
+      case 6: {
+        title='Deleted Sucessfully!';
+        notifyMsg='ONDELETE';
+        break;
+      }
+    }
+    showNotification({ autoClose: 5000, title: `${title}`, message: `${data?.result?.message}`, color: 'blue', icon: <AlertOctagon /> });
+    dispatch(notifyMsg);
+  };
+
   //const asyncState = useAsync(changeState, [action]);
   const asyncOnClick = useAsyncCallback(async () => {
     if (payload) await changeState(payload);
@@ -57,8 +91,10 @@ export const EntityBar: React.FC<EntityToolbarProps> = (rx) => {
       try {
         ectx.showLoading(true);
         const id = ectx.entity.id;
-        payload = { id: id, name: 'User Action', reason: reason, action: action };
-        asyncOnClick.execute();
+        if (id) {
+          payload = { id, name: 'User Action', reason: reason, action: action };
+          asyncOnClick.execute();
+        }
       } finally {
         ectx.showLoading(false);
       }

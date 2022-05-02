@@ -1,8 +1,8 @@
 import { INamedRecord, useEntityContext } from '@dotars/di-core';
-import { Avatar, Card, Container, Group, Text } from '@mantine/core';
+import { Avatar, Card, Group, Text } from '@mantine/core';
 import { ReactNode } from 'react';
 import { File, FilePlus } from 'tabler-icons-react';
-import { pnlBarStyles } from './Styles';
+import { dataUiStyles } from '../Styles';
 
 export interface EntityViewProps {
   name: string;
@@ -10,7 +10,7 @@ export interface EntityViewProps {
 }
 
 export const EntityView: React.FC<EntityViewProps> = (rx) => {
-  const { classes } = pnlBarStyles();
+  const { classes } = dataUiStyles();
   const ectx = useEntityContext();
   const isNew = ectx?.entity !== undefined;
   return (
@@ -35,9 +35,7 @@ export const EntityView: React.FC<EntityViewProps> = (rx) => {
         </Group>
       </Card.Section>
       <Card.Section className={classes.content}>
-        <Container fluid={true}>
           {rx.children}
-        </Container>
       </Card.Section>
     </Card>
   );
