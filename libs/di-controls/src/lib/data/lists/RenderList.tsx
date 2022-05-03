@@ -65,7 +65,7 @@ export function RenderList(rx: RenderListProps): ReactElement {
       const selected = selection && selection === row.id;
       if (selected) entityCtx?.select(row);
       return (
-        <tr key={row.id} className={cx({ [classes.rowSelected]: selected })}>
+        <tr key={row.id} className={cx({ [classes.rowSelected]: selected })} >
           <td>
             <UnstyledButton onClick={() => selectRow(row)} className={classes.linkbox}>
               <div>
@@ -105,13 +105,13 @@ export function RenderList(rx: RenderListProps): ReactElement {
         </Alert>
       )}
       {asyncData.result && (
-        <Card withBorder p="lg" className={classes.card}>
+        <Card withBorder p="lg" className={classes.listView}>
           <Card.Section className={classes.header}>
             <SearchCmdBar title={rx.title} searchStr={search} OnSearch={(v) => setSearch(v)} OnRefresh={() => asyncData.execute()} OnCreate={() => selectRow(undefined)} />
           </Card.Section>
           <Card.Section className={classes.content}>
-            <ScrollArea sx={{ height: '89vh' }} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
-              <Table sx={{}} verticalSpacing="xs">
+            <ScrollArea sx={{ height: '76vh' }} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
+              <Table sx={{}} verticalSpacing="xs" width={250}>
                 <tbody>{rows}</tbody>
               </Table>
             </ScrollArea>

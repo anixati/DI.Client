@@ -12,7 +12,7 @@ import { dispatch } from 'use-bus';
 import { showNotification } from '@mantine/notifications';
 import { AlertOctagon, CircleCheck } from 'tabler-icons-react';
 
-export interface EntityFormProps<T> {
+export interface EntityFormProps<T extends IEntity> {
   baseUrl: string;
   config: UseFormInput<T>;
   submitData?: (values: T) => void;
@@ -20,10 +20,8 @@ export interface EntityFormProps<T> {
 }
 
 export const EntityForm = <T extends IEntity>(rx: PropsWithChildren<EntityFormProps<T>>) => {
-  let entity: T;
   const { classes } = dataUiStyles();
   const form = useForm<T>(rx.config);
-
   const ectx = useEntityContext();
   const isNew = ectx?.entity === undefined;
   useEffect(() => {
@@ -62,10 +60,10 @@ export const EntityForm = <T extends IEntity>(rx: PropsWithChildren<EntityFormPr
     const resp = await axios.post<IApiResponse>(`${rx.baseUrl}/create`, item);
     const data = resp.data;
     if (data.failed) {
-      console.log(data);
-      showNotification({ autoClose: 5000, title: 'Failed to change state', message: `${data.messages}`, color: 'red', icon: <AlertOctagon /> });
+      showNotification({  message: `${data.messages}`, color: 'red', icon: <AlertOctagon /> });
     } else {
-      showNotification({ autoClose: 5000, title: 'Created Sucessfully!', message: `${data?.result?.message}`, color: 'green', icon: <CircleCheck /> });
+      form.reset();
+      showNotification({ message: 'Created Sucessfully!', color: 'green', icon: <CircleCheck /> });
       dispatch({ type: 'RELOADSELECTED', payload: item });
     }
     return data;

@@ -11,7 +11,8 @@
     "./src/lib/panels/CenterPanel.ts",
     "src/lib/data/tables/RenderTable.tsx",
     "src/lib/data/forms/EntityView.tsx",
-    "./src/lib/data/pnlBarStyles.tsx"
+    "./src/lib/data/pnlBarStyles.tsx",
+    "./src/lib/data/controls/MdlWindow.tsx"
   ],
   "exclude": [
     "**/*.spec.ts",

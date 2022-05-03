@@ -14,7 +14,7 @@ export const EntityView: React.FC<EntityViewProps> = (rx) => {
   const ectx = useEntityContext();
   const isNew = ectx?.entity !== undefined;
   return (
-    <Card withBorder p="lg" className={classes.card}>
+    <Card withBorder p="lg" className={classes.entityView}>
       <Card.Section className={classes.header}>
         <Group spacing="sm" position="apart">
           <Group spacing="sm" position="left">

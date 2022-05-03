@@ -1,4 +1,4 @@
-import { Box, Group, Text, ActionIcon, TextInput, Button } from '@mantine/core';
+import { Box, Group, Text, ActionIcon, TextInput } from '@mantine/core';
 import { Plus, Refresh, Search, SquarePlus } from 'tabler-icons-react';
 
 export interface SearchCmdBarProps {
@@ -25,14 +25,15 @@ export const SearchCmdBar: React.FC<SearchCmdBarProps> = (rx) => {
           <ActionIcon variant="light" color="indigo" onClick={rx.OnRefresh}>
             <Refresh size={16} />
           </ActionIcon>
-          <Button leftIcon={<Plus />} size="xs" variant="filled" color="indigo" onClick={rx.OnCreate}>
-            New
-          </Button>
-          {/* <ActionIcon variant="filled" color="indigo" onClick={rx.OnCreate}>
+          {/* <Button leftIcon={<Plus />} size="xs" variant="filled" color="indigo" onClick={rx.OnCreate}>
+          </Button> */}
+           <ActionIcon variant="filled" color="indigo" onClick={rx.OnCreate}>
             <SquarePlus size={16} />
-          </ActionIcon> */}
+          </ActionIcon> 
         </Group>
       </Group>
     </Box>
   );
 };
+
+

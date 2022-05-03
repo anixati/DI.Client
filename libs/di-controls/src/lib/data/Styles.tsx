@@ -1,9 +1,17 @@
 import { createStyles } from '@mantine/core';
 
 export const dataUiStyles = createStyles((theme) => ({
+  listView: {
+    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+    height: '83vh',
+  },
+  entityView: {
+    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+    height:  '83vh',
+  },
   card: {
     backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
-    height: '90vh',
+    
   },
   header: {
     padding: theme.spacing.xs,
@@ -18,6 +26,9 @@ export const dataUiStyles = createStyles((theme) => ({
   title: {
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
     lineHeight: 1,
+  },
+  tableTh: {
+    minWidth: 150,
   },
   tableheader: {
     position: 'sticky',
@@ -41,18 +52,17 @@ export const dataUiStyles = createStyles((theme) => ({
   rowSelected: {
     backgroundColor: theme.colorScheme === 'dark' ? theme.fn.rgba(theme.colors[theme.primaryColor][7], 0.2) : theme.colors[theme.primaryColor][0],
   },
-  tableCell: {padding:5},
+  tableCell: { padding: 5 },
   scrolled: {
     boxShadow: theme.shadows.sm,
   },
-  linkbox: {width: 430,
-  },
+  linkbox: { width: 330 },
   box: {
     border: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[3] : theme.colors.gray[2]}`,
     height: '90vh',
   },
-  form:{
-    padding:8,
+  form: {
+    padding: 8,
     borderBottom: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[3] : theme.colors.gray[2]}`,
-  }
+  },
 }));

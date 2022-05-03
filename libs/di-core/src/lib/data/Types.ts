@@ -1,5 +1,5 @@
 export interface IEntity {
-  id?: number;
+  id: number;
   isLocked?: boolean;
   isDisabled?: boolean;
 }
@@ -74,3 +74,4 @@ export interface IApiResponse {
   messages: Array<string> | null;
   result: IDomainResponse | null;
 }
+export const NoOpResponse:IApiResponse = { reason: 0, failed:false, messages: null,  result: null};
