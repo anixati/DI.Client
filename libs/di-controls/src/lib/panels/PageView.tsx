@@ -1,38 +1,10 @@
 import { EntityCtxProvider, IViewProps } from '@dotars/di-core';
-import { Avatar, Card, Container, createStyles, Group, LoadingOverlay, Text } from '@mantine/core';
+import { Avatar, Card, Container, Group, Text } from '@mantine/core';
+import { panelStyles } from './Styles';
 
- const useStyles = createStyles((theme) => ({
-  card: {
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
-    height: '93vh',
-  },
-
-  footer: {
-    // display: 'flex',
-    // justifyContent: 'space-between',
-    padding: theme.spacing.xs,
-    //padding: `${theme.spacing.sm}px ${theme.spacing.lg}px`,
-    borderTop: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[2]}`,
-  },
-
-  header: {
-    padding: theme.spacing.xs,
-    borderBottom: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]}`,
-  },
-  content: {
-    paddingBottom: 10,
-    paddingTop: 10,
-    paddinLeft: 5,
-    paddinRight: 5,
-  },
-  title: {
-    fontFamily: `Greycliff CF, ${theme.fontFamily}`,
-    lineHeight: 1,
-  },
-}));
 
 export const PageView: React.FC<IViewProps> = (rx) => {
-  const { classes } = useStyles();
+  const { classes } = panelStyles();
   return (
     <EntityCtxProvider>
       <Card withBorder p="lg" className={classes.card}>
@@ -54,8 +26,6 @@ export const PageView: React.FC<IViewProps> = (rx) => {
         <Card.Section className={classes.content}>
           <Container fluid={true}>{rx.children}</Container>
         </Card.Section>
-        
-        {/* <Card.Section className={classes.footer}>Ak</Card.Section> */}
       </Card>
     </EntityCtxProvider>
   );

@@ -9,6 +9,10 @@ export const dataUiStyles = createStyles((theme) => ({
     backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
     height:  '83vh',
   },
+  tableCard:{
+    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+    height:'85vh'
+  },
   card: {
     backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
     
@@ -18,14 +22,16 @@ export const dataUiStyles = createStyles((theme) => ({
     borderBottom: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]}`,
   },
   footer: {
+    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.gray[2],
     padding: 3,//theme.spacing.xs,
     borderTop: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]}`,
   },
   content: {
     paddingBottom: 10,
     paddingTop: 10,
-    paddinLeft: 5,
-    paddinRight: 5,
+    paddingLeft: 5,
+    paddingRight: 5,
+    minHeight:'55vh',
   },
   title: {
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,

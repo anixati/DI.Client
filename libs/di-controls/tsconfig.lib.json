@@ -7,7 +7,7 @@
   "files": [
     "../../node_modules/@nrwl/react/typings/cssmodule.d.ts",
     "../../node_modules/@nrwl/react/typings/image.d.ts",
-    "./src/lib/panels/TitledPanel.tsx",
+    "src/lib/panels/Panels.tsx",
     "./src/lib/panels/CenterPanel.ts",
     "src/lib/data/tables/RenderTable.tsx",
     "src/lib/data/forms/EntityView.tsx",
@@ -19,7 +19,8 @@
     "./src/lib/fields/FieldProps.tsx",
     "./src/lib/data/forms/DataField.tsx",
     "./src/lib/data/controls/MdlWindow.tsx",
-    "./src/lib/data/lists/ListItem.tsx"
+    "./src/lib/data/lists/ListItem.tsx",
+    "./src/lib/panels/panelStyles.tsx"
   ],
   "exclude": [
     "**/*.spec.ts",

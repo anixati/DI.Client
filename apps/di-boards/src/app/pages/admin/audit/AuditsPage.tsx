@@ -1,33 +1,15 @@
-import { DataTable, PagedTable, PageView } from '@dotars/di-controls';
-import { IAuditLog, IAuditProp, IGenericListResponse } from '@dotars/di-core';
-import { ActionIcon, Grid, Table } from '@mantine/core';
-import { showNotification } from '@mantine/notifications';
-import axios from 'axios';
+import { PagedTable, PageView, ScrollPanel } from '@dotars/di-controls';
+import { IAuditLog, IAuditProp } from '@dotars/di-core';
+import { ActionIcon, Grid, Group, Table, Text } from '@mantine/core';
 import moment from 'moment';
-import { useEffect, useState } from 'react';
-import { useAsync } from 'react-async-hook';
+import { useState } from 'react';
 import { CellProps, Column } from 'react-table';
-import { AlertOctagon, Eye, Receipt } from 'tabler-icons-react';
+import { Eye, Receipt } from 'tabler-icons-react';
 
 export const AuditsPage: React.FC = () => {
-  // const getAuditData = async () => {
-  //   const resp = await axios.post<IGenericListResponse<IAuditLog>>('/audits', { index: 0, size: 10 });
-  //   const data = resp.data;
-  //   if (resp.data.failed) {
-  //     console.log(resp.data);
-  //     showNotification({ message: `${data.messages}`, color: 'red', icon: <AlertOctagon /> });
-  //   }
-  //   return data;
-  // };
-  // const asyncApi = useAsync(getAuditData, []);
-  // useEffect(() => {
-  //   asyncApi.execute();
-  // }, []);
-
   const createItem = () => {
     console.log('.');
   };
-
   const [auditProps, setAuditProps] = useState<Array<IAuditProp> | undefined>(undefined);
   const viewItem = (row: IAuditLog) => {
     setAuditProps(row.data);
@@ -51,7 +33,6 @@ export const AuditsPage: React.FC = () => {
     },
     {
       Header: 'Date',
-      //accessor: 'auditDate',
       accessor: (d) => {
         return moment(d.auditDate).local().format('DD/MM/YYYY hh:mm:ss');
       },
@@ -68,33 +49,42 @@ export const AuditsPage: React.FC = () => {
     },
   ];
 
-  const rows = auditProps && auditProps.map((e) => (
-    <tr key={e.key}>
-      <td>{e.key}</td>
-      <td>{e.oldValue?e.oldValue:''}</td>
-      <td>{e.newValue?e.newValue:''}</td>
-    </tr>
-  ));
-
   return (
     <PageView title="Audit Logs" desc="" icon={<Receipt />}>
-      <Grid justify="space-between">
+      <Grid justify="space-between" style={{ height: '85vh' }}>
         <Grid.Col span={6} style={{ minHeight: 280, padding: 5 }}>
-          <PagedTable<IAuditLog> title="Audit logs"  OnCreate={createItem}  columns={columns} canCreate={false} baseUrl="/audits"/>
+          <PagedTable<IAuditLog> title="Audit logs" OnCreate={createItem} columns={columns} canCreate={false} baseUrl="/audits" />
         </Grid.Col>
         <Grid.Col span={6} style={{ minHeight: 280, padding: 5 }}>
-          {auditProps && (
-            <Table striped highlightOnHover verticalSpacing={2} fontSize="xs" horizontalSpacing={2}>
-              <thead>
-                <tr>
-                  <th>Key</th>
-                  <th>Old Value</th>
-                  <th>New Value</th>
-                </tr>
-              </thead>
-              <tbody>{rows}</tbody>
-            </Table>
-          )}
+          <ScrollPanel
+            rndrTitle={() => (
+              <Group spacing="sm" position="left">
+                <Text weight={500}>Change Details</Text>
+              </Group>
+            )}
+          >
+            {auditProps && (
+              <Table striped highlightOnHover verticalSpacing={2} fontSize="xs" horizontalSpacing={2}>
+                <thead>
+                  <tr>
+                    <th>Key</th>
+                    <th>Old Value</th>
+                    <th>New Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {auditProps &&
+                    auditProps.map((e) => (
+                      <tr key={e.key}>
+                        <td>{e.key}</td>
+                        <td>{e.oldValue ? e.oldValue : ''}</td>
+                        <td>{e.newValue ? e.newValue : ''}</td>
+                      </tr>
+                    ))}
+                </tbody>
+              </Table>
+            )}
+          </ScrollPanel>
         </Grid.Col>
       </Grid>
     </PageView>

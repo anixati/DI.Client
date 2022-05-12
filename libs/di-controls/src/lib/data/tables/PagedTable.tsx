@@ -75,7 +75,7 @@ export function PagedTable<T extends IEntity>({ columns, title, baseUrl, OnCreat
   };
   // Render the UI for your table
   return (
-    <Card withBorder p="lg" className={classes.card}>
+    <Card withBorder p="lg" className={classes.tableCard}>
       <Card.Section className={classes.header}>
         <SearchCmdBar title={title} searchStr={search} OnSearch={OnSearch} OnRefresh={OnRefresh} OnCreate={OnCreate} canCreate={canCreate} />
       </Card.Section>
