@@ -1,20 +1,17 @@
-import {
-  AuthenticateInner,
-  createUserManager,
-  LoginComplete,
-  LogoutPage,
-  Protected,
-  setUserManager,
-  useAppContext,
-} from '@dotars/di-core';
+import { AuthenticateInner, createUserManager, LoginComplete, LogoutPage, Protected, rootNav, setUserManager, useAppContext } from '@dotars/di-core';
+import { useAtom } from 'jotai';
 import { UserManager, WebStorageStateStore } from 'oidc-client';
 import React, { useEffect, useState } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigationType } from 'react-router-dom';
 import { NotFoundPage, SignOutPage } from '../pages';
 import { ShellPage } from '../shell/ShellPage';
 
 export const AuthRouter: React.FC = (rx) => {
+
+
   const ctx = useAppContext();
+
+
   const [mgr] = useState<UserManager>(() => {
     const oidc_config = {
       loadUserInfo: true,
@@ -29,10 +26,11 @@ export const AuthRouter: React.FC = (rx) => {
       scope: `${ctx.settings?.oidc_scope}`, // add other scopes here
       post_logout_redirect_uri: `${ctx.settings?.clientBase}/logout`,
     };
-    const usm = createUserManager(oidc_config); 
-     if (usm) setUserManager(usm);
+    const usm = createUserManager(oidc_config);
+    if (usm) setUserManager(usm);
     return usm;
   });
+
 
   // useEffect(() => {
   //   const oidc_config = {
@@ -53,8 +51,6 @@ export const AuthRouter: React.FC = (rx) => {
   //   setUserManager(usm);
   //   setMgr(usm);
   // });
-
-
 
   return (
     <Routes>

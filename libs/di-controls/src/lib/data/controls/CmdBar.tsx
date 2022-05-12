@@ -4,6 +4,7 @@ import { Plus, Refresh, Search, SquarePlus } from 'tabler-icons-react';
 export interface SearchCmdBarProps {
   title: string;
   searchStr: string;
+  canCreate?:boolean;
   OnSearch: (value: string) => void;
   OnRefresh: () => void;
   OnCreate: () => void;
@@ -27,9 +28,10 @@ export const SearchCmdBar: React.FC<SearchCmdBarProps> = (rx) => {
           </ActionIcon>
           {/* <Button leftIcon={<Plus />} size="xs" variant="filled" color="indigo" onClick={rx.OnCreate}>
           </Button> */}
+          {rx.canCreate && (
            <ActionIcon variant="filled" color="indigo" onClick={rx.OnCreate}>
             <SquarePlus size={16} />
-          </ActionIcon> 
+          </ActionIcon> )}
         </Group>
       </Group>
     </Box>

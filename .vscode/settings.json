@@ -26,7 +26,6 @@
         "jest.preset.js": true,
         "nx.json": true,
         "package-lock.json": true,
-        "package.json": true,
         "tsconfig.base.json": true,
         "workspace.json": true,
         "libs/.gitkeep": true,
@@ -53,7 +52,12 @@
         "libs/di-controls/README.md": true,
         "libs/di-controls/tsconfig.json": true,
         "libs/di-controls/tsconfig.lib.json": true,
-        "libs/di-controls/tsconfig.spec.json": true
+        "libs/di-controls/tsconfig.spec.json": true,
+        "babel.config.json": true,
+        "apps/di-boards/src/styles.scss": true,
+        "apps/di-boards/src/polyfills.ts": true,
+        "apps/di-boards/src/index.html": true,
+        "apps/di-boards/src/favicon.ico": true
     },
     "hide-files.files": [
         "apps/di-boards-e2e",
@@ -76,7 +80,6 @@
         "jest.preset.js",
         "nx.json",
         "package-lock.json",
-        "package.json",
         "tsconfig.base.json",
         "workspace.json",
         "libs/.gitkeep",
@@ -103,6 +106,11 @@
         "libs/di-controls/README.md",
         "libs/di-controls/tsconfig.json",
         "libs/di-controls/tsconfig.lib.json",
-        "libs/di-controls/tsconfig.spec.json"
+        "libs/di-controls/tsconfig.spec.json",
+        "babel.config.json",
+        "apps/di-boards/src/styles.scss",
+        "apps/di-boards/src/polyfills.ts",
+        "apps/di-boards/src/index.html",
+        "apps/di-boards/src/favicon.ico"
     ]
 }

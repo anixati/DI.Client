@@ -5,8 +5,8 @@ import { UseFormInput, UseFormReturnType } from '@mantine/form/lib/use-form';
 import { ReactNode } from 'react';
 import { Column } from 'react-table';
 import { Receipt } from 'tabler-icons-react';
-import { OptionValue } from '../../data';
-import { appStyles } from '../../Styles';
+import { OptionValue } from '../../../data';
+import { appStyles } from '../../../Styles';
 
 function renderForm(form: UseFormReturnType<ICodeRecord>): ReactNode {
   const { classes } = appStyles();
@@ -86,7 +86,7 @@ const OptionDetails: React.FC = () => {
   };
 
   return (
-    <EntityForm baseUrl="/options" config={okConfig} renderForm={renderForm}>
+    <EntityForm baseUrl="/options" config={okConfig} renderForm={renderForm} canLock={true}>
       {ectx && ectx.entity && <SubCodeTable<OptionValue> baseUrl="/optval" title="Optionset Values" columns={columns} 
         config={getConfig(ectx.entity.id)} renderForm={renderOptionValue} />}
     </EntityForm>

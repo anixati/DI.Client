@@ -14,6 +14,7 @@ import { AlertOctagon, CircleCheck } from 'tabler-icons-react';
 
 export interface EntityFormProps<T extends IEntity> {
   baseUrl: string;
+  canLock:boolean;
   config: UseFormInput<T>;
   submitData?: (values: T) => void;
   renderForm: (form: UseFormReturnType<T>) => React.ReactNode;
@@ -97,7 +98,7 @@ export const EntityForm = <T extends IEntity>(rx: PropsWithChildren<EntityFormPr
 
   /* #endregion */
   return (
-    <EntityView name="Option" toolBar={<EntityBar url={`${rx.baseUrl}/change`} OnCreate={onCreate} onUpdate={onUpdate} />}>
+    <EntityView name="Option" toolBar={<EntityBar disabled={false} url={`${rx.baseUrl}/change`} OnCreate={onCreate} onUpdate={onUpdate} canLock={rx.canLock} />}>
       <form onSubmit={form.onSubmit(handleSubmit)} className={classes.form}>
         <button hidden={true} ref={refSub} type={'submit'} />
         {rx.renderForm(form)}

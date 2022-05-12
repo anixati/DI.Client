@@ -17,6 +17,10 @@ export const dataUiStyles = createStyles((theme) => ({
     padding: theme.spacing.xs,
     borderBottom: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]}`,
   },
+  footer: {
+    padding: 3,//theme.spacing.xs,
+    borderTop: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]}`,
+  },
   content: {
     paddingBottom: 10,
     paddingTop: 10,
@@ -28,7 +32,7 @@ export const dataUiStyles = createStyles((theme) => ({
     lineHeight: 1,
   },
   tableTh: {
-    minWidth: 150,
+    minWidth: 15,
   },
   tableheader: {
     position: 'sticky',

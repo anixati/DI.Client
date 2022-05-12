@@ -1,0 +1,13 @@
+[
+  { "Key": "CreatedBy", "OldValue": null, "NewValue": "490681CE-B778-4A2A-A948-2404EC50A8B0_System" },
+  { "Key": "CreatedOn", "OldValue": null, "NewValue": "2022-05-03T06:45:00.2959942Z" },
+  { "Key": "Deleted", "OldValue": null, "NewValue": false },
+  { "Key": "Description", "OldValue": null, "NewValue": "Boards.Domain.Contacts.Appointee" },
+  { "Key": "Disabled", "OldValue": null, "NewValue": false },
+  { "Key": "Locked", "OldValue": null, "NewValue": false },
+  { "Key": "ModifiedBy", "OldValue": null, "NewValue": "490681CE-B778-4A2A-A948-2404EC50A8B0_System" },
+  { "Key": "ModifiedOn", "OldValue": null, "NewValue": "2022-05-03T06:45:00.2959942Z" },
+  { "Key": "Name", "OldValue": null, "NewValue": "Appointee" },
+  { "Key": "Timestamp", "OldValue": null, "NewValue": null },
+  { "Key": "Id", "OldValue": null, "NewValue": 23 }
+]

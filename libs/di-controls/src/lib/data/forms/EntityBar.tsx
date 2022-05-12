@@ -5,6 +5,8 @@ import { useAsyncCallback } from 'react-async-hook';
 import { dispatch } from 'use-bus';
 import { showNotification } from '@mantine/notifications';
 import { AlertOctagon } from 'tabler-icons-react';
+import { ReactNode, useEffect, useState } from 'react';
+import { atom, useAtom } from 'jotai';
 
 const useStyles = createStyles((theme) => ({
   button: {
@@ -28,17 +30,24 @@ const useStyles = createStyles((theme) => ({
 
 export interface EntityToolbarProps {
   url: string;
+  canLock: boolean;
+  actions?: ReactNode;
+  disabled: boolean;
   onUpdate: () => void;
   OnCreate: () => void;
 }
-
 export const EntityBar: React.FC<EntityToolbarProps> = (rx) => {
   const { classes } = useStyles();
   const ectx = useEntityContext();
   const isNew = ectx?.entity === undefined;
-
+  const [disabled, setDisabled] = useState<boolean>(rx.disabled);
+  //const [disabled,] = useAtom(disableToolbar);
   let payload: IChangeRequest;
   //const [payload, setPayload] = useState<IChangeRequest>();
+
+  useEffect(() => {
+    setDisabled(rx.disabled);
+  }, [rx]);
 
   const changeState = async (request: IChangeRequest) => {
     const resp = await axios.post<IApiResponse>(rx.url, request);
@@ -47,34 +56,34 @@ export const EntityBar: React.FC<EntityToolbarProps> = (rx) => {
       console.log(data);
       showNotification({ autoClose: 5000, title: 'Failed to change state', message: `${data.messages}`, color: 'red', icon: <AlertOctagon /> });
     } else {
-      Notify(request.action,data);
+      Notify(request.action, data);
     }
     return data;
   };
 
   const Notify = (action: number, data: IApiResponse) => {
-    let title='';
-    let notifyMsg='RELOAD';
+    let title = '';
+    let notifyMsg = 'RELOAD';
     switch (action) {
       case 2: {
-        title='Enabled Sucessfully!';
+        title = 'Enabled Sucessfully!';
         break;
       }
       case 3: {
-        title='Disabled Sucessfully!';
+        title = 'Disabled Sucessfully!';
         break;
       }
       case 4: {
-        title='Locked Sucessfully!';
+        title = 'Locked Sucessfully!';
         break;
       }
       case 5: {
-        title='Unlocked Sucessfully!';
+        title = 'Unlocked Sucessfully!';
         break;
       }
       case 6: {
-        title='Deleted Sucessfully!';
-        notifyMsg='ONDELETE';
+        title = 'Deleted Sucessfully!';
+        notifyMsg = 'ONDELETE';
         break;
       }
     }
@@ -135,6 +144,7 @@ export const EntityBar: React.FC<EntityToolbarProps> = (rx) => {
 
   return (
     <Group spacing={0} position="right">
+      {rx.actions}
       {isNew && (
         <Button className={classes.button} compact onClick={onClickCreate}>
           Create
@@ -143,33 +153,34 @@ export const EntityBar: React.FC<EntityToolbarProps> = (rx) => {
       {!isNew && (
         <>
           {ectx?.entity?.isDisabled === false && ectx?.entity?.isLocked === false && (
-            <Button className={classes.button} compact onClick={onClickUpdate}>
+            <Button className={classes.button} compact onClick={onClickUpdate} disabled={disabled}>
               Update
             </Button>
           )}
-          {ectx?.entity?.isDisabled === false && ectx?.entity?.isLocked === false && (
-            <Button variant="light" className={classes.button} compact onClick={onClickLock}>
+
+          {rx.canLock && ectx?.entity?.isDisabled === false && ectx?.entity?.isLocked === false && (
+            <Button variant="light" className={classes.button} compact onClick={onClickLock} disabled={disabled}>
               Lock
             </Button>
           )}
-          {ectx?.entity?.isLocked === true && (
-            <Button variant="light" className={classes.button} compact onClick={onClickUnlock}>
+          {rx.canLock && ectx?.entity?.isLocked === true && (
+            <Button variant="light" className={classes.button} compact onClick={onClickUnlock} disabled={disabled}>
               Un-lock
             </Button>
           )}
 
           {ectx?.entity?.isDisabled === false && ectx?.entity?.isLocked === false && (
-            <Button variant="light" className={classes.button} compact onClick={onClickDisable}>
+            <Button variant="light" className={classes.button} compact onClick={onClickDisable} disabled={disabled}>
               Disable
             </Button>
           )}
           {ectx?.entity?.isDisabled === true && (
-            <Button variant="light" className={classes.button} compact onClick={onClickEnable}>
+            <Button variant="light" className={classes.button} compact onClick={onClickEnable} disabled={disabled}>
               Enable
             </Button>
           )}
           {ectx?.entity?.isDisabled === false && ectx?.entity?.isLocked === false && (
-            <Button color="red" className={classes.button} compact onClick={onClickDelete}>
+            <Button color="red" className={classes.button} compact onClick={onClickDelete} disabled={disabled}>
               Delete
             </Button>
           )}

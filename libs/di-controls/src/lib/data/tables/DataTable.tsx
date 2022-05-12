@@ -8,11 +8,12 @@ import { dataUiStyles } from '../Styles';
 
 interface DataTableProps<T extends IEntity> extends TableOptions<T> {
   title: string;
+  canCreate?:boolean;
   OnRefresh: () => void;
   OnCreate: () => void;
 }
 
-export function DataTable<T extends IEntity>({ columns, data, title, OnRefresh, OnCreate, ...rest }: DataTableProps<T>): ReactElement {
+export function DataTable<T extends IEntity>({ columns, data, title, OnRefresh, OnCreate,canCreate, ...rest }: DataTableProps<T>): ReactElement {
   const { classes, cx } = dataUiStyles();
   const [scrolled, setScrolled] = useState(false);
   const ectx = useEntityContext();
@@ -26,7 +27,6 @@ export function DataTable<T extends IEntity>({ columns, data, title, OnRefresh, 
     rows,
     prepareRow,
     state: { globalFilter },
-    preGlobalFilteredRows,
     setGlobalFilter,
   } = useTable<T>({ columns: memoizedColumns, data: memoizedData, ...rest },  useGlobalFilter,useSortBy);
   const [search, setSearch] = useState(globalFilter);
@@ -39,11 +39,11 @@ export function DataTable<T extends IEntity>({ columns, data, title, OnRefresh, 
   return (
     <Card withBorder p="lg" className={classes.card}>
       <Card.Section className={classes.header}>
-        <SearchCmdBar title={title} searchStr={search} OnSearch={OnSearch} OnRefresh={OnRefresh} OnCreate={OnCreate} />
+        <SearchCmdBar title={title} searchStr={search} OnSearch={OnSearch} OnRefresh={OnRefresh} OnCreate={OnCreate}  canCreate={canCreate}/>
       </Card.Section>
       <Card.Section className={classes.content}>
-        <ScrollArea sx={{ height: 450, paddingRight: 10 }} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
-          <Table sx={{ minWidth: 10 }} {...getTableProps()}>
+        <ScrollArea sx={{ height: 450, paddingRight: 20 }} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
+          <Table sx={{ }} {...getTableProps()} verticalSpacing={2} fontSize="xs" horizontalSpacing={2} striped highlightOnHover>
             <thead className={cx(classes.tableheader, { [classes.scrolled]: scrolled })}>
               {headerGroups.map((headerGroup) => (
                 <tr {...headerGroup.getHeaderGroupProps()}>

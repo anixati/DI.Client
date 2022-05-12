@@ -72,14 +72,26 @@
                 {
                     "route": "/options",
                     "label": "Option sets"
+                },{
+                    "route": "/logs",
+                    "label": "Audit logs"
                 },
                 {
-                    "route": "/settings",
-                    "label": "Settings"
-                },
-                {
-                    "route": "/users",
-                    "label": "Users"
+                    "label": "Security",
+                    "links": [
+                        {
+                            "route": "/users",
+                            "label": "Users"
+                        },
+                        {
+                            "route": "/roles",
+                            "label": "Roles"
+                        },
+                        {
+                            "route": "/teams",
+                            "label": "Teams"
+                        }
+                    ]
                 },
                 {
                     "label": "Reference Data",

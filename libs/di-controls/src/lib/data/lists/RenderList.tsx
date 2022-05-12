@@ -1,4 +1,4 @@
-import { Alert, Badge, Card, Group, Loader, ScrollArea, Table, Text, UnstyledButton } from '@mantine/core';
+import { Alert, Badge, Card, Center, Group, Loader, ScrollArea, Table, Text, UnstyledButton } from '@mantine/core';
 import { ReactElement, useMemo, useState } from 'react';
 
 import { ICodeRecord, IDataListResponse, useEntityContext } from '@dotars/di-core';
@@ -58,8 +58,8 @@ export function RenderList(rx: RenderListProps): ReactElement {
 
   /* #region  render list item */
 
-  const rows = memData
-    ?.filter((x) => x.name.toLowerCase().includes(search) || x.description.toLowerCase().includes(search) || search === '')
+  const rows = memData === undefined || memData.length <=0 ? <tr><td><Center>No data found!</Center></td></tr>: memData
+    ?.filter((x) => x.name?.toLowerCase().includes(search) || x.description?.toLowerCase().includes(search) || search === '')
     //.sort((a,b) => { if(a) return a.id - b.id; return undefined;})
     .map((row) => {
       const selected = selection && selection === row.id;

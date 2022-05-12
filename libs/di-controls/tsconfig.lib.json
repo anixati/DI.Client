@@ -12,7 +12,14 @@
     "src/lib/data/tables/RenderTable.tsx",
     "src/lib/data/forms/EntityView.tsx",
     "./src/lib/data/pnlBarStyles.tsx",
-    "./src/lib/data/controls/MdlWindow.tsx"
+    "./src/lib/fields/TextField.tsx",
+    "./src/lib/fields/ViewField.tsx",
+    "./src/lib/fields/wrapperProps.tsx",
+    "./src/lib/fields/ErrorMsg.tsx",
+    "./src/lib/fields/FieldProps.tsx",
+    "./src/lib/data/forms/DataField.tsx",
+    "./src/lib/data/controls/MdlWindow.tsx",
+    "./src/lib/data/lists/ListItem.tsx"
   ],
   "exclude": [
     "**/*.spec.ts",

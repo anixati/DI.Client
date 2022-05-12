@@ -14,11 +14,13 @@
     "./src/app/RootLayout.tsx",
     "./src/app/pages/boards/dashboard/StatsGrid.tsx",
     "./src/app/pages/boards/DashboardPage.tsx",
-    "./src/app/pages/admin/UsersPage.tsx",
-    "./src/app/pages/admin/PortfoliosPage.tsx",
-    "./src/app/pages/admin/SettingsPage.tsx",
-    "src/app/pages/admin/OptionsPage.tsx",
-    "./src/app/pages/admin/options/OptionDetail.tsx"
+    "src/app/pages/admin/security/UsersPage.tsx",
+    "src/app/pages/admin/refdata/PortfoliosPage.tsx",
+    "src/app/pages/admin/refdata/SettingsPage.tsx",
+    "src/app/pages/admin/refdata/OptionsPage.tsx",
+    "./src/app/pages/admin/options/OptionDetail.tsx",
+    "./src/app/pages/admin/security/RolesPage.tsx",
+    "./src/app/pages/admin/security/TeamsPage.tsx"
   ],
   "exclude": [
     "**/*.spec.ts",

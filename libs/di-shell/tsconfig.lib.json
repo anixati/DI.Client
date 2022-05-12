@@ -9,7 +9,8 @@
     "../../node_modules/@nrwl/react/typings/image.d.ts",
     "./src/lib/shell/UserButton.tsx",
     "./src/lib/shell/LinksGroup.tsx",
-    "./src/lib/shell/Footer.tsx"
+    "./src/lib/shell/Footer.tsx",
+    "./src/lib/shell/useStyles.tsx"
   ],
   "exclude": [
     "**/*.spec.ts",
