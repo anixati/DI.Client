@@ -1,4 +1,4 @@
-import { IAuditedRecord } from '@dotars/di-core';
+import { IAuditedRecord, IContactType } from '@dotars/di-core';
 
 
 export interface OptionValue extends IAuditedRecord {
@@ -7,4 +7,10 @@ export interface OptionValue extends IAuditedRecord {
   optionId: number;
   order?: number;
   value: number;
+}
+
+
+export interface Appointee extends IContactType {
+  
+  
 }

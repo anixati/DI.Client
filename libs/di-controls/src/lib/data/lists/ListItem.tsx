@@ -19,7 +19,7 @@ export const ListItem = <T extends IEntity>(rx: ListItemProps<T>) => {
           </Badge>
         )}
         {rx.item.isLocked && (
-          <Badge color="indigo" size="xs">
+          <Badge color="dotars" size="xs">
             Locked
           </Badge>
         )}

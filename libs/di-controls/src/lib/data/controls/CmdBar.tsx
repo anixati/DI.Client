@@ -22,14 +22,14 @@ export const SearchCmdBar: React.FC<SearchCmdBarProps> = (rx) => {
           <Text weight={500}>{rx.title}</Text>
         </Group>
         <Group position="right" spacing={3}>
-          <TextInput size="xs" placeholder="Search" icon={<Search size={14} color="indigo" />} value={rx.searchStr} onChange={handleSearchChange} />
-          <ActionIcon variant="light" color="indigo" onClick={rx.OnRefresh}>
+          <TextInput size="xs" placeholder="Search" icon={<Search size={14} color="#071E3E" />} value={rx.searchStr} onChange={handleSearchChange} />
+          <ActionIcon variant="filled" color="dotars" onClick={rx.OnRefresh}>
             <Refresh size={16} />
           </ActionIcon>
           {/* <Button leftIcon={<Plus />} size="xs" variant="filled" color="indigo" onClick={rx.OnCreate}>
           </Button> */}
           {rx.canCreate && (
-           <ActionIcon variant="filled" color="indigo" onClick={rx.OnCreate}>
+           <ActionIcon variant="filled" color="dotars" onClick={rx.OnCreate}>
             <SquarePlus size={16} />
           </ActionIcon> )}
         </Group>

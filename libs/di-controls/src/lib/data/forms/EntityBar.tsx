@@ -1,12 +1,11 @@
 import { IApiResponse, IChangeRequest, useEntityContext } from '@dotars/di-core';
-import { Button, createStyles, Group } from '@mantine/core';
-import axios from 'axios';
-import { useAsyncCallback } from 'react-async-hook';
-import { dispatch } from 'use-bus';
+import { Button, createStyles, Group, Text } from '@mantine/core';
+import { useModals } from '@mantine/modals';
 import { showNotification } from '@mantine/notifications';
-import { AlertOctagon } from 'tabler-icons-react';
+import axios from 'axios';
 import { ReactNode, useEffect, useState } from 'react';
-import { atom, useAtom } from 'jotai';
+import { AlertOctagon } from 'tabler-icons-react';
+import { dispatch } from 'use-bus';
 
 const useStyles = createStyles((theme) => ({
   button: {
@@ -38,6 +37,7 @@ export interface EntityToolbarProps {
 }
 export const EntityBar: React.FC<EntityToolbarProps> = (rx) => {
   const { classes } = useStyles();
+  const modals = useModals();
   const ectx = useEntityContext();
   const isNew = ectx?.entity === undefined;
   const [disabled, setDisabled] = useState<boolean>(rx.disabled);
@@ -90,19 +90,13 @@ export const EntityBar: React.FC<EntityToolbarProps> = (rx) => {
     showNotification({ autoClose: 5000, title: `${title}`, message: `${data?.result?.message}`, color: 'blue', icon: <AlertOctagon /> });
     dispatch(notifyMsg);
   };
-
-  //const asyncState = useAsync(changeState, [action]);
-  const asyncOnClick = useAsyncCallback(async () => {
-    if (payload) await changeState(payload);
-  });
-  const execAction = (action: number, reason: string) => {
+  const execAction = async (action: number, reason: string) => {
     if (ectx && ectx.entity) {
       try {
         ectx.showLoading(true);
         const id = ectx.entity.id;
         if (id) {
-          payload = { id, name: 'User Action', reason: reason, action: action };
-          asyncOnClick.execute();
+          await  changeState({ id, name: 'User Action', reason: reason, action: action });
         }
       } finally {
         ectx.showLoading(false);
@@ -139,43 +133,55 @@ export const EntityBar: React.FC<EntityToolbarProps> = (rx) => {
     execAction(2, 'Enable entity');
   };
   const onClickDelete = () => {
-    execAction(6, 'Delete entity');
+    modals.openConfirmModal({
+      title: 'Please confirm',
+      centered: true,
+      children: <Text size="sm">Are you sure you want to delete this </Text>,
+      labels: { confirm: 'Yes', cancel: 'No' },
+      confirmProps: { color: 'red' },
+      onConfirm: () => {
+              execAction(6, 'Delete entity');
+      },
+    });
+
+
+  
   };
 
   return (
     <Group spacing={0} position="right">
       {rx.actions}
       {isNew && (
-        <Button className={classes.button} compact onClick={onClickCreate}>
+        <Button  color="dotars" className={classes.button} compact onClick={onClickCreate}>
           Create
         </Button>
       )}
       {!isNew && (
         <>
           {ectx?.entity?.isDisabled === false && ectx?.entity?.isLocked === false && (
-            <Button className={classes.button} compact onClick={onClickUpdate} disabled={disabled}>
+            <Button  color="dotars" className={classes.button} compact onClick={onClickUpdate} disabled={disabled}>
               Update
             </Button>
           )}
 
           {rx.canLock && ectx?.entity?.isDisabled === false && ectx?.entity?.isLocked === false && (
-            <Button variant="light" className={classes.button} compact onClick={onClickLock} disabled={disabled}>
+            <Button variant="outline" color="dotars" className={classes.button} compact onClick={onClickLock} disabled={disabled}>
               Lock
             </Button>
           )}
           {rx.canLock && ectx?.entity?.isLocked === true && (
-            <Button variant="light" className={classes.button} compact onClick={onClickUnlock} disabled={disabled}>
+            <Button variant="outline" color="dotars" className={classes.button} compact onClick={onClickUnlock} disabled={disabled}>
               Un-lock
             </Button>
           )}
 
           {ectx?.entity?.isDisabled === false && ectx?.entity?.isLocked === false && (
-            <Button variant="light" className={classes.button} compact onClick={onClickDisable} disabled={disabled}>
+            <Button variant="outline" color="dotars" className={classes.button} compact onClick={onClickDisable} disabled={disabled}>
               Disable
             </Button>
           )}
           {ectx?.entity?.isDisabled === true && (
-            <Button variant="light" className={classes.button} compact onClick={onClickEnable} disabled={disabled}>
+            <Button variant="outline" className={classes.button} compact onClick={onClickEnable} disabled={disabled}>
               Enable
             </Button>
           )}

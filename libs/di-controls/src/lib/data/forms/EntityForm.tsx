@@ -82,7 +82,6 @@ export const EntityForm = <T extends IEntity>(rx: PropsWithChildren<EntityFormPr
     if (original) {
       const changeSet = jpatch.compare(original, item);
       if (Array.isArray(changeSet)) {
-        console.log(changeSet, '*******');
         const patchResp = await axios.patch<IApiResponse>(`${rx.baseUrl}/${original.id}`, changeSet);
         const data = patchResp.data;
         if (data.failed) {
@@ -98,7 +97,7 @@ export const EntityForm = <T extends IEntity>(rx: PropsWithChildren<EntityFormPr
 
   /* #endregion */
   return (
-    <EntityView name="Option" toolBar={<EntityBar disabled={false} url={`${rx.baseUrl}/change`} OnCreate={onCreate} onUpdate={onUpdate} canLock={rx.canLock} />}>
+    <EntityView name="Item" toolBar={<EntityBar disabled={false} url={`${rx.baseUrl}/change`} OnCreate={onCreate} onUpdate={onUpdate} canLock={rx.canLock} />}>
       <form onSubmit={form.onSubmit(handleSubmit)} className={classes.form}>
         <button hidden={true} ref={refSub} type={'submit'} />
         {rx.renderForm(form)}

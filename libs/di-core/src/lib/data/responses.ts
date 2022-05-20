@@ -17,7 +17,31 @@ export interface IDomainResponse {
   export const NoOpResponse:IApiResponse = { reason: 0, failed:false, messages: null,  result: null};
 
 
-  
+  export interface IDataResponse<T extends object> {
+    reason: number;
+    failed: boolean;
+    messages: Array<string> | null;
+    result: T | null;
+  }
+ 
+// ---- table schema
+export interface ITableDef {
+  schema: ISchemaDef;
+}
+export interface ISchemaDef {
+  columns:  Array<IColumnDef>;
+}
+export interface IColumnDef {
+  accessor:string;
+  Header: string;
+  width: number;
+  format: string|null;
+  type: number;
+  typeCode: string|null;
+}
+   
+
+
 export interface IListResponse {
     pageIndex: number;
     pageSize: number;

@@ -57,7 +57,8 @@
         "apps/di-boards/src/styles.scss": true,
         "apps/di-boards/src/polyfills.ts": true,
         "apps/di-boards/src/index.html": true,
-        "apps/di-boards/src/favicon.ico": true
+        "apps/di-boards/src/favicon.ico": true,
+        ".vscode": true
     },
     "hide-files.files": [
         "apps/di-boards-e2e",
@@ -111,6 +112,7 @@
         "apps/di-boards/src/styles.scss",
         "apps/di-boards/src/polyfills.ts",
         "apps/di-boards/src/index.html",
-        "apps/di-boards/src/favicon.ico"
+        "apps/di-boards/src/favicon.ico",
+        ".vscode"
     ]
 }

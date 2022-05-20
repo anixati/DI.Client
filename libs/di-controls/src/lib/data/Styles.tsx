@@ -7,31 +7,28 @@ export const dataUiStyles = createStyles((theme) => ({
   },
   entityView: {
     backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
-    height:  '83vh',
-  },
-  tableCard:{
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
-    height:'85vh'
+    height: '83vh',
   },
   card: {
     backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
-    
   },
-  header: {
+  cardHeader: {
     padding: theme.spacing.xs,
     borderBottom: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]}`,
   },
-  footer: {
+  cardFooter: {
     backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.gray[2],
-    padding: 3,//theme.spacing.xs,
+    padding: 3, //theme.spacing.xs,
     borderTop: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]}`,
   },
-  content: {
-    paddingBottom: 10,
-    paddingTop: 10,
-    paddingLeft: 5,
-    paddingRight: 5,
-    minHeight:'55vh',
+
+  cardContent: {
+    // paddingBottom: 10,
+    // paddingTop: 10,
+    // paddingLeft: 5,
+    // paddingRight: 5,
+    //   minHeight:'55vh',
+    // backgroundColor:'red'
   },
   title: {
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
@@ -74,5 +71,29 @@ export const dataUiStyles = createStyles((theme) => ({
   form: {
     padding: 8,
     borderBottom: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[3] : theme.colors.gray[2]}`,
+  },
+  //paged table
+  ptCard: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '88vh',
+  },
+  ptheader: {
+    padding: theme.spacing.xs,
+    borderBottom: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]}`,
+    flexBasis: '50px',
+  },
+  ptContent: {
+    background: 'white',
+    flexGrow: '1',
+    paddingLeft: 4,
+    paddingRight: 4,
+  },
+  ptFooter: {
+   // borderTop: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]}`,
+    padding: 5,
+    background: theme.colors.gray[1],
+    // flexBasis: '50px',
+    Height: 70,
   },
 }));

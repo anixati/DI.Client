@@ -90,10 +90,10 @@ export const GenericList = <T extends IEntity>(rx: PropsWithChildren<GenericList
       )}
       {asyncData.result && (
         <Card withBorder p="lg" className={classes.listView}>
-          <Card.Section className={classes.header}>
+          <Card.Section className={classes.cardHeader}>
             <SearchCmdBar title={rx.title} searchStr={search} OnSearch={(v) => setSearch(v)} OnRefresh={() => asyncData.execute()} OnCreate={() => selectRow(undefined)} />
           </Card.Section>
-          <Card.Section className={classes.content}>
+          <Card.Section className={classes.cardContent}>
             <ScrollArea sx={{ height: '76vh' }} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
               <Table sx={{}} verticalSpacing="xs" width={250}>
                 <tbody>{rows}</tbody>

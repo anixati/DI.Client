@@ -50,7 +50,17 @@ export function SideNavGroup(item: NavLink) {
       >
         <Group position="apart" spacing={0}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <ThemeIcon variant="light" size={30}>
+            <ThemeIcon
+              variant="light"
+              size={30}
+              sx={(theme) => ({
+                color: theme.colors['dotars'][0],
+                backgroundColor: theme.colors.gray[1],
+                '&:hover': {
+                  backgroundColor: theme.colors.gray[1],
+                },
+              })}
+            >
               <FileAnalytics size={18} />
             </ThemeIcon>
             <Box ml="md">{item.label}</Box>
@@ -64,7 +74,7 @@ export function SideNavGroup(item: NavLink) {
 }
 
 export function NavbarNested() {
-  const { classes,  } = shellStyles();
+  const { classes } = shellStyles();
   const [root] = useAtom(rootNav);
   const [nav] = useAtom(showNavigation);
   const [opened] = useState(false);

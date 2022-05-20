@@ -1,7 +1,6 @@
 import { IApiResponse, IChangeRequest, IEntity, IGenericListResponse, NoOpResponse, useEntityContext } from '@dotars/di-core';
-import { ActionIcon, Alert, Card, Group, Loader, Text } from '@mantine/core';
+import { ActionIcon, Alert, Group, Loader, Text } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { UseFormInput, UseFormReturnType } from '@mantine/form/lib/use-form';
 import { useModals } from '@mantine/modals';
 import { showNotification } from '@mantine/notifications';
 import axios from 'axios';
@@ -10,14 +9,13 @@ import { ReactElement, useEffect, useState } from 'react';
 import { useAsync } from 'react-async-hook';
 import { CellProps, Column } from 'react-table';
 import { AlertOctagon, CircleCheck, Edit, Eraser } from 'tabler-icons-react';
-import { SearchCmdBar } from '../controls/CmdBar';
 import { FormOpType, MdlForm, showMdlForm } from '../controls/MdlForm';
 import { dataUiStyles } from '../Styles';
-import { SimpleTable } from '../tables/SimpleTable';
 import * as jpatch from 'fast-json-patch';
-import { DataTable } from '../tables/DataTable';
+import { DataTable } from './DataTable';
+import { UseFormInput, UseFormReturnType } from '@mantine/form/lib/use-form';
 
-export interface CodeTableProps<T extends IEntity> {
+export interface SubCodeTableProps<T extends IEntity> {
   title: string;
   baseUrl: string;
   columns: ReadonlyArray<Column<T>>;
@@ -25,10 +23,8 @@ export interface CodeTableProps<T extends IEntity> {
   renderForm: (form: UseFormReturnType<T>) => React.ReactNode;
 }
 
-export function SubCodeTable<T extends IEntity>(rx: CodeTableProps<T>): ReactElement {
-  const { classes } = dataUiStyles();
+export function SubCodeTable<T extends IEntity>(rx: SubCodeTableProps<T>): ReactElement {
   const modals = useModals();
-  const [search, setSearch] = useState('');
   const form = useForm<T>(rx.config);
   const ectx = useEntityContext();
 
@@ -50,6 +46,7 @@ export function SubCodeTable<T extends IEntity>(rx: CodeTableProps<T>): ReactEle
   useEffect(() => {
     asyncApi.execute();
   }, [ectx?.entity]);
+  
   /* #endregion */
 
   /* #region  Delete */
@@ -72,17 +69,16 @@ export function SubCodeTable<T extends IEntity>(rx: CodeTableProps<T>): ReactEle
     });
 
   /* #endregion */
-
   const actionCol: Array<Column<T>> = [
     {
-      Header: '', // No header
-      id: 'edit_action', // It needs an ID
+      Header: '',
+      id: 'edit_action',
       Cell: ({ row }: CellProps<T>) => (
         <Group spacing={1} position="right">
-          <ActionIcon variant="light" color="blue" onClick={() => editItem(row.original)}>
+          <ActionIcon variant="transparent" color="dotars" onClick={() => editItem(row.original)}>
             <Edit size={16} />
           </ActionIcon>
-          <ActionIcon variant="light" color="red" onClick={() => deleteItem(row.original)}>
+          <ActionIcon variant="transparent" color="red" onClick={() => deleteItem(row.original)}>
             <Eraser size={16} />
           </ActionIcon>
         </Group>
@@ -142,13 +138,7 @@ export function SubCodeTable<T extends IEntity>(rx: CodeTableProps<T>): ReactEle
             </Alert>
           )}
           {asyncApi.result && asyncApi.result?.result && (
-            // <Card withBorder p="lg" className={classes.card}>
-            //   <Card.Section className={classes.header}>
-            //     <SearchCmdBar title={rx.title} searchStr={search} OnSearch={(v) => setSearch(v)} OnRefresh={() => asyncApi.execute()} OnCreate={createItem} />
-            //   </Card.Section>
-            //   <Card.Section className={classes.content}>{asyncApi.result?.result && <SimpleTable<T> data={asyncApi.result?.result?.items} columns={[...rx.columns, ...actionCol]} />}</Card.Section>
-            // </Card>
-            <DataTable<T> title={rx.title}  OnRefresh={() => asyncApi.execute()} OnCreate={createItem} data={asyncApi.result?.result?.items} columns={[...rx.columns, ...actionCol]} />
+            <DataTable<T> title={rx.title} OnRefresh={() => asyncApi.execute()} OnCreate={createItem} data={asyncApi.result?.result?.items} columns={[...rx.columns, ...actionCol]} />
           )}
         </>
       )}

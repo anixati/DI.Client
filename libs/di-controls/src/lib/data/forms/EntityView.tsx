@@ -15,10 +15,19 @@ export const EntityView: React.FC<EntityViewProps> = (rx) => {
   const isNew = ectx?.entity !== undefined;
   return (
     <Card withBorder p="lg" className={classes.entityView}>
-      <Card.Section className={classes.header}>
+      <Card.Section className={classes.cardHeader}>
         <Group spacing="sm" position="apart">
           <Group spacing="sm" position="left">
-            <Avatar color="071E3E" radius="sm" size={30}>
+            <Avatar
+              styles={{
+                root: { color: '#071E3E' },
+                image: { color: '#071E3E' },
+                placeholder: { color: '#071E3E' },
+                placeholderIcon: { color: '#071E3E' },
+              }}
+              radius="sm"
+              size={30}
+            >
               {isNew && <File size={30} />}
               {!isNew && <FilePlus size={30} />}
             </Avatar>
@@ -34,11 +43,7 @@ export const EntityView: React.FC<EntityViewProps> = (rx) => {
           {rx.toolBar && rx.toolBar}
         </Group>
       </Card.Section>
-      <Card.Section className={classes.content}>
-          {rx.children}
-      </Card.Section>
+      <Card.Section className={classes.cardContent}>{rx.children}</Card.Section>
     </Card>
   );
 };
-
-

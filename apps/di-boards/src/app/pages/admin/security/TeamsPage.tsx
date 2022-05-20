@@ -11,11 +11,11 @@ function rendeTeamForm(form: UseFormReturnType<ICodeRecord>): ReactNode {
   return (
     <Grid justify="space-between" className={classes.grid}>
       <Grid.Col span={6} className={classes.firstGrid}>
-        <TextInput label="Name" required placeholder="Option set name" {...form.getInputProps('name')} />
+        <TextInput label="Team Name" required placeholder="Team name" {...form.getInputProps('name')} />
         <TextInput label="Code" variant="unstyled" disabled {...form.getInputProps('code')} />
       </Grid.Col>
       <Grid.Col span={6}>
-        <Textarea label="Description" placeholder="Description" {...form.getInputProps('description')} autosize minRows={3} maxRows={6} />
+        <Textarea label="Team Description" placeholder="Team description" {...form.getInputProps('description')} autosize minRows={3} maxRows={6} />
       </Grid.Col>
     </Grid>
   );

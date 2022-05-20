@@ -1,10 +1,10 @@
 import { Divider, Grid } from '@mantine/core';
 import { TextField } from '../fields';
-export interface SimpleCmdProps {
+export interface CompositeProps {
   title?: string;
 }
 
-export const UserName: React.FC<SimpleCmdProps> = (rx) => {
+export const UserName: React.FC<CompositeProps> = (rx) => {
   return (
     <Grid grow gutter="xs">
       <Grid.Col md={3} lg={2}>
@@ -23,7 +23,7 @@ export const UserName: React.FC<SimpleCmdProps> = (rx) => {
   );
 };
 
-export const ContactDetails: React.FC<SimpleCmdProps> = (rx) => {
+export const ContactDetails: React.FC<CompositeProps> = (rx) => {
   return (
     
     <Grid grow gutter="xs">
@@ -43,7 +43,7 @@ export const ContactDetails: React.FC<SimpleCmdProps> = (rx) => {
   );
 };
 
-export interface AddressProps extends SimpleCmdProps {
+export interface AddressProps extends CompositeProps {
   code: string;
 }
 export const AddressDetails: React.FC<AddressProps> = (rx) => {
@@ -61,7 +61,6 @@ export const AddressDetails: React.FC<AddressProps> = (rx) => {
           <TextField name={`${rx.code}.city`} placeholder="city" label="Suburb/City" />
         </Grid.Col>
       </Grid>
-
       <Grid grow gutter="xs">
         <Grid.Col md={4} lg={4}>
           <TextField name={`${rx.code}.postcode`} placeholder="Post Code" label="Post Code" />

@@ -42,7 +42,7 @@ export const AuditsPage: React.FC = () => {
       Header: '', // No header
       id: 'edit_action', // It needs an ID
       Cell: ({ row }: CellProps<IAuditLog>) => (
-        <ActionIcon size="xs" variant="light" color="blue" onClick={() => viewItem(row.original)}>
+        <ActionIcon size="xs" variant="transparent" color="dotars" onClick={() => viewItem(row.original)}>
           <Eye size={16} />
         </ActionIcon>
       ),

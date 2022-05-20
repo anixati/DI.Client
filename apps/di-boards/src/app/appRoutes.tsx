@@ -1,10 +1,13 @@
 import { AppMain } from '@dotars/di-shell';
-import { Navigate, Route } from 'react-router-dom';
-import { ActiveBoardsPage, AdminLayout, AdminRouteList, BoardsLayout, DashboardPage, GenderReportPage, Report1Page, Report2Page, ReportdashPage, ReportLayout, UpcomingPage, VacanciesPage } from './pages';
-import { RootLayout } from './RootLayout';
+import { Navigate, Outlet, Route } from 'react-router-dom';
+import { AdminLayout, AdminRouteList, BoardRouteList, BoardsLayout, ReportLayout, ReportRouteList } from './pages';
+
+export const RootLayout: React.FC = () => {
+  return <Outlet />;
+};
 
 export const HomePage: React.FC = () => {
-  return <Navigate to="boards" replace />;
+  return <Navigate to="/boards" replace />;
 };
 
 export const AppRoutes: React.FC = () => {
@@ -13,22 +16,14 @@ export const AppRoutes: React.FC = () => {
       <Route path="/" element={<RootLayout />}>
         <Route path="" element={<HomePage />} />
         <Route path="boards" element={<BoardsLayout />}>
-          <Route path="dashboard" element={<DashboardPage />} />
-          <Route path="active" element={<ActiveBoardsPage />} />
-          <Route path="vacancies" element={<VacanciesPage />} />
-          <Route path="upcoming" element={<UpcomingPage />} />
-          <Route path="appointees" element={<UpcomingPage />} />
-          <Route path="events" element={<UpcomingPage />} />
+          {BoardRouteList}
         </Route>
         <Route path="reports" element={<ReportLayout />}>
-          <Route path="dashboard" element={<ReportdashPage />} />
-          <Route path="gender" element={<GenderReportPage />} />
-          <Route path="report1" element={<Report1Page />} />
-          <Route path="report2" element={<Report2Page />} />
+          {ReportRouteList}
         </Route>
-         <Route path="admin" element={<AdminLayout />}>
-           {AdminRouteList}         
-        </Route> 
+        <Route path="admin" element={<AdminLayout />}>
+          {AdminRouteList}
+        </Route>
       </Route>
     </AppMain>
   );

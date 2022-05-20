@@ -37,12 +37,12 @@ export function DataTable<T extends IEntity>({ columns, data, title, OnRefresh, 
   };
   // Render the UI for your table
   return (
-    <Card withBorder p="lg" className={classes.tableCard}>
-      <Card.Section className={classes.header}>
+    <Card withBorder p="lg" >
+      <Card.Section className={classes.cardHeader}>
         <SearchCmdBar title={title} searchStr={search} OnSearch={OnSearch} OnRefresh={OnRefresh} OnCreate={OnCreate}  canCreate={canCreate}/>
       </Card.Section>
-      <Card.Section className={classes.content}>
-        <ScrollArea sx={{ height: 450, paddingRight: 20 }} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
+      <Card.Section className={classes.cardContent}>
+        <ScrollArea sx={{ minHeight: 350, paddingRight: 20,paddingLeft:10 }} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
           <Table sx={{ }} {...getTableProps()} verticalSpacing={2} fontSize="xs" horizontalSpacing={2} striped highlightOnHover>
             <thead className={cx(classes.tableheader, { [classes.scrolled]: scrolled })}>
               {headerGroups.map((headerGroup) => (

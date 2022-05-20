@@ -29,10 +29,10 @@ export const EntityCtxProvider: React.FC = (rx) => {
   };
   return (
     <EntityContext.Provider value={{ entity, refresh, loading, showLoading, select, reload }}>
-      <div>
+      <>
         {rx.children}
         <LoadingOverlay visible={loading} />
-      </div>
+      </>
     </EntityContext.Provider>
   );
 };
