@@ -26,6 +26,7 @@ export interface IDomainResponse {
  
 // ---- table schema
 export interface ITableDef {
+  title: string;
   schema: ISchemaDef;
 }
 export interface ISchemaDef {

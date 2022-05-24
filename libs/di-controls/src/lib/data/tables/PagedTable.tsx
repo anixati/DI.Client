@@ -8,7 +8,7 @@ import { AlertOctagon, ChevronDown, ChevronUp, Selector } from 'tabler-icons-rea
 import { ScrollContent } from '../../panels';
 import { SearchCmdBar } from '../controls/CmdBar';
 import { dataUiStyles } from '../Styles';
-import { PagingBar } from './PagingBar';
+import { RenderPagingBar } from './PagingBar';
 
 interface PagedTableProps<T extends IEntity> {
   title: string;
@@ -86,18 +86,22 @@ export function PagedTable<T extends IEntity>({ columns, title, baseUrl, OnCreat
         content={(scrolled) => (
           <Table sx={{}} {...getTableProps()} verticalSpacing={2} fontSize="xs" horizontalSpacing={2} striped highlightOnHover>
             <thead className={cx(classes.tableheader, { [classes.scrolled]: scrolled })}>
-              {headerGroups.map((headerGroup) => (
-                <tr {...headerGroup.getHeaderGroupProps()}>
-                  {headerGroup.headers.map((column) => (
-                    <th {...column.getHeaderProps(column.getSortByToggleProps())} className={classes.tableTh}>
-                      <Group position="left" spacing={4}>
-                        {column.render('Header')}
-                        {column.Header !== '' && <Center className={classes.tableicon}>{column.isSorted ? column.isSortedDesc ? <ChevronUp size={14} /> : <ChevronDown size={14} /> : <Selector size={14} />}</Center>}
-                      </Group>
-                    </th>
-                  ))}
-                </tr>
-              ))}
+              {headerGroups.map((headerGroup) => {
+                return (
+                  <tr {...headerGroup.getHeaderGroupProps()}>
+                    {headerGroup.headers.map((column) => {
+                      return (
+                        <th {...column.getHeaderProps(column.getSortByToggleProps())} className={classes.tableTh}>
+                          <Group position="left" spacing={4}>
+                            {column.render('Header')}
+                            {column.Header !== '' && <Center className={classes.tableicon}>{column.isSorted ? column.isSortedDesc ? <ChevronUp size={14} /> : <ChevronDown size={14} /> : <Selector size={14} />}</Center>}
+                          </Group>
+                        </th>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
             </thead>
             <tbody {...getTableBodyProps()}>
               {page.map((row, i) => {
@@ -114,7 +118,7 @@ export function PagedTable<T extends IEntity>({ columns, title, baseUrl, OnCreat
           </Table>
         )}
       />
-      <div className={classes.ptFooter}>{PagingBar({ pageLength: pageOptions.length, canPreviousPage, canNextPage, pageIndex, pageSize, pageCount, setPageSize, nextPage, previousPage, gotoPage })}</div>
+      <div className={classes.ptFooter}>{RenderPagingBar({ pageLength: pageOptions.length, canPreviousPage, canNextPage, pageIndex, pageSize, pageCount, setPageSize, nextPage, previousPage, gotoPage })}</div>
     </div>
   );
 }

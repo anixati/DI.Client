@@ -34,6 +34,8 @@ export const dataUiStyles = createStyles((theme) => ({
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
     lineHeight: 1,
   },
+
+
   tableTh: {
     minWidth: 15,
   },

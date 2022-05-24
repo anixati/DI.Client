@@ -1,5 +1,7 @@
-import { ActionIcon, Group, NativeSelect, NumberInput, Text } from '@mantine/core';
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'tabler-icons-react';
+import { ActionIcon, Center, createStyles, Group, NativeSelect, NumberInput, Text } from '@mantine/core';
+import { ReactElement } from 'react';
+import { HeaderGroup } from 'react-table';
+import { ChevronDown, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, ChevronUp, Selector } from 'tabler-icons-react';
 
 export interface pagingProps {
   canPreviousPage: boolean;
@@ -14,7 +16,7 @@ export interface pagingProps {
   gotoPage: (inp: number) => void;
 }
 
-export function PagingBar(rx: pagingProps) {
+export function RenderPagingBar(rx: pagingProps) {
   return (
     <Group spacing="sm" position="apart">
       <Group spacing={2} position="left">
@@ -24,7 +26,8 @@ export function PagingBar(rx: pagingProps) {
         <ActionIcon variant="filled" color="dotars" onClick={() => rx.previousPage()} disabled={!rx.canPreviousPage}>
           <ChevronLeft size={16} />
         </ActionIcon>
-        <NumberInput color="dotars" 
+        <NumberInput
+          color="dotars"
           size="xs"
           width={40}
           defaultValue={rx.pageIndex + 1}
@@ -44,7 +47,8 @@ export function PagingBar(rx: pagingProps) {
         </Text>
       </Group>
       <Group spacing={2} position="right">
-        <NativeSelect color="dotars" 
+        <NativeSelect
+          color="dotars"
           size="xs"
           data={['10', '20', '50', '100']}
           placeholder="Pick one"
@@ -63,3 +67,28 @@ export function PagingBar(rx: pagingProps) {
     </Group>
   );
 }
+
+// const useStyles = createStyles((theme) => ({
+  
+// }));
+
+// export function RenderTableHeader<T extends object>(groups: Array<HeaderGroup<T>>): ReactElement {
+//   const { classes } = useStyles();
+//   console.log(groups);
+//   return (
+//     <>
+//       {groups.map((headerGroup) => {
+//         return <tr {...headerGroup.getHeaderGroupProps()}>
+//           {headerGroup.headers.map((column) => {
+//             return <th {...column.getHeaderProps(column.getSortByToggleProps())} className={classes.tableTh}>
+//               <Group position="left" spacing={4}>
+//                 {column.render('Header')}
+//                 {column.Header !== '' && <Center className={classes.tableicon}>{column.isSorted ? column.isSortedDesc ? <ChevronUp size={14} /> : <ChevronDown size={14} /> : <Selector size={14} />}</Center>}
+//               </Group>
+//             </th>;
+//           })}
+//         </tr>;
+//       })}
+//     </>
+//   );
+// }
