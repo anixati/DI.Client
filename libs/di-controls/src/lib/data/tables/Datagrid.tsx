@@ -1,8 +1,8 @@
 import { getErrorMsg, IDataResponse, IGenericListResponse, ISchemaDef, ITableDef } from '@dotars/di-core';
 import { Alert, Center, Group, LoadingOverlay, Table } from '@mantine/core';
 import axios from 'axios';
-import { ReactElement, ReactNode, useEffect, useMemo, useCallback, useState } from 'react';
-import { QueryClient, useQuery } from 'react-query';
+import { ReactElement, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import { useQuery } from 'react-query';
 import { usePagination, useSortBy, useTable } from 'react-table';
 import { ChevronDown, ChevronUp, Selector } from 'tabler-icons-react';
 import { ScrollContent } from '../../panels';
@@ -11,11 +11,15 @@ import { dataUiStyles } from '../Styles';
 import { RenderPagingBar } from './PagingBar';
 
 export interface RenderTableProps {
-  title: string;
   queryKey: string;
   schema: ISchemaDef;
   renderCmds?: () => ReactNode;
 }
+
+type SortInfo = {
+  id: string;
+  desc: boolean;
+};
 
 function RenderDataGrid(rx: RenderTableProps): ReactElement {
   const { classes, cx } = dataUiStyles();
@@ -28,27 +32,20 @@ function RenderDataGrid(rx: RenderTableProps): ReactElement {
   const [items, setItems] = useState<any[]>([]);
   //const [{pgIndex, pgSize, pgSearch, pgSort}, SetState] = useState<TableState>(initialState);
   const QueryKey = `${rx.queryKey}`;
-
-  //const [items, setItems] = useState<any[]>([]);
-  //const [tbState] = useState<TableState<any>>(initialState);
-  const fetchData = useCallback(async (index: number, size: number, searchStr: string, sortList: Array<any>) => {
+  const fetchData = useCallback(async (index: number, size: number) => {
     try {
       setLoading(true);
-      if (sortList.length > 0) {
-        const sortParams = sortList[0];
-        const sortyByDir = sortParams.desc ? 'desc' : 'asc';
-        console.log(sortParams, sortyByDir);
+      console.log('loading ... ', index, size);
+      let sortBy: Array<SortInfo> = [];
+      if (pgSort.length > 0) {
+        sortBy = pgSort.map((x) => ({ id: x.id, desc: x.desc } as SortInfo));
       }
-      if (searchStr !== '') {
-        console.log(searchStr);
-      }
-      const resp = await axios.post<IGenericListResponse<any>>(`/qry/schema/${QueryKey}`, { index, size });
+      const resp = await axios.post<IGenericListResponse<any>>(`/qry/schema/${QueryKey}`, { index, size, sortBy,SearchStr:pgSearch });
       if (resp.data?.result) {
         const rs = resp.data?.result;
         setPgIndex(rs.pageIndex);
+        setPgSize(rs.pageSize);
         setPgCount(rs.pageCount);
-        //setitemIdx(pageIndex);
-        //setItemCount(resp.data.result?.pageCount);
         setItems(resp.data?.result?.items);
       } else throw new Error(`Failed to retrive `);
     } catch (ex) {
@@ -56,14 +53,11 @@ function RenderDataGrid(rx: RenderTableProps): ReactElement {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [QueryKey,pgSort,pgSearch]);
 
   const memoizedColumns = useMemo(() => {
     return rx.schema.columns.map((x) => ({ Header: x.Header, accessor: x.accessor, width: x.width }));
   }, [rx.schema]);
-  // const [{ pgIndex, pgSize, pgSearch, pgSort }, dispatch] = useReducer(tableReducer, initialState);
-  //const { isLoading, error, data, isSuccess } = useQuery([QueryKey,pageIndex, pageSize], () => fetchData(), { keepPreviousData: false, staleTime: Infinity });
-
   const {
     getTableProps,
     getTableBodyProps,
@@ -83,43 +77,38 @@ function RenderDataGrid(rx: RenderTableProps): ReactElement {
   } = useTable<any>({ columns: memoizedColumns, data: items, initialState: { pageIndex: pgIndex, pageSize: pgSize, sortBy: pgSort }, manualPagination: true, pageCount: pgCount }, useSortBy, usePagination);
 
   useEffect(() => {
-    fetchData(pageIndex, pageSize, pgSearch, pgSort);
-  }, [fetchData, pageIndex]);
+    fetchData(pageIndex, pageSize);
+  }, [fetchData, pageIndex, pageSize, pgSearch, pgSort]);
 
-  useEffect(() => {
-    fetchData(pageIndex, pageSize, pgSearch, pgSort);
-    gotoPage(0);
-  }, [fetchData, pageSize, gotoPage]);
+  // useEffect(() => {
+  //   fetchData(pageIndex, pageSize, pgSearch, pgSort);
+  //   gotoPage(0);
+  // }, [fetchData, pageSize, gotoPage]);
 
   useEffect(() => {
     if (sortBy && sortBy.length > 0) {
-      console.log(sortBy, '--');
       setPgSort(sortBy);
-      fetchData(pageIndex, pageSize, pgSearch, pgSort);
-      gotoPage(0);
     }
-  }, [fetchData, sortBy, gotoPage]);
+  }, [sortBy]);
 
-  useEffect(() => {
-    if (pgSearch && pgSearch.length > 0) {
-      console.log(pgSearch, '--');
-      fetchData(pageIndex, pageSize, pgSearch, pgSort);
-      gotoPage(0);
-    }
-  }, [fetchData, pgSearch, gotoPage]);
+  // useEffect(() => {
+  //   if (pgSearch && pgSearch.length > 3) {
+  //     fetchData(pageIndex, pageSize);
+  //   }
+  // }, [pgSearch, fetchData]);
 
   const OnSearch = (val: string) => {
-    setPgSearch(val);
+    if (val && val.length > 3) setPgSearch(val); else setPgSearch('')
   };
 
   const OnRefresh = () => {
-    fetchData(pageIndex, pageSize, pgSearch, pgSort);
+    fetchData(pageIndex, pageSize);
   };
 
   return (
     <div className={classes.ptCard}>
       <div className={classes.ptheader}>
-        <TableCmdBar title={rx.title} searchStr={pgSearch} OnSearch={OnSearch} OnRefresh={OnRefresh} renderCmds={rx.renderCmds} />
+        <TableCmdBar title={rx.schema.title}  OnSearch={OnSearch} OnRefresh={OnRefresh} renderCmds={rx.renderCmds} />
       </div>
       <ScrollContent
         loading={loading}
@@ -174,7 +163,7 @@ export const SchemaTable: React.FC<SchemaTableProps> = (rx) => {
     try {
       const rsp = await axios.get<IDataResponse<ITableDef>>(`/qry/schema/${rx.schemaName}`);
       if (rsp.data.failed) throw new Error(`Failed to get ${rsp.data.messages} `);
-      if (rsp.data.result) return rsp.data.result;
+      if (rsp.data?.result?.schema) return rsp.data.result.schema;
       throw new Error(`Failed to retrive `);
     } catch (ex) {
       throw new Error(`API error:${getErrorMsg(ex)}`);
@@ -191,7 +180,7 @@ export const SchemaTable: React.FC<SchemaTableProps> = (rx) => {
         </Alert>
       )}
 
-      {isSuccess && <RenderDataGrid queryKey={rx.schemaName} title={data.title} schema={data.schema} renderCmds={rx.renderCmds} />}
+      {isSuccess && <RenderDataGrid queryKey={rx.schemaName} schema={data} renderCmds={rx.renderCmds} />}
     </>
   );
 };

@@ -1,50 +1,28 @@
-import { PagedTable, PageView } from '@dotars/di-controls';
-import { IColumnDef, IDataResponse, IEntity, ITableDef } from '@dotars/di-core';
-import axios from 'axios';
-import { useCallback, useEffect, useState } from 'react';
-import { Column } from 'react-table';
+import { PageView, SchemaTable } from '@dotars/di-controls';
+import { Button, Group } from '@mantine/core';
 import { Receipt } from 'tabler-icons-react';
-
-interface IModel extends IEntity {
-  GroupName: string;
-  OptionId: number;
-  Order: number;
-  Label: string;
-  Value: number;
-}
+import { appStyles } from '../../../Styles';
 
 export const UpcomingPage: React.FC = () => {
-  const [cols, setCols] = useState<Column<any>[]>([]);
-
-  const getConfig = useCallback(async () => {
-    const resp = await axios.get<IDataResponse<ITableDef>>('/qry/schema/optionsets');
-    if (resp.data?.result?.schema) {
-      console.log('-#-',resp.data?.result?.schema);
-
-      const cols: Array<Column<any>> = [];
-      resp.data?.result?.schema.columns.map((s) => {
-        cols.push({
-          Header: s.Header,
-          accessor: s.accessor,
-          width: s.width,
-        });
-      });
-console.log('--',cols);
-      setCols(cols);
-    }
-  }, []);
-  useEffect(() => {
-    getConfig();
-  }, [getConfig]);
-
+  const { classes } = appStyles();
   const createItem = () => {
     console.log('.');
   };
 
-
   return (
-    <PageView title="Audit Logs" desc="" icon={<Receipt />}>
-      <PagedTable<any> title="Audit as" OnCreate={createItem} columns={cols} canCreate={false} baseUrl="/qry/schema/optionsets" />
+    <PageView
+      title="Upcoming Vacancies"
+      desc=""
+      icon={<Receipt />}
+      renderCmds={() => {
+        return (
+          <Button variant="filled" color="dotars" className={classes.toolButton} onClick={() => createItem()}>
+          Create New
+        </Button>
+        );
+      }}
+    >
+      <SchemaTable schemaName="optionsets" />
     </PageView>
   );
 };

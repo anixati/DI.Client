@@ -29,8 +29,3 @@ export interface IComponent {
   error?: Error;
 }
 
-export interface IViewProps {
-  title: string;
-  icon?: ReactNode;
-  desc: string;
-}

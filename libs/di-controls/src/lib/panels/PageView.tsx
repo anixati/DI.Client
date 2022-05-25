@@ -1,5 +1,6 @@
-import { EntityCtxProvider, IViewProps } from '@dotars/di-core';
-import { Avatar, Card, createStyles, Group, Text } from '@mantine/core';
+import { EntityCtxProvider } from '@dotars/di-core';
+import { Avatar, Box, Card, createStyles, Group, Text } from '@mantine/core';
+import { ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 const useStyles = createStyles((theme) => ({
@@ -27,7 +28,13 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export const PageView: React.FC<IViewProps> = (rx) => {
+export interface IPageViewProps {
+  title: string;
+  icon?: ReactNode;
+  desc: string;
+  renderCmds?: () => ReactNode;
+}
+export const PageView: React.FC<IPageViewProps> = (rx) => {
   const { classes } = useStyles();
   const queryClient = new QueryClient();
   return (
@@ -35,28 +42,35 @@ export const PageView: React.FC<IViewProps> = (rx) => {
       <EntityCtxProvider>
         <Card withBorder className={classes.Card}>
           <Card.Section className={classes.Header}>
-            <Group spacing="sm">
-              <Avatar
-                styles={{
-                  root: { color: '#071E3E' },
-                  image: { color: '#071E3E' },
-                  placeholder: { color: '#071E3E' },
-                  placeholderIcon: { color: '#071E3E' },
-                }}
-                radius="sm"
-                size={45}
-              >
-                {rx.icon}
-              </Avatar>
-              <div>
-                <Text size="sm" color="dotars" weight={500}>
-                  {rx.title}
-                </Text>
-                <Text color="dimmed" size="xs">
-                  {rx.desc}
-                </Text>
-              </div>
-            </Group>
+            <Box>
+              <Group spacing="sm" position="apart">
+                <Group spacing="sm" position="left">
+                  <Avatar
+                    styles={{
+                      root: { color: '#071E3E' },
+                      image: { color: '#071E3E' },
+                      placeholder: { color: '#071E3E' },
+                      placeholderIcon: { color: '#071E3E' },
+                    }}
+                    radius="sm"
+                    size={45}
+                  >
+                    {rx.icon}
+                  </Avatar>
+                  <div>
+                    <Text size="sm" color="dotars" weight={500}>
+                      {rx.title}
+                    </Text>
+                    <Text color="dimmed" size="xs">
+                      {rx.desc}
+                    </Text>
+                  </div>
+                </Group>
+                <Group position="right" spacing={3}>
+                  {rx.renderCmds && rx.renderCmds()}
+                </Group>
+              </Group>
+            </Box>
           </Card.Section>
           <Card.Section className={classes.Content}>{rx.children}</Card.Section>
         </Card>

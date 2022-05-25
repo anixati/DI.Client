@@ -43,7 +43,6 @@ export const SearchCmdBar: React.FC<SearchCmdBarProps> = (rx) => {
 
 export interface TableCmdBarProps {
   title: string;
-  searchStr: string;
   OnSearch: (value: string) => void;
   OnRefresh: () => void;
   renderCmds?: () => ReactNode;
@@ -63,7 +62,7 @@ export const TableCmdBar: React.FC<TableCmdBarProps> = (rx) => {
           <Text weight={500}>{rx.title}</Text>
         </Group>
         <Group position="right" spacing={3}>
-          <TextInput size="xs" placeholder="Search" icon={<Search size={14} color="#071E3E" />} value={rx.searchStr} onChange={handleSearchChange} />
+          <TextInput size="xs" placeholder="Search" icon={<Search size={14} color="#071E3E" />}  onChange={handleSearchChange} />
           <ActionIcon variant="filled" color="dotars" onClick={rx.OnRefresh}>
             <Refresh size={16} />
           </ActionIcon>
