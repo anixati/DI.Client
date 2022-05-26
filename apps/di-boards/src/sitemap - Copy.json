@@ -9,10 +9,32 @@
                     "route": "/dashboard",
                     "label": "Dashboard"
                 },
+                // {
+                //     "route": "/boards",
+                //     "label": "Active boards",
+                //     "links": [
+                //         {
+                //             "route": "/active",
+                //             "label": "Boards"
+                //         },
+                //         {
+                //             "route": "/vacancies",
+                //             "label": "Vacancies"
+                //         },
+                //         {
+                //             "route": "/upcoming",
+                //             "label": "Upcoming Vacancies"
+                //         }
+                //     ]
+                // },
                 {
                     "route": "/appointees",
                     "label": "Appointees"
                 }
+                // {
+                //     "route": "/events",
+                //     "label": "Events"
+                // }
             ]
         },
         {
