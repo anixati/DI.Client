@@ -23,9 +23,7 @@ export const AuthenticateInner: React.FC<SecurityCtx> = (rx) => {
       throw new Error('No user account');
     }else{
       const ix = xpath.indexOf('/', 1);
-      
       const rx = (ix>0)?xpath.substring(0, xpath.indexOf('/', 1)):xpath;
-      console.log('set root here ',ix,rx);
       SetRoot(rx);
     }
     return user;

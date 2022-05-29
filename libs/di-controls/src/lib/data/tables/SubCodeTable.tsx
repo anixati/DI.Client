@@ -33,7 +33,6 @@ export function SubCodeTable<T extends IEntity>(rx: SubCodeTableProps<T>): React
   /* #region  get Table data */
   const getCodes = async () => {
     const request = { keyId: ectx?.entity?.id, index: 0, size: 100 };
-    console.log(request);
     const resp = await axios.post<IGenericListResponse<T>>(rx.baseUrl, request);
     const data = resp.data;
     if (data.failed) {

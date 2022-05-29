@@ -1,8 +1,6 @@
 import { Input } from '@mantine/core';
 import { FieldHookConfig } from 'formik';
-import { FieldProps } from './FieldProps';
-import { Wrapper } from './DataField';
-
+import { Wrapper,FieldProps } from './Wrapper';
 
 export const ViewField = (rx: FieldProps & FieldHookConfig<string>) => {
   return (

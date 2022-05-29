@@ -1,13 +1,12 @@
-import { getErrorMsg, IColumnDef, IDataResponse, IEntity, IGenericListResponse, ISchemaDef, ITableDef } from '@dotars/di-core';
+import { getErrorMsg, IColumnDef, IDataResponse, IGenericListResponse, ISchemaDef, ITableDef } from '@dotars/di-core';
 import { ActionIcon, Alert, Anchor, Box, Center, Group, LoadingOverlay, NativeSelect, SelectItem, Table, TextInput } from '@mantine/core';
 import axios from 'axios';
 import { createContext, ReactElement, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 import { CellProps, Column, usePagination, useSortBy, useTable } from 'react-table';
-import { ChevronDown, ChevronUp, Eye, Refresh, Search, Selector } from 'tabler-icons-react';
+import { ChevronDown, ChevronUp, Refresh, Search, Selector } from 'tabler-icons-react';
 import { ScrollContent } from '../../panels';
-import { TableCmdBar } from '../controls';
 import { dataUiStyles } from '../Styles';
 import { RenderPagingBar } from './PagingBar';
 
@@ -26,7 +25,7 @@ const LinkCol = (def: IColumnDef): Column<any> => {
   return {
     Header: `${def.Header}`,
     id: `${def.accessor}-link`,
-    accessor:  `${def.accessor}`,
+    accessor: `${def.accessor}`,
     Cell: ({ row }: CellProps<any>) => (
       <Anchor component={Link} to="/react-router" size="xs">
         {row.original[def.accessor]}
@@ -83,7 +82,7 @@ function RenderDataGrid(rx: RenderTableProps): ReactElement {
         return { Header: x.Header, accessor: x.accessor, width: x.width };
       }
     });
-    console.log('--', colList);
+    //TODO: --- fix duplicate issue 
     return colList;
   }, [rx.schema]);
 
@@ -158,9 +157,14 @@ function RenderDataGrid(rx: RenderTableProps): ReactElement {
                     {headerGroup.headers.map((column) => {
                       return (
                         <th {...column.getHeaderProps(column.getSortByToggleProps())} className={classes.tableTh}>
-                          <Group position="left" spacing={4}>
-                            {column.render('Header')}
-                            {column.Header !== '' && <Center className={classes.tableicon}>{column.isSorted ? column.isSortedDesc ? <ChevronUp size={14} /> : <ChevronDown size={14} /> : <Selector size={14} />}</Center>}
+                          <Group position="apart">
+                            <Group position="left" spacing={4}>
+                              {column.render('Header')}
+                            </Group>
+
+                            <Group position="right" spacing={4}>
+                              {column.Header !== '' && <Center className={classes.tableicon}>{column.isSorted ? column.isSortedDesc ? <ChevronUp size={14} /> : <ChevronDown size={14} /> : <Selector size={14} />}</Center>}
+                            </Group>
                           </Group>
                         </th>
                       );

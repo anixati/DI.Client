@@ -61,12 +61,10 @@ export const DataForm = <T extends IEntity>(rx: PropsWithChildren<DataFormProps<
   const handleSubmit = async (data: T, actions: FormikHelpers<T>) => {
     const errors = await actions.validateForm();
     if (Object.keys(errors).length !== 0) {
-      console.log('errors ..',errors);
       return;
     }
     if (data) {
       try {
-        console.log('submitting ..',data);
         actions.setSubmitting(true);
         // ectx?.showLoading(true);
         if (rx.validate) {

@@ -98,4 +98,19 @@ export const dataUiStyles = createStyles((theme) => ({
     // flexBasis: '50px',
     Height: 70,
   },
+  toolButton: {
+    borderRadius: 0,
+    '&:not(:first-of-type)': {
+      borderLeftWidth: 0,
+    },
+    '&:first-of-type': {
+      borderTopLeftRadius: theme.radius.sm,
+      borderBottomLeftRadius: theme.radius.sm,
+    },
+    '&:last-of-type': {
+      borderTopRightRadius: theme.radius.sm,
+      borderBottomRightRadius: theme.radius.sm,
+    },
+  },
+
 }));
