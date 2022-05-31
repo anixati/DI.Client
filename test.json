@@ -1,13 +1,583 @@
-[
-  { "Key": "CreatedBy", "OldValue": null, "NewValue": "490681CE-B778-4A2A-A948-2404EC50A8B0_System" },
-  { "Key": "CreatedOn", "OldValue": null, "NewValue": "2022-05-03T06:45:00.2959942Z" },
-  { "Key": "Deleted", "OldValue": null, "NewValue": false },
-  { "Key": "Description", "OldValue": null, "NewValue": "Boards.Domain.Contacts.Appointee" },
-  { "Key": "Disabled", "OldValue": null, "NewValue": false },
-  { "Key": "Locked", "OldValue": null, "NewValue": false },
-  { "Key": "ModifiedBy", "OldValue": null, "NewValue": "490681CE-B778-4A2A-A948-2404EC50A8B0_System" },
-  { "Key": "ModifiedOn", "OldValue": null, "NewValue": "2022-05-03T06:45:00.2959942Z" },
-  { "Key": "Name", "OldValue": null, "NewValue": "Appointee" },
-  { "Key": "Timestamp", "OldValue": null, "NewValue": null },
-  { "Key": "Id", "OldValue": null, "NewValue": 23 }
-]
+{
+  "reason": 0,
+  "messages": null,
+  "failed": false,
+  "result": {
+      "initialValues": {
+          "Title": "",
+          "FirstName": "ASqadq",
+          "MiddleName": "",
+          "LastName": "dqdq",
+          "Gender": 0,
+          "Email1": "qqwqw@gmail.com",
+          "Email2": "edq@g.com",
+          "Mobile": null,
+          "HomePhone": "",
+          "FaxNumber": "",
+          "Biography": "wfqwffrewrewretererwyt",
+          "PostNominals": "werer",
+          "ResumeLink": "",
+          "LinkedInProfile": "",
+          "IsRegional": 1,
+          "IsAboriginal": 1,
+          "IsDisabled": null,
+          "ExecutiveSearch": null
+      },
+      "schema": {
+          "name": "view_appointee",
+          "fields": [
+              {
+                  "key": "69d3f5b3803d4936a6d7c050f1aba183",
+                  "layout": 3,
+                  "fieldType": 0,
+                  "title": "Personal Details",
+                  "description": null,
+                  "disabled": false,
+                  "options": null,
+                  "value": null,
+                  "width": 70,
+                  "required": false,
+                  "valType": "string",
+                  "rules": [],
+                  "fields": [
+                      {
+                          "key": "afdcd679d4e7424e8253c3bfc2e9a587",
+                          "layout": 2,
+                          "fieldType": 0,
+                          "title": null,
+                          "description": null,
+                          "disabled": false,
+                          "options": null,
+                          "value": null,
+                          "width": 70,
+                          "required": false,
+                          "valType": "string",
+                          "rules": [],
+                          "fields": [
+                              {
+                                  "key": "Title",
+                                  "layout": 0,
+                                  "fieldType": 0,
+                                  "title": "Title",
+                                  "description": null,
+                                  "disabled": false,
+                                  "options": null,
+                                  "value": null,
+                                  "width": 50,
+                                  "required": false,
+                                  "valType": "string",
+                                  "rules": [],
+                                  "fields": []
+                              },
+                              {
+                                  "key": "FirstName",
+                                  "layout": 0,
+                                  "fieldType": 0,
+                                  "title": "First Name",
+                                  "description": null,
+                                  "disabled": false,
+                                  "options": null,
+                                  "value": null,
+                                  "width": 50,
+                                  "required": true,
+                                  "valType": "string",
+                                  "rules": [
+                                      {
+                                          "type": "required",
+                                          "data": [
+                                              "First Name is required"
+                                          ]
+                                      }
+                                  ],
+                                  "fields": []
+                              }
+                          ]
+                      },
+                      {
+                          "key": "ad964c9fa7a841ed908f84f7f05b0326",
+                          "layout": 2,
+                          "fieldType": 0,
+                          "title": null,
+                          "description": null,
+                          "disabled": false,
+                          "options": null,
+                          "value": null,
+                          "width": 70,
+                          "required": false,
+                          "valType": "string",
+                          "rules": [],
+                          "fields": [
+                              {
+                                  "key": "MiddleName",
+                                  "layout": 0,
+                                  "fieldType": 0,
+                                  "title": "Middle Name",
+                                  "description": null,
+                                  "disabled": false,
+                                  "options": null,
+                                  "value": null,
+                                  "width": 50,
+                                  "required": false,
+                                  "valType": "string",
+                                  "rules": [],
+                                  "fields": []
+                              },
+                              {
+                                  "key": "LastName",
+                                  "layout": 0,
+                                  "fieldType": 0,
+                                  "title": "Last Name",
+                                  "description": null,
+                                  "disabled": false,
+                                  "options": null,
+                                  "value": null,
+                                  "width": 50,
+                                  "required": true,
+                                  "valType": "string",
+                                  "rules": [
+                                      {
+                                          "type": "required",
+                                          "data": [
+                                              "Last Name is required"
+                                          ]
+                                      }
+                                  ],
+                                  "fields": []
+                              }
+                          ]
+                      },
+                      {
+                          "key": "Gender",
+                          "layout": 0,
+                          "fieldType": 7,
+                          "title": "Gender",
+                          "description": null,
+                          "disabled": false,
+                          "options": [
+                              {
+                                  "label": "Na",
+                                  "value": "0"
+                              },
+                              {
+                                  "label": "Male",
+                                  "value": "1"
+                              },
+                              {
+                                  "label": "Female",
+                                  "value": "2"
+                              }
+                          ],
+                          "value": null,
+                          "width": 50,
+                          "required": true,
+                          "valType": "string",
+                          "rules": [
+                              {
+                                  "type": "required",
+                                  "data": [
+                                      "Gender is required"
+                                  ]
+                              }
+                          ],
+                          "fields": []
+                      },
+                      {
+                          "key": "6b1756df9a1c478ca03a0f95b02808fa",
+                          "layout": 2,
+                          "fieldType": 0,
+                          "title": null,
+                          "description": null,
+                          "disabled": false,
+                          "options": null,
+                          "value": null,
+                          "width": 70,
+                          "required": false,
+                          "valType": "string",
+                          "rules": [],
+                          "fields": [
+                              {
+                                  "key": "Email1",
+                                  "layout": 0,
+                                  "fieldType": 0,
+                                  "title": "Primary Email",
+                                  "description": null,
+                                  "disabled": false,
+                                  "options": null,
+                                  "value": null,
+                                  "width": 50,
+                                  "required": true,
+                                  "valType": "string",
+                                  "rules": [
+                                      {
+                                          "type": "required",
+                                          "data": [
+                                              "Primary Email is required"
+                                          ]
+                                      },
+                                      {
+                                          "type": "email",
+                                          "data": [
+                                              "Primary Email is invalid email"
+                                          ]
+                                      }
+                                  ],
+                                  "fields": []
+                              },
+                              {
+                                  "key": "Email2",
+                                  "layout": 0,
+                                  "fieldType": 0,
+                                  "title": "other Email",
+                                  "description": null,
+                                  "disabled": false,
+                                  "options": null,
+                                  "value": null,
+                                  "width": 50,
+                                  "required": false,
+                                  "valType": "string",
+                                  "rules": [
+                                      {
+                                          "type": "email",
+                                          "data": [
+                                              "other Email is invalid email"
+                                          ]
+                                      }
+                                  ],
+                                  "fields": []
+                              }
+                          ]
+                      },
+                      {
+                          "key": "6f8d40dae3aa45abba4e59dbca03ef88",
+                          "layout": 2,
+                          "fieldType": 0,
+                          "title": null,
+                          "description": null,
+                          "disabled": false,
+                          "options": null,
+                          "value": null,
+                          "width": 70,
+                          "required": false,
+                          "valType": "string",
+                          "rules": [],
+                          "fields": [
+                              {
+                                  "key": "Mobile",
+                                  "layout": 0,
+                                  "fieldType": 0,
+                                  "title": "Mobile Number",
+                                  "description": null,
+                                  "disabled": false,
+                                  "options": null,
+                                  "value": null,
+                                  "width": 50,
+                                  "required": false,
+                                  "valType": "string",
+                                  "rules": [
+                                      {
+                                          "type": "regex",
+                                          "data": [
+                                              "/^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/",
+                                              "Mobile Number is invalid"
+                                          ]
+                                      }
+                                  ],
+                                  "fields": []
+                              },
+                              {
+                                  "key": "HomePhone",
+                                  "layout": 0,
+                                  "fieldType": 0,
+                                  "title": "Phone Number",
+                                  "description": null,
+                                  "disabled": false,
+                                  "options": null,
+                                  "value": null,
+                                  "width": 50,
+                                  "required": false,
+                                  "valType": "string",
+                                  "rules": [
+                                      {
+                                          "type": "regex",
+                                          "data": [
+                                              "/^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/",
+                                              "Phone Number is invalid"
+                                          ]
+                                      }
+                                  ],
+                                  "fields": []
+                              }
+                          ]
+                      },
+                      {
+                          "key": "FaxNumber",
+                          "layout": 0,
+                          "fieldType": 0,
+                          "title": "Fax Number",
+                          "description": null,
+                          "disabled": false,
+                          "options": null,
+                          "value": null,
+                          "width": 50,
+                          "required": false,
+                          "valType": "string",
+                          "rules": [
+                              {
+                                  "type": "regex",
+                                  "data": [
+                                      "/^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/",
+                                      "Fax Number is invalid"
+                                  ]
+                              }
+                          ],
+                          "fields": []
+                      }
+                  ]
+              },
+              {
+                  "key": "e3de81475d794a7c851a523025fa32e6",
+                  "layout": 3,
+                  "fieldType": 0,
+                  "title": "Address Details",
+                  "description": null,
+                  "disabled": false,
+                  "options": null,
+                  "value": null,
+                  "width": 70,
+                  "required": false,
+                  "valType": "string",
+                  "rules": [],
+                  "fields": []
+              },
+              {
+                  "key": "d94cdb72133547c1a7106ebee6c93107",
+                  "layout": 3,
+                  "fieldType": 0,
+                  "title": "Professional Details",
+                  "description": null,
+                  "disabled": false,
+                  "options": null,
+                  "value": null,
+                  "width": 70,
+                  "required": false,
+                  "valType": "string",
+                  "rules": [],
+                  "fields": [
+                      {
+                          "key": "Biography",
+                          "layout": 0,
+                          "fieldType": 1,
+                          "title": "Biography",
+                          "description": null,
+                          "disabled": false,
+                          "options": null,
+                          "value": null,
+                          "width": 70,
+                          "required": true,
+                          "valType": "string",
+                          "rules": [
+                              {
+                                  "type": "required",
+                                  "data": [
+                                      "Biography is required"
+                                  ]
+                              },
+                              {
+                                  "type": "min",
+                                  "data": [
+                                      10,
+                                      "Minimum 10 chars required"
+                                  ]
+                              }
+                          ],
+                          "fields": []
+                      },
+                      {
+                          "key": "PostNominals",
+                          "layout": 0,
+                          "fieldType": 0,
+                          "title": "PostNominals",
+                          "description": null,
+                          "disabled": false,
+                          "options": null,
+                          "value": null,
+                          "width": 50,
+                          "required": false,
+                          "valType": "string",
+                          "rules": [],
+                          "fields": []
+                      },
+                      {
+                          "key": "b22d3f3bc0a24a4ea8dfe377f3794f5f",
+                          "layout": 2,
+                          "fieldType": 0,
+                          "title": null,
+                          "description": null,
+                          "disabled": false,
+                          "options": null,
+                          "value": null,
+                          "width": 70,
+                          "required": false,
+                          "valType": "string",
+                          "rules": [],
+                          "fields": [
+                              {
+                                  "key": "ResumeLink",
+                                  "layout": 0,
+                                  "fieldType": 0,
+                                  "title": "Resume Link",
+                                  "description": null,
+                                  "disabled": false,
+                                  "options": null,
+                                  "value": null,
+                                  "width": 50,
+                                  "required": false,
+                                  "valType": "string",
+                                  "rules": [],
+                                  "fields": []
+                              },
+                              {
+                                  "key": "LinkedInProfile",
+                                  "layout": 0,
+                                  "fieldType": 0,
+                                  "title": "LinkedIn Profile",
+                                  "description": null,
+                                  "disabled": false,
+                                  "options": null,
+                                  "value": null,
+                                  "width": 50,
+                                  "required": false,
+                                  "valType": "string",
+                                  "rules": [],
+                                  "fields": []
+                              }
+                          ]
+                      }
+                  ]
+              },
+              {
+                  "key": "871e0c3f02194b6ea0694550724e818c",
+                  "layout": 3,
+                  "fieldType": 0,
+                  "title": "Other Details",
+                  "description": null,
+                  "disabled": false,
+                  "options": null,
+                  "value": null,
+                  "width": 70,
+                  "required": false,
+                  "valType": "string",
+                  "rules": [],
+                  "fields": [
+                      {
+                          "key": "d966fa944f8f4aeeba2ac3f25d4f6ec3",
+                          "layout": 2,
+                          "fieldType": 0,
+                          "title": null,
+                          "description": null,
+                          "disabled": false,
+                          "options": null,
+                          "value": null,
+                          "width": 70,
+                          "required": false,
+                          "valType": "string",
+                          "rules": [],
+                          "fields": [
+                              {
+                                  "key": "IsRegional",
+                                  "layout": 0,
+                                  "fieldType": 3,
+                                  "title": "Regional",
+                                  "description": "Please specify",
+                                  "disabled": false,
+                                  "options": null,
+                                  "value": null,
+                                  "width": 50,
+                                  "required": true,
+                                  "valType": "string",
+                                  "rules": [
+                                      {
+                                          "type": "required",
+                                          "data": [
+                                              "Regional is required"
+                                          ]
+                                      }
+                                  ],
+                                  "fields": []
+                              },
+                              {
+                                  "key": "IsAboriginal",
+                                  "layout": 0,
+                                  "fieldType": 3,
+                                  "title": "Aboriginal",
+                                  "description": "Please specify",
+                                  "disabled": false,
+                                  "options": null,
+                                  "value": null,
+                                  "width": 50,
+                                  "required": true,
+                                  "valType": "string",
+                                  "rules": [
+                                      {
+                                          "type": "required",
+                                          "data": [
+                                              "Aboriginal is required"
+                                          ]
+                                      }
+                                  ],
+                                  "fields": []
+                              }
+                          ]
+                      },
+                      {
+                          "key": "ba2bf021aa6d4661bdb008164ce0222f",
+                          "layout": 2,
+                          "fieldType": 0,
+                          "title": null,
+                          "description": null,
+                          "disabled": false,
+                          "options": null,
+                          "value": null,
+                          "width": 70,
+                          "required": false,
+                          "valType": "string",
+                          "rules": [],
+                          "fields": [
+                              {
+                                  "key": "IsDisabled",
+                                  "layout": 0,
+                                  "fieldType": 3,
+                                  "title": "Disabled",
+                                  "description": "Please specify",
+                                  "disabled": false,
+                                  "options": null,
+                                  "value": null,
+                                  "width": 50,
+                                  "required": false,
+                                  "valType": "string",
+                                  "rules": [],
+                                  "fields": []
+                              },
+                              {
+                                  "key": "ExecutiveSearch",
+                                  "layout": 0,
+                                  "fieldType": 3,
+                                  "title": "Executive",
+                                  "description": "Please specify",
+                                  "disabled": false,
+                                  "options": null,
+                                  "value": null,
+                                  "width": 50,
+                                  "required": false,
+                                  "valType": "string",
+                                  "rules": [],
+                                  "fields": []
+                              }
+                          ]
+                      }
+                  ]
+              }
+          ]
+      }
+  }
+}
