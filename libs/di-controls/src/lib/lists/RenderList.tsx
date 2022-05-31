@@ -5,8 +5,8 @@ import { ICodeRecord, IDataListResponse, useEntityContext } from '@dotars/di-cor
 import axios from 'axios';
 import { useAsync } from 'react-async-hook';
 import useBus from 'use-bus';
-import { SearchCmdBar } from '../controls/CmdBar';
-import { dataUiStyles } from '../Styles';
+import { SearchCmdBar } from '../controls';
+import { dataUiStyles } from '../styles/Styles';
 
 export interface RenderListProps {
   title: string;
@@ -17,7 +17,7 @@ export function RenderList(rx: RenderListProps): ReactElement {
   const [search, setSearch] = useState('');
   const [selection, setSelection] = useState<number | undefined>(undefined);
   const { classes, cx } = dataUiStyles();
-  const [scrolled, setScrolled] = useState(false);
+  const [, setScrolled] = useState(false);
   const entityCtx = useEntityContext();
 
   const selectRow = (row?: ICodeRecord) => {

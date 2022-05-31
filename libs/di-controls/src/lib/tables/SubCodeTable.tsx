@@ -1,19 +1,18 @@
 import { IApiResponse, IChangeRequest, IEntity, IGenericListResponse, NoOpResponse, useEntityContext } from '@dotars/di-core';
 import { ActionIcon, Alert, Group, Loader, Text } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { UseFormInput, UseFormReturnType } from '@mantine/form/lib/use-form';
 import { useModals } from '@mantine/modals';
 import { showNotification } from '@mantine/notifications';
 import axios from 'axios';
+import * as jpatch from 'fast-json-patch';
 import { useAtom } from 'jotai';
-import { ReactElement, useEffect, useState } from 'react';
+import { ReactElement, useEffect } from 'react';
 import { useAsync } from 'react-async-hook';
 import { CellProps, Column } from 'react-table';
 import { AlertOctagon, CircleCheck, Edit, Eraser } from 'tabler-icons-react';
-import { FormOpType, MdlForm, showMdlForm } from '../controls/MdlForm';
-import { dataUiStyles } from '../Styles';
-import * as jpatch from 'fast-json-patch';
+import { FormOpType, MdlForm, showMdlForm } from '../controls';
 import { DataTable } from './DataTable';
-import { UseFormInput, UseFormReturnType } from '@mantine/form/lib/use-form';
 
 export interface SubCodeTableProps<T extends IEntity> {
   title: string;
@@ -44,7 +43,7 @@ export function SubCodeTable<T extends IEntity>(rx: SubCodeTableProps<T>): React
   const asyncApi = useAsync(getCodes, []);
   useEffect(() => {
     asyncApi.execute();
-  }, [ectx?.entity]);
+  }, [ectx?.entity,asyncApi]);
   
   /* #endregion */
 

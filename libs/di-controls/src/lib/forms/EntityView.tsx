@@ -2,7 +2,7 @@ import { INamedRecord, useEntityContext } from '@dotars/di-core';
 import { Avatar, Card, Group, Text } from '@mantine/core';
 import { ReactNode } from 'react';
 import { File, FilePlus } from 'tabler-icons-react';
-import { dataUiStyles } from '../Styles';
+import { dataUiStyles } from '../styles/Styles';
 
 export interface EntityViewProps {
   name: string;

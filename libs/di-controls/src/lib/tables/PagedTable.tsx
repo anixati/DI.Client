@@ -5,9 +5,9 @@ import axios from 'axios';
 import { ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { Column, useGlobalFilter, usePagination, useSortBy, useTable } from 'react-table';
 import { AlertOctagon, ChevronDown, ChevronUp, Selector } from 'tabler-icons-react';
-import { ScrollContent } from '../../panels';
-import { SearchCmdBar } from '../controls/CmdBar';
-import { dataUiStyles } from '../Styles';
+import { SearchCmdBar } from '../controls';
+import { ScrollContent } from '../panels';
+import { dataUiStyles } from '../styles/Styles';
 import { RenderPagingBar } from './PagingBar';
 
 interface PagedTableProps<T extends IEntity> {
@@ -42,7 +42,7 @@ export function PagedTable<T extends IEntity>({ columns, title, baseUrl, OnCreat
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [baseUrl]);
 
   const {
     getTableProps,

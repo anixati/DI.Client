@@ -1,13 +1,13 @@
 import { getErrorMsg, IColumnDef, IDataResponse, IGenericListResponse, ISchemaDef, ITableDef } from '@dotars/di-core';
 import { ActionIcon, Alert, Anchor, Box, Center, Group, LoadingOverlay, NativeSelect, SelectItem, Table, TextInput } from '@mantine/core';
 import axios from 'axios';
-import { createContext, forwardRef, ReactElement, ReactNode, useCallback, useContext, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import { createContext, forwardRef, ReactNode, useCallback, useContext, useEffect, useImperativeHandle, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 import { CellProps, Column, usePagination, useSortBy, useTable } from 'react-table';
 import { ChevronDown, ChevronUp, Refresh, Search, Selector } from 'tabler-icons-react';
-import { ScrollContent } from '../../panels';
-import { dataUiStyles } from '../Styles';
+import { ScrollContent } from '../panels';
+import { dataUiStyles } from '../styles/Styles';
 import { RenderPagingBar } from './PagingBar';
 
 export interface SchemaListRef {

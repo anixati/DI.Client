@@ -3,8 +3,8 @@ import { Button, Divider, Group, Modal, Stack } from '@mantine/core';
 import { UseFormReturnType } from '@mantine/form/lib/use-form';
 import { showNotification } from '@mantine/notifications';
 import { atom, useAtom } from 'jotai';
-import { PropsWithChildren, useEffect, useRef } from 'react';
-import { ChevronsUpLeft, Ban, CircleCheck } from 'tabler-icons-react';
+import { PropsWithChildren, useRef } from 'react';
+import { Ban, ChevronsUpLeft, CircleCheck } from 'tabler-icons-react';
 
 export interface MdlFormProps<T> {
   okText?: string;
@@ -30,7 +30,7 @@ export const MdlForm = <T extends IEntity>(rx: PropsWithChildren<MdlFormProps<T>
     if (data) {
       const sx = await rx.processItem(data, type);
       if (!sx.failed) closeModel();
-      else showNotification({  title: 'Failed', message: `${sx?.messages}`, color: 'red', icon: <CircleCheck /> });
+      else showNotification({ title: 'Failed', message: `${sx?.messages}`, color: 'red', icon: <CircleCheck /> });
     }
   };
   const OnOkClick = () => {

@@ -1,4 +1,4 @@
-import { PageView, SchemaListRef, SchemaListTable, WzForm } from '@dotars/di-controls';
+import { PageView, SchemaListRef, SchemaListTable, SchemaWizardForm } from '@dotars/di-controls';
 import { createRef } from 'react';
 import { Receipt } from 'tabler-icons-react';
 
@@ -8,7 +8,7 @@ export const AppointeeList: React.FC = () => {
     listRef.current?.refresh();
   };
   return (
-    <PageView title="Appointees" desc="" icon={<Receipt />} renderCmds={() => <WzForm title="New Appointee" schema="createappointee" onClose={onClose} />}>
+    <PageView title="Appointees" desc="" icon={<Receipt />} renderCmds={() => <SchemaWizardForm title="New Appointee" schema="createappointee" onClose={onClose} />}>
       <SchemaListTable
         ref={listRef}
         schemas={[

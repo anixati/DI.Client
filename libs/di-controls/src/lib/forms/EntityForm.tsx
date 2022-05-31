@@ -5,12 +5,12 @@ import { UseFormInput, UseFormReturnType } from '@mantine/form/lib/use-form';
 import { PropsWithChildren, useEffect, useRef } from 'react';
 import { EntityBar } from './EntityBar';
 import { EntityView } from './EntityView';
-import { dataUiStyles } from '../Styles';
 import * as jpatch from 'fast-json-patch';
 import axios from 'axios';
 import { dispatch } from 'use-bus';
 import { showNotification } from '@mantine/notifications';
 import { AlertOctagon, CircleCheck } from 'tabler-icons-react';
+import { dataUiStyles } from '../styles/Styles';
 
 export interface EntityFormProps<T extends IEntity> {
   baseUrl: string;
@@ -32,7 +32,7 @@ export const EntityForm = <T extends IEntity>(rx: PropsWithChildren<EntityFormPr
     } else {
       form.reset();
     }
-  }, [ectx]);
+  }, [form,ectx]);
   const refSub = useRef<HTMLButtonElement>(null);
 
   const handleSubmit = (values: typeof form.values) => {

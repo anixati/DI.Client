@@ -7,7 +7,6 @@ import { Form, Formik, FormikHelpers, FormikProps, useFormikContext } from 'form
 import { PropsWithChildren, ReactNode, useState } from 'react';
 import { AlertOctagon, CircleCheck } from 'tabler-icons-react';
 import { dispatch } from 'use-bus';
-import { dataUiStyles } from '../Styles';
 import { EntityBar } from './EntityBar';
 import { EntityView } from './EntityView';
 
@@ -22,16 +21,9 @@ export interface DataFormProps<T extends IEntity> {
 }
 
 export const DataForm = <T extends IEntity>(rx: PropsWithChildren<DataFormProps<T>>) => {
-  const { classes } = dataUiStyles();
-
   const ectx = useEntityContext();
   const isNew = ectx?.entity === undefined;
   const [entity, setEntity] = useState<T>(rx.initial);
-  // useEffect(() => {
-  //   //if (ectx?.entity) setEntity(ectx.entity as T);
-  //   //else setEntity(rx.initial);
-  // }, [ectx,rx]);
-
   const handleApiResponse = (item: T, data: IApiResponse) => {
     if (data.failed) {
       showNotification({ message: `${data.messages}`, color: 'red', icon: <AlertOctagon /> });

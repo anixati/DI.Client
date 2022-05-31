@@ -8,19 +8,20 @@ import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
 import { AlertCircle, ChevronLeft, ChevronRight, CircleCheck, CircleDot, CircleMinus } from 'tabler-icons-react';
 import * as Yup from 'yup';
 import { ConfirmBtn } from '../controls';
-import { dataUiStyles } from '../Styles';
 import { formStyles } from '../styles/FormStyles';
-import { WizField, WizGroup } from './Controls';
-import { PageInfo, ResultState, WizardContext } from './FormContext';
+import { dataUiStyles } from '../styles/Styles';
+import { PageInfo, ResultState, SchemaFormContext } from './Context';
+import { SchemaFieldFactory } from './SchemaFieldFactory';
+import { SchemaFieldGroup } from './SchemaFieldGroup';
 import { buildYupObj } from './Validation';
 
-export interface WzFormProps {
+export interface ISchemaWizardFormProps {
   title: string;
   schema: string;
   onClose?: () => void;
 }
 
-export const WzForm: React.FC<WzFormProps> = (rx) => {
+export const SchemaWizardForm: React.FC<ISchemaWizardFormProps> = (rx) => {
   const { classes } = dataUiStyles();
   const modals = useModals();
   let modalId = '';
@@ -39,7 +40,7 @@ export const WzForm: React.FC<WzFormProps> = (rx) => {
       },
       children: (
         <QueryClientProvider client={queryClient}>
-          <WzFormView schema={rx.schema} modalId={modalId} title={rx.title} />
+          <SchemaWizardFormView schema={rx.schema} modalId={modalId} title={rx.title} />
         </QueryClientProvider>
       ),
     });
@@ -52,13 +53,13 @@ export const WzForm: React.FC<WzFormProps> = (rx) => {
   );
 };
 
-export interface WzFormViewProps {
+export interface SchemaWizardFormViewProps {
   title: string;
   schema: string;
   modalId: string;
 }
 
-const WzFormView: React.FC<WzFormViewProps> = (rx) => {
+const SchemaWizardFormView: React.FC<SchemaWizardFormViewProps> = (rx) => {
   const fetchData = async () => {
     try {
       const rsp = await axios.get<IDataResponse<IFormSchemaResult>>(`/forms/schema/${rx.schema}`);
@@ -78,14 +79,14 @@ const WzFormView: React.FC<WzFormViewProps> = (rx) => {
           {getErrorMsg(error)}{' '}
         </Alert>
       )}
-      {isSuccess && <RenderWizard schemaKey={rx.schema} schema={data} modalId={rx.modalId} title={rx.title} />}
+      {isSuccess && <RenderSchemaWizard schemaKey={rx.schema} schema={data} modalId={rx.modalId} title={rx.title} />}
     </>
   );
 };
 
-const WizCmdBar: React.FC = () => {
+const WizardCmdBar: React.FC = () => {
   const { classes } = formStyles();
-  const { pages, page, setPage, closeModal, canGoNext, submit, processState } = useContext(WizardContext);
+  const { pages, page, setPage, closeModal, canGoNext, submit, processState } = useContext(SchemaFormContext);
   const onCancel = () => {
     if (closeModal) closeModal();
   };
@@ -128,9 +129,9 @@ const WizCmdBar: React.FC = () => {
   );
 };
 
-const WizNavBar: React.FC = () => {
+const WizardNavBar: React.FC = () => {
   const { classes, cx } = formStyles();
-  const { current, page, pages, setPage, canGoNext, processState } = useContext(WizardContext);
+  const { current, page, pages, setPage, canGoNext, processState } = useContext(SchemaFormContext);
   const onSelect = (idx: number, pg: PageInfo) => {
     if (setPage && canGoNext()) {
       if (setPage) setPage(idx);
@@ -188,14 +189,15 @@ const WizNavBar: React.FC = () => {
     </div>
   );
 };
-export interface RenderWizardProps {
+
+interface RenderSchemaWizardProps {
   title: string;
   schemaKey: string;
   schema: IFormSchema;
   modalId: string;
 }
 
-const RenderWizard: React.FC<RenderWizardProps> = (rx) => {
+const RenderSchemaWizard: React.FC<RenderSchemaWizardProps> = (rx) => {
   const { classes } = formStyles();
   const modals = useModals();
   const [loading, setLoading] = useState(false);
@@ -357,10 +359,10 @@ const RenderWizard: React.FC<RenderWizardProps> = (rx) => {
   };
 
   return (
-    <WizardContext.Provider value={{ current, pages, page, setPage, closeModal, values, errors, canGoNext, submit, processState }}>
+    <SchemaFormContext.Provider value={{ current, pages, page, setPage, closeModal, values, errors, canGoNext, submit, processState }}>
       <Grid justify="space-between">
         <Grid.Col span={3} className={classes.navPanel}>
-          <WizNavBar />
+          <WizardNavBar />
         </Grid.Col>
         <Grid.Col span={9} className={classes.cntPanel}>
           <LoadingOverlay visible={loading} />
@@ -382,17 +384,17 @@ const RenderWizard: React.FC<RenderWizardProps> = (rx) => {
                   pageData.fields.map((field) => {
                     switch (field.layout) {
                       case 2:
-                        return <WizGroup key={field.key} field={field} fieldChanged={onFieldChange} values={values} />;
+                        return <SchemaFieldGroup key={field.key} field={field} fieldChanged={onFieldChange} values={values} />;
                       default:
-                        return <WizField key={field.key} field={field} fieldChanged={onFieldChange} values={values} />;
+                        return <SchemaFieldFactory key={field.key} field={field} fieldChanged={onFieldChange} values={values} />;
                     }
                   })}
               </ScrollArea>
             </div>
-            <WizCmdBar />
+            <WizardCmdBar />
           </div>
         </Grid.Col>
       </Grid>
-    </WizardContext.Provider>
+    </SchemaFormContext.Provider>
   );
 };

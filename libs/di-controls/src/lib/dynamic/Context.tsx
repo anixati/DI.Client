@@ -10,7 +10,7 @@ export type PageInfo = {
   state: PageState;
 };
 
-export interface IWizardContext {
+export interface ISchemaFormContext {
   processState: ResultState;
   current?: PageInfo;
   pages: Array<PageInfo>;
@@ -22,7 +22,8 @@ export interface IWizardContext {
   closeModal?: () => void;
   submit?: () => void;
 }
-export const WizardContext = createContext<IWizardContext>({
+
+export const SchemaFormContext = createContext<ISchemaFormContext>({
   processState: 'INIT',
   pages: [],
   page: 0,

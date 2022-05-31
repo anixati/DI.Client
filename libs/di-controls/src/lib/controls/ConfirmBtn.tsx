@@ -31,11 +31,29 @@ export const ConfirmBtn: React.FC<ConfirmBtnProps> = (rx) => {
     >
       <Stack>
         <Group spacing={8} position="center">
-          <Text size="lg" color="dotars" weight="bold">{rx.confirmTxt}</Text>
+          <Text size="lg" color="dotars" weight="bold">
+            {rx.confirmTxt}
+          </Text>
         </Group>
         <Group spacing={8} position="right">
-            <Button variant='filled' color="red" onClick={() => {setOpened(false);rx.OnConfirm();}}>Yes</Button>
-            <Button variant='default'onClick={() => {setOpened(false);}}>No</Button>
+          <Button
+            variant="filled"
+            color="red"
+            onClick={() => {
+              setOpened(false);
+              rx.OnConfirm();
+            }}
+          >
+            Yes
+          </Button>
+          <Button
+            variant="default"
+            onClick={() => {
+              setOpened(false);
+            }}
+          >
+            No
+          </Button>
         </Group>
       </Stack>
     </Popover>

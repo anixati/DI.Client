@@ -1,17 +1,16 @@
 import { IFormSchemaField } from '@dotars/di-core';
-import { Group, NumberInput, Radio, RadioGroup, Select, Textarea, TextInput } from '@mantine/core';
+import { NumberInput, Radio, RadioGroup, Select, Textarea, TextInput } from '@mantine/core';
 import { useContext } from 'react';
-import { formStyles } from '../styles/FormStyles';
-import { WizardContext } from './FormContext';
+import { SchemaFormContext } from './Context';
 
-export interface IFieldProps {
+export interface ISchemaFieldProps {
   field: IFormSchemaField;
   fieldChanged: (key: string, value: any) => void;
   values: Record<string, any>;
 }
 
-export const WizField = (rx: IFieldProps) => {
-  const { errors } = useContext(WizardContext);
+export const SchemaFieldFactory = (rx: ISchemaFieldProps) => {
+  const { errors } = useContext(SchemaFormContext);
   const { field, fieldChanged, values } = rx;
   const ph = `Please enter ${field.title}`;
   switch (rx.field.fieldType) {
@@ -33,13 +32,4 @@ export const WizField = (rx: IFieldProps) => {
   }
 };
 
-export const WizGroup = (rx: IFieldProps) => {
-  const { classes } = formStyles();
-  return (
-    <Group key={rx.field.key} spacing={12} position="left">
-      {rx.field.fields.map((field) => {
-        return <WizField key={field.key} field={field} fieldChanged={rx.fieldChanged} values={rx.values} />;
-      })}
-    </Group>
-  );
-};
+

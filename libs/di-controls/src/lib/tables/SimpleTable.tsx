@@ -3,7 +3,7 @@ import { Center, Group, ScrollArea, Table } from '@mantine/core';
 import { ReactElement, useMemo, useState } from 'react';
 import { Row, TableOptions, useSortBy, useTable } from 'react-table';
 import { ChevronDown, ChevronUp, Selector } from 'tabler-icons-react';
-import { dataUiStyles } from '../Styles';
+import { dataUiStyles } from '../styles/Styles';
 
 interface SimpleTableProps<T extends IEntity> extends TableOptions<T> {
   onClick?: (row: Row<T>) => void;

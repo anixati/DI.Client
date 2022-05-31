@@ -1,10 +1,10 @@
-import { IEntity, useEntityContext } from '@dotars/di-core';
+import { IEntity } from '@dotars/di-core';
 import { Card, Center, Group, ScrollArea, Table } from '@mantine/core';
 import { ReactElement, useMemo, useState } from 'react';
-import { TableOptions, useAsyncDebounce, useGlobalFilter, useSortBy, useTable } from 'react-table';
+import { TableOptions, useGlobalFilter, useSortBy, useTable } from 'react-table';
 import { ChevronDown, ChevronUp, Selector } from 'tabler-icons-react';
-import { SearchCmdBar } from '../controls/CmdBar';
-import { dataUiStyles } from '../Styles';
+import { SearchCmdBar } from '../controls';
+import { dataUiStyles } from '../styles/Styles';
 
 interface DataTableProps<T extends IEntity> extends TableOptions<T> {
   title: string;
@@ -16,7 +16,7 @@ interface DataTableProps<T extends IEntity> extends TableOptions<T> {
 export function DataTable<T extends IEntity>({ columns, data, title, OnRefresh, OnCreate,canCreate, ...rest }: DataTableProps<T>): ReactElement {
   const { classes, cx } = dataUiStyles();
   const [scrolled, setScrolled] = useState(false);
-  const ectx = useEntityContext();
+  //const ectx = useEntityContext();
 
   const memoizedColumns = useMemo(() => columns, [columns]);
   const memoizedData = useMemo(() => data, [data]);

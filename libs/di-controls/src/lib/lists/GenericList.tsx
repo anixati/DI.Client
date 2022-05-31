@@ -5,8 +5,8 @@ import { IEntity, IGenericListResponse, useEntityContext } from '@dotars/di-core
 import axios from 'axios';
 import { useAsync } from 'react-async-hook';
 import useBus from 'use-bus';
-import { SearchCmdBar } from '../controls/CmdBar';
-import { dataUiStyles } from '../Styles';
+import { SearchCmdBar } from '../controls';
+import { dataUiStyles } from '../styles/Styles';
 import { ListItem } from './ListItem';
 
 export interface GenericListProps<T extends IEntity> {
@@ -22,7 +22,7 @@ export const GenericList = <T extends IEntity>(rx: PropsWithChildren<GenericList
   const [search, setSearch] = useState('');
   const [selection, setSelection] = useState<number | undefined>(undefined);
   const { classes, cx } = dataUiStyles();
-  const [scrolled, setScrolled] = useState(false);
+  const [, setScrolled] = useState(false);
   const entityCtx = useEntityContext();
   const selectRow = (row?: T) => {
     setSelection(row?.id);
