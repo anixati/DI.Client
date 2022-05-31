@@ -3,7 +3,7 @@ import { Container } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { UseFormInput, UseFormReturnType } from '@mantine/form/lib/use-form';
 import { PropsWithChildren, useEffect, useRef } from 'react';
-import { EntityBar } from './EntityBar';
+import { EntityBar } from '../controls/EntityBar';
 import { EntityView } from './EntityView';
 import * as jpatch from 'fast-json-patch';
 import axios from 'axios';

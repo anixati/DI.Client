@@ -7,7 +7,7 @@ import { Form, Formik, FormikHelpers, FormikProps, useFormikContext } from 'form
 import { PropsWithChildren, ReactNode, useState } from 'react';
 import { AlertOctagon, CircleCheck } from 'tabler-icons-react';
 import { dispatch } from 'use-bus';
-import { EntityBar } from './EntityBar';
+import { EntityBar } from '../controls/EntityBar';
 import { EntityView } from './EntityView';
 
 export interface DataFormProps<T extends IEntity> {

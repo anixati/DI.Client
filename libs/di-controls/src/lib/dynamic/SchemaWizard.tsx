@@ -11,7 +11,7 @@ import { ConfirmBtn } from '../controls';
 import { formStyles } from '../styles/formStyles';
 import { dataUiStyles } from '../styles/Styles';
 import { getCreateSchemaData } from './api';
-import { PageInfo, ResultState, SchemaFormContext } from './Context';
+import { PageInfo, ResultState, WizardFormContext } from './Context';
 import { SchemaFieldFactory } from './SchemaFieldFactory';
 import { SchemaFieldGroup } from './SchemaFieldGroup';
 import { buildYupObj } from './Validation';
@@ -66,7 +66,7 @@ export const SchemaWizardForm: React.FC<ISchemaWizardFormProps> = (rx) => {
 
 const WizardCmdBar: React.FC = () => {
   const { classes } = formStyles();
-  const { pages, page, setPage, closeModal, canGoNext, submit, processState } = useContext(SchemaFormContext);
+  const { pages, page, setPage, closeModal, canGoNext, submit, processState } = useContext(WizardFormContext);
   const onCancel = () => {
     if (closeModal) closeModal();
   };
@@ -111,7 +111,7 @@ const WizardCmdBar: React.FC = () => {
 
 const WizardNavBar: React.FC = () => {
   const { classes, cx } = formStyles();
-  const { current, page, pages, setPage, canGoNext, processState } = useContext(SchemaFormContext);
+  const { current, page, pages, setPage, canGoNext, processState } = useContext(WizardFormContext);
   const onSelect = (idx: number, pg: PageInfo) => {
     if (setPage && canGoNext()) {
       if (setPage) setPage(idx);
@@ -339,7 +339,7 @@ const RenderSchemaWizard: React.FC<RenderSchemaWizardProps> = (rx) => {
   };
 
   return (
-    <SchemaFormContext.Provider value={{ current, pages, page, setPage, closeModal, values, errors, canGoNext, submit, processState }}>
+    <WizardFormContext.Provider value={{ current, pages, page, setPage, closeModal, values, errors, canGoNext, submit, processState }}>
       <Grid justify="space-between">
         <Grid.Col span={3} className={classes.navPanel}>
           <WizardNavBar />
@@ -375,6 +375,6 @@ const RenderSchemaWizard: React.FC<RenderSchemaWizardProps> = (rx) => {
           </div>
         </Grid.Col>
       </Grid>
-    </SchemaFormContext.Provider>
+    </WizardFormContext.Provider>
   );
 };

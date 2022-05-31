@@ -38,7 +38,7 @@ export interface IColumnDef {
   format: string | null;
   type: number;
   typeCode: string | null;
-  options:any;
+  options: any;
 }
 
 export interface IListResponse {
@@ -72,18 +72,26 @@ export interface IPagedList<T extends IEntity> extends IListResponse {
 }
 
 // ---- form Schema schema
+
+export interface IEntityState {
+  title: string;
+  id: number;
+  locked: boolean;
+  disabled: boolean;
+  deleted: boolean;
+}
 export interface IFormSchemaResult {
-  title:string;
-  initialValues?:Record<string,any>;
+  entity: IEntityState;
+  initialValues?: Record<string, string>;
   schema: IFormSchema;
 }
 export interface IFormSchema {
   name: string;
   fields: IFormSchemaField[];
 }
-export interface IRule{
-  type:string;
-  data:Array<any>;
+export interface IRule {
+  type: string;
+  data: Array<any>;
 }
 export interface IFormSchemaField {
   key: string;
@@ -96,7 +104,7 @@ export interface IFormSchemaField {
   value: any;
   width?: number;
   fields: IFormSchemaField[];
-  valType:string;
-  required:boolean;
-  rules?:Array<IRule>;
+  valType: string;
+  required: boolean;
+  rules?: Array<IRule>;
 }

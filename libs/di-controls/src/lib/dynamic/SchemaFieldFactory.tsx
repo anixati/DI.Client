@@ -1,7 +1,7 @@
 import { IFormSchemaField } from '@dotars/di-core';
 import { NumberInput, Radio, RadioGroup, Select, Textarea, TextInput } from '@mantine/core';
 import { useContext } from 'react';
-import { SchemaFormContext } from './Context';
+import { WizardFormContext } from './Context';
 
 export interface ISchemaFieldProps {
   field: IFormSchemaField;
@@ -10,7 +10,7 @@ export interface ISchemaFieldProps {
 }
 
 export const SchemaFieldFactory = (rx: ISchemaFieldProps) => {
-  const { errors } = useContext(SchemaFormContext);
+  const { errors } = useContext(WizardFormContext);
   const { field, fieldChanged, values } = rx;
   const ph = `Please enter ${field.title}`;
   switch (rx.field.fieldType) {
