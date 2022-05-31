@@ -10,7 +10,7 @@ import * as Yup from 'yup';
 import { ConfirmBtn } from '../controls';
 import { formStyles } from '../styles/formStyles';
 import { dataUiStyles } from '../styles/Styles';
-import { getSchemaData } from './api';
+import { getCreateSchemaData } from './api';
 import { PageInfo, ResultState, SchemaFormContext } from './Context';
 import { SchemaFieldFactory } from './SchemaFieldFactory';
 import { SchemaFieldGroup } from './SchemaFieldGroup';
@@ -27,7 +27,7 @@ export const SchemaWizardForm: React.FC<ISchemaWizardFormProps> = (rx) => {
   const modals = useModals();
   let modalId = '';
   const queryClient = new QueryClient();
-  const { isLoading, error, data, isSuccess } = useQuery([rx.schema], () => getSchemaData(rx.schema), { keepPreviousData: false, staleTime: Infinity });
+  const { isLoading, error, data, isSuccess } = useQuery([rx.schema], () => getCreateSchemaData(rx.schema), { keepPreviousData: false, staleTime: Infinity });
   
   const openWizard = () => {
     modalId = modals.openModal({

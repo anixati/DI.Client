@@ -73,6 +73,8 @@ export interface IPagedList<T extends IEntity> extends IListResponse {
 
 // ---- form Schema schema
 export interface IFormSchemaResult {
+  title:string;
+  initialValues?:Record<string,any>;
   schema: IFormSchema;
 }
 export interface IFormSchema {

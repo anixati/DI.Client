@@ -114,5 +114,6 @@
         "apps/di-boards/src/index.html",
         "apps/di-boards/src/favicon.ico",
         ".vscode"
-    ]
+    ],
+    "workspace.isHidden": false
 }
