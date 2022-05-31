@@ -11,7 +11,7 @@ import { dataUiStyles } from '../styles/Styles';
 export interface RenderListProps {
   title: string;
   url: string;
-  request?: any;
+  request?: unknown;
 }
 export function RenderList(rx: RenderListProps): ReactElement {
   const [search, setSearch] = useState('');

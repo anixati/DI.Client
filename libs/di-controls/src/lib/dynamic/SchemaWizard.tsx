@@ -1,4 +1,4 @@
-import { getErrorMsg, IApiResponse, IDataResponse, IDomainResponse, IFormSchema, IFormSchemaField, IFormSchemaResult } from '@dotars/di-core';
+import { getErrorMsg, IApiResponse, IDomainResponse, IFormSchema, IFormSchemaField } from '@dotars/di-core';
 import { Alert, Avatar, Button, Collapse, Grid, Group, List, LoadingOverlay, ScrollArea, Table, Text, UnstyledButton } from '@mantine/core';
 import { useModals } from '@mantine/modals';
 import axios from 'axios';
@@ -8,8 +8,9 @@ import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
 import { AlertCircle, ChevronLeft, ChevronRight, CircleCheck, CircleDot, CircleMinus } from 'tabler-icons-react';
 import * as Yup from 'yup';
 import { ConfirmBtn } from '../controls';
-import { formStyles } from '../styles/FormStyles';
+import { formStyles } from '../styles/formStyles';
 import { dataUiStyles } from '../styles/Styles';
+import { getSchemaData } from './api';
 import { PageInfo, ResultState, SchemaFormContext } from './Context';
 import { SchemaFieldFactory } from './SchemaFieldFactory';
 import { SchemaFieldGroup } from './SchemaFieldGroup';
@@ -26,6 +27,8 @@ export const SchemaWizardForm: React.FC<ISchemaWizardFormProps> = (rx) => {
   const modals = useModals();
   let modalId = '';
   const queryClient = new QueryClient();
+  const { isLoading, error, data, isSuccess } = useQuery([rx.schema], () => getSchemaData(rx.schema), { keepPreviousData: false, staleTime: Infinity });
+  
   const openWizard = () => {
     modalId = modals.openModal({
       title: `${rx.title}`,
@@ -40,7 +43,15 @@ export const SchemaWizardForm: React.FC<ISchemaWizardFormProps> = (rx) => {
       },
       children: (
         <QueryClientProvider client={queryClient}>
-          <SchemaWizardFormView schema={rx.schema} modalId={modalId} title={rx.title} />
+          <>
+            {isLoading && <LoadingOverlay visible={true} />}
+            {error && (
+              <Alert title="Error!" color="red">
+                {getErrorMsg(error)}{' '}
+              </Alert>
+            )}
+            {isSuccess && <RenderSchemaWizard schemaKey={rx.schema} schema={data} modalId={modalId} title={rx.title} />}
+          </>
         </QueryClientProvider>
       ),
     });
@@ -50,37 +61,6 @@ export const SchemaWizardForm: React.FC<ISchemaWizardFormProps> = (rx) => {
     <Button variant="filled" color="dotars" className={classes.toolButton} onClick={() => openWizard()}>
       {rx.title}
     </Button>
-  );
-};
-
-export interface SchemaWizardFormViewProps {
-  title: string;
-  schema: string;
-  modalId: string;
-}
-
-const SchemaWizardFormView: React.FC<SchemaWizardFormViewProps> = (rx) => {
-  const fetchData = async () => {
-    try {
-      const rsp = await axios.get<IDataResponse<IFormSchemaResult>>(`/forms/schema/${rx.schema}`);
-      if (rsp.data.failed) throw new Error(`Failed to get ${rsp.data.messages} `);
-      if (rsp.data?.result?.schema) return rsp.data.result.schema;
-      throw new Error(`Failed to retrieve form schema`);
-    } catch (ex) {
-      throw new Error(`API error:${getErrorMsg(ex)}`);
-    }
-  };
-  const { isLoading, error, data, isSuccess } = useQuery([rx.schema], () => fetchData(), { keepPreviousData: false, staleTime: Infinity });
-  return (
-    <>
-      {isLoading && <LoadingOverlay visible={true} />}
-      {error && (
-        <Alert title="Error!" color="red">
-          {getErrorMsg(error)}{' '}
-        </Alert>
-      )}
-      {isSuccess && <RenderSchemaWizard schemaKey={rx.schema} schema={data} modalId={rx.modalId} title={rx.title} />}
-    </>
   );
 };
 
@@ -140,7 +120,7 @@ const WizardNavBar: React.FC = () => {
   const RenderIcon = (pi: PageInfo) => {
     switch (pi.state) {
       case 'CURRENT':
-        return <CircleDot  color="#071E3E" />;
+        return <CircleDot color="#071E3E" />;
       case 'ERROR':
         return <AlertCircle color="red" />;
       case 'SUCCESS':
@@ -322,7 +302,7 @@ const RenderSchemaWizard: React.FC<RenderSchemaWizardProps> = (rx) => {
         <Collapse in={processState === 'INIT'}>
           <List size="sm">
             {Object.entries(values)
-              .filter(([key, value]) => value !== null && value.length >0 )
+              .filter(([key, value]) => value !== null && value.length > 0)
               .map(([key, value]) => {
                 return (
                   <List.Item>

@@ -12,7 +12,7 @@ import { ListItem } from './ListItem';
 export interface GenericListProps<T extends IEntity> {
   title: string;
   url: string;
-  request?: any;
+  request?: unknown;
   predicate: (instr: string) => (v: T, i: number, a: T[]) => unknown;
   rndrTitle: (item: T) => React.ReactNode;
   rndrDesc: (item: T) => React.ReactNode;
