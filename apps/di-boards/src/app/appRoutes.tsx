@@ -7,15 +7,16 @@ export const RootLayout: React.FC = () => {
 };
 
 export const HomePage: React.FC = () => {
-  return <Navigate to="/boards" replace />;
+  return <Navigate to="/boards/dashboard" replace />;
 };
 
 export const AppRoutes: React.FC = () => {
   return (
     <AppMain>
       <Route path="/" element={<RootLayout />}>
-        <Route path="" element={<HomePage />} />
+        <Route index element={<HomePage />} />
         <Route path="boards" element={<BoardsLayout />}>
+         
           {BoardRouteList}
         </Route>
         <Route path="reports" element={<ReportLayout />}>

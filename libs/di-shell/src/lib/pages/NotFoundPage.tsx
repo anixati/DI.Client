@@ -5,7 +5,7 @@ import { CenterPanel } from '@dotars/di-controls';
 export const NotFoundPage: React.FC = () => {
   const navigate = useNavigate();
   return (
-    <CenterPanel title="Page not found!" desc="Page you are looking not found!">
+    <CenterPanel title="Page not found!" desc="Page you are looking not found!" >
       <Button
         fullWidth
         style={{ marginTop: 14 }}

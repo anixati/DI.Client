@@ -22,7 +22,7 @@ export const AppMain: React.FC = (rx) => {
             styles={(theme) => ({
               body: {
                 height: '100%',
-                backgroundColor: 'green',
+                backgroundColor: '#ccc',
                 overflowX: 'hidden',
                 overflowY: 'auto',
               },

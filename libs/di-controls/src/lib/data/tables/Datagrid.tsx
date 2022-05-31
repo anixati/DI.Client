@@ -1,7 +1,7 @@
 import { getErrorMsg, IColumnDef, IDataResponse, IGenericListResponse, ISchemaDef, ITableDef } from '@dotars/di-core';
 import { ActionIcon, Alert, Anchor, Box, Center, Group, LoadingOverlay, NativeSelect, SelectItem, Table, TextInput } from '@mantine/core';
 import axios from 'axios';
-import { createContext, ReactElement, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, forwardRef, ReactElement, ReactNode, useCallback, useContext, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 import { CellProps, Column, usePagination, useSortBy, useTable } from 'react-table';
@@ -10,6 +10,9 @@ import { ScrollContent } from '../../panels';
 import { dataUiStyles } from '../Styles';
 import { RenderPagingBar } from './PagingBar';
 
+export interface SchemaListRef {
+  refresh(): void;
+}
 export interface RenderTableProps {
   queryKey: string;
   schema: ISchemaDef;
@@ -27,14 +30,16 @@ const LinkCol = (def: IColumnDef): Column<any> => {
     id: `${def.accessor}-link`,
     accessor: `${def.accessor}`,
     Cell: ({ row }: CellProps<any>) => (
-      <Anchor component={Link} to="/react-router" size="xs">
+       <Anchor component={Link} to={`${row.original['Id']}`} size="xs">
         {row.original[def.accessor]}
       </Anchor>
     ),
   };
 };
 
-function RenderDataGrid(rx: RenderTableProps): ReactElement {
+
+export const RenderDataGrid = forwardRef<SchemaListRef, RenderTableProps>((rx, ref) => {
+//function RenderDataGrid(rx: RenderTableProps): ReactElement {
   const { classes, cx } = dataUiStyles();
   const [pgSearch, setPgSearch] = useState('');
   const [loading, setLoading] = useState(false);
@@ -50,7 +55,6 @@ function RenderDataGrid(rx: RenderTableProps): ReactElement {
     async (index: number, size: number) => {
       try {
         setLoading(true);
-        console.log('loading ... ', index, size);
         let sortBy: Array<SortInfo> = [];
         if (pgSort.length > 0) {
           sortBy = pgSort.map((x) => ({ id: x.id, desc: x.desc } as SortInfo));
@@ -82,7 +86,7 @@ function RenderDataGrid(rx: RenderTableProps): ReactElement {
         return { Header: x.Header, accessor: x.accessor, width: x.width };
       }
     });
-    //TODO: --- fix duplicate issue 
+    //TODO: --- fix duplicate issue
     return colList;
   }, [rx.schema]);
 
@@ -119,9 +123,11 @@ function RenderDataGrid(rx: RenderTableProps): ReactElement {
     if (value && value.length > 3) setPgSearch(value);
     else setPgSearch('');
   };
-  const OnRefresh = () => {
+  const refresh = () => {
     fetchData(pageIndex, pageSize);
   };
+  useImperativeHandle(ref, ()=>({refresh}));
+
   const { schema, schemas, changeSchema } = useContext(SchemaContext);
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const { value } = event.currentTarget;
@@ -138,7 +144,7 @@ function RenderDataGrid(rx: RenderTableProps): ReactElement {
             </Group>
             <Group position="right" spacing={3}>
               <TextInput size="xs" placeholder="Search" icon={<Search size={14} color="#071E3E" />} onChange={handleSearchChange} />
-              <ActionIcon variant="filled" color="dotars" onClick={OnRefresh}>
+              <ActionIcon variant="filled" color="dotars" onClick={refresh}>
                 <Refresh size={16} />
               </ActionIcon>
               {rx.renderCmds && rx.renderCmds()}
@@ -192,6 +198,7 @@ function RenderDataGrid(rx: RenderTableProps): ReactElement {
     </div>
   );
 }
+);
 
 //---------------------------------------------------------------------------------------------------------------
 export interface SchemaTableProps {
@@ -199,7 +206,7 @@ export interface SchemaTableProps {
   renderCmds?: () => ReactNode;
 }
 
-export const SchemaTable: React.FC<SchemaTableProps> = (rx) => {
+export const SchemaTable = forwardRef<SchemaListRef, SchemaTableProps>((rx, ref) => {
   const fetchData = async () => {
     try {
       const rsp = await axios.get<IDataResponse<ITableDef>>(`/qry/schema/${rx.schemaName}`);
@@ -220,11 +227,10 @@ export const SchemaTable: React.FC<SchemaTableProps> = (rx) => {
           {getErrorMsg(error)}{' '}
         </Alert>
       )}
-
-      {isSuccess && <RenderDataGrid queryKey={rx.schemaName} schema={data} renderCmds={rx.renderCmds} />}
+      {isSuccess && <RenderDataGrid ref={ref} queryKey={rx.schemaName} schema={data} renderCmds={rx.renderCmds} />}
     </>
   );
-};
+});
 //---------------------------------------------------------------------------------------------------------------
 
 interface ISchemaContext {
@@ -232,23 +238,22 @@ interface ISchemaContext {
   schemas: Array<SelectItem>;
   changeSchema?: (name: string) => void;
 }
-
 const SchemaContext = createContext<ISchemaContext>({ schema: '', schemas: [] });
-
 export interface SchemaListTableProps {
   schemas: Array<SelectItem>;
   renderCmds?: () => ReactNode;
 }
 
-export const SchemaListTable: React.FC<SchemaListTableProps> = (rx) => {
+export const SchemaListTable = forwardRef<SchemaListRef, SchemaListTableProps>((rx, ref) => {
   const [schema, setSchema] = useState<string>(rx.schemas[0].value);
   const [schemas] = useState<Array<SelectItem>>(rx.schemas);
+
   const changeSchema = (name: string) => {
     setSchema(name);
   };
   return (
     <SchemaContext.Provider value={{ schema, schemas, changeSchema }}>
-      <SchemaTable schemaName={schema} />
+      <SchemaTable ref={ref} schemaName={schema} />
     </SchemaContext.Provider>
   );
-};
+});

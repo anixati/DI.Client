@@ -38,6 +38,7 @@ export interface IColumnDef {
   format: string | null;
   type: number;
   typeCode: string | null;
+  options:any;
 }
 
 export interface IListResponse {

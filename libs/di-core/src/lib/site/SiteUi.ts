@@ -14,7 +14,7 @@ export class SiteSettings {
   footer?: NavLink;
 }
 
-export const rootNav = atom<string | undefined>('/boards');
+export const rootNav = atom<string | undefined>('/boards/dashboard');
 export const currentNav = atom<string | undefined>('/');
 export const showNavigation = atom<boolean>(true);
 

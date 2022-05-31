@@ -9,7 +9,7 @@ export const CenterPanel: React.FC<CenterPanelProps> = (rx) => {
   const theme = useMantineTheme();
   const secondaryColor = theme.colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.gray[7];
   return (
-    <div style={{ width: 440, margin: 'auto' }}>
+    <div style={{ width: 440, margin: 'auto',marginTop:50 }}>
       <Card shadow="sm" p="lg">
         <Card.Section></Card.Section>
         <Group position="apart" style={{ marginBottom: 5, marginTop: theme.spacing.sm }}>

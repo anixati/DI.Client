@@ -1,13 +1,16 @@
-import { PageView, SchemaListTable, WzForm } from '@dotars/di-controls';
+import { PageView, SchemaListRef, SchemaListTable, WzForm } from '@dotars/di-controls';
+import { createRef } from 'react';
 import { Receipt } from 'tabler-icons-react';
-import { appStyles } from '../../../Styles';
 
 export const AppointeeList: React.FC = () => {
-  const { classes } = appStyles();
-
+  const listRef = createRef<SchemaListRef>();
+  const onClose = () => {
+    listRef.current?.refresh();
+  };
   return (
-    <PageView title="Appointees" desc="" icon={<Receipt />} renderCmds={() => <WzForm title="Create new Appointee" schema="createappointee"/>}>
+    <PageView title="Appointees" desc="" icon={<Receipt />} renderCmds={() => <WzForm title="New Appointee" schema="createappointee" onClose={onClose} />}>
       <SchemaListTable
+        ref={listRef}
         schemas={[
           { label: 'Active Appointees', value: 'ActiveAppointees' },
           { label: 'Inactive Appointees', value: 'InActiveAppointees' },

@@ -25,7 +25,8 @@
     "./src/lib/panels/TitledPanel.tsx",
     "./src/lib/panels/ScrollPanel.tsx",
     "./src/lib/data/tables/PagingBar.tsx",
-    "src/lib/panels/ScrollContent.tsx"
+    "src/lib/panels/ScrollContent.tsx",
+    "./src/lib/data/forms/wizStyles.tsx"
   ],
   "exclude": [
     "**/*.spec.ts",

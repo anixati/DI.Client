@@ -1,19 +1,23 @@
-import { getErrorMsg, IApiResponse, IDataResponse, IDomainResponse, IFormSchema, IFormSchemaField, IFormSchemaResult, IGenericListResponse } from '@dotars/di-core';
-import { Alert, Avatar, Button, Center, Collapse, createStyles, Grid, Group, List, LoadingOverlay, Radio, RadioGroup, ScrollArea, Table, Text, Textarea, TextInput, UnstyledButton } from '@mantine/core';
+import { getErrorMsg, IApiResponse, IDataResponse, IDomainResponse, IFormSchema, IFormSchemaField, IFormSchemaResult } from '@dotars/di-core';
+import { Alert, Avatar, Button, Collapse, Grid, Group, List, LoadingOverlay, ScrollArea, Table, Text, UnstyledButton } from '@mantine/core';
 import { useModals } from '@mantine/modals';
 import axios from 'axios';
 import { yupToFormErrors } from 'formik';
-import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
 import { AlertCircle, ChevronLeft, ChevronRight, CircleCheck, CircleDot, CircleMinus } from 'tabler-icons-react';
 import * as Yup from 'yup';
 import { ConfirmBtn } from '../controls';
 import { dataUiStyles } from '../Styles';
+import { formStyles } from '../styles/FormStyles';
+import { WizField, WizGroup } from './Controls';
+import { PageInfo, ResultState, WizardContext } from './FormContext';
+import { buildYupObj } from './Validation';
 
-/* #region  wizard form */
 export interface WzFormProps {
   title: string;
   schema: string;
+  onClose?: () => void;
 }
 
 export const WzForm: React.FC<WzFormProps> = (rx) => {
@@ -30,6 +34,9 @@ export const WzForm: React.FC<WzFormProps> = (rx) => {
       withCloseButton: false,
       closeOnClickOutside: false,
       closeOnEscape: false,
+      onClose: () => {
+        if (rx.onClose) rx.onClose();
+      },
       children: (
         <QueryClientProvider client={queryClient}>
           <WzFormView schema={rx.schema} modalId={modalId} title={rx.title} />
@@ -44,10 +51,7 @@ export const WzForm: React.FC<WzFormProps> = (rx) => {
     </Button>
   );
 };
-/* #endregion */
 
-/* #region  wizard form view  */
-//---------------------------------------------------------------------------------------------------------------
 export interface WzFormViewProps {
   title: string;
   schema: string;
@@ -78,116 +82,9 @@ const WzFormView: React.FC<WzFormViewProps> = (rx) => {
     </>
   );
 };
-/* #endregion */
 
-/* #region  Styles */
-//-------------------------------------------------Styles--------------------------------------------------------------
-const wizStyles = createStyles((theme) => ({
-  wzSummary: {
-    // backgroundColor: '#FFFFF0',
-    color: theme.colors['dotars'],
-    padding: 15,
-  },
-  pgSelected: {
-    backgroundColor: theme.colors['dotars'], //theme.colors.gray[3],
-    color: '#fff',
-  },
-  navPanel: {
-    minHeight: 280,
-    padding: 0,
-    backgroundColor: theme.colors.gray[1],
-    boxShadow: theme.shadows.xs,
-  },
-  cntPanel: {
-    minHeight: 280,
-    padding: 5,
-    border: `1px solid ${theme.colors.gray[1]}`,
-    boxShadow: theme.shadows.xs,
-  },
-  wizard: {
-    display: 'flex',
-    flexDirection: 'column',
-    minHeight: 400,
-  },
-  wzheader: {
-    padding: 5,
-    borderBottom: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]}`,
-    flexBasis: '20px',
-  },
-  ptContent: {
-    background: 'white',
-    flexGrow: '1',
-    paddingLeft: 4,
-    paddingRight: 4,
-  },
-  wzFooter: {
-    borderTop: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]}`,
-    padding: 5,
-    // flexBasis: '50px',
-  },
-  wzNavBar: {
-    padding: 5,
-    // flexBasis: '50px',
-  },
-  wzButton: {
-    borderRadius: 0,
-    '&:not(:first-of-type)': {
-      borderLeftWidth: 0,
-    },
-    '&:first-of-type': {
-      borderTopLeftRadius: theme.radius.sm,
-      borderBottomLeftRadius: theme.radius.sm,
-    },
-    '&:last-of-type': {
-      borderTopRightRadius: theme.radius.sm,
-      borderBottomRightRadius: theme.radius.sm,
-    },
-  },
-}));
-/* #endregion */
-
-/* #region  Context */
-//---------------------------------------------------wizard context------------------------------------------------------------
-type ResultState = 'INIT' | 'ERROR' | 'SUBMITTING' | 'SUCCESS';
-type PageState = 'INIT' | 'ERROR' | 'CURRENT' | 'SUCCESS';
-type PageInfo = {
-  id: string;
-  title?: string;
-  desc?: string;
-  state: PageState;
-};
-
-interface IWizardContext {
-  processState: ResultState;
-  current?: PageInfo;
-  pages: Array<PageInfo>;
-  page: number;
-  values: Record<string, any>;
-  errors: Record<string, any>;
-  setPage?: (page: number) => void;
-  canGoNext: () => boolean;
-  closeModal?: () => void;
-  submit?: () => void;
-}
-const WizardContext = createContext<IWizardContext>({
-  processState: 'INIT',
-  pages: [],
-  page: 0,
-  values: {},
-  errors: {},
-  canGoNext: () => {
-    return true;
-  },
-});
-
-/* #endregion */
-
-//---------------------------------------------------wizard  controls------------------------------------------------------------
-
-/* #region  Command Bar */
 const WizCmdBar: React.FC = () => {
-  const { classes } = wizStyles();
-  //modals.closeModal(rx.modalId);
+  const { classes } = formStyles();
   const { pages, page, setPage, closeModal, canGoNext, submit, processState } = useContext(WizardContext);
   const onCancel = () => {
     if (closeModal) closeModal();
@@ -230,12 +127,9 @@ const WizCmdBar: React.FC = () => {
     </div>
   );
 };
-/* #endregion */
-
-/* #region  Navigation Bar */
 
 const WizNavBar: React.FC = () => {
-  const { classes, cx } = wizStyles();
+  const { classes, cx } = formStyles();
   const { current, page, pages, setPage, canGoNext, processState } = useContext(WizardContext);
   const onSelect = (idx: number, pg: PageInfo) => {
     if (setPage && canGoNext()) {
@@ -245,7 +139,7 @@ const WizNavBar: React.FC = () => {
   const RenderIcon = (pi: PageInfo) => {
     switch (pi.state) {
       case 'CURRENT':
-        return <CircleDot />;
+        return <CircleDot  color="#071E3E" />;
       case 'ERROR':
         return <AlertCircle color="red" />;
       case 'SUCCESS':
@@ -294,77 +188,6 @@ const WizNavBar: React.FC = () => {
     </div>
   );
 };
-
-/* #endregion */
-
-//---------------------------------------------------wizard  fields------------------------------------------------------------
-
-/* #region  fields */
-
-interface IFieldProps {
-  field: IFormSchemaField;
-  fieldChanged: (key: string, value: any) => void;
-  values: Record<string, any>;
-}
-
-const WizField = (rx: IFieldProps) => {
-  const { errors } = useContext(WizardContext);
-  const { field, fieldChanged, values } = rx;
-  const ph = `Please enter ${field.title}`;
-  switch (rx.field.fieldType) {
-    case 1:
-      return <Textarea required={field.required ? field.required : false} label={field.title} placeholder={ph} style={{ marginTop: 10 }} value={values[rx.field.key]} error={errors[rx.field.key]} onChange={(e) => fieldChanged(rx.field.key, e.currentTarget.value)} size="xs" autosize minRows={3} />;
-    case 3:
-      return (
-        <RadioGroup required={field.required ? field.required : false} label={field.title} description={field.description} style={{ marginTop: 10, width: `${field?.width ? field.width - 5 : 50}%` }} value={values[rx.field.key]} error={errors[rx.field.key]} onChange={(e) => fieldChanged(rx.field.key, e)} size="sm">
-          <Radio value="1" label="Yes" />
-          <Radio value="0" label="No" />
-        </RadioGroup>
-      );
-    default:
-      return <TextInput required={field.required ? field.required : false} label={field.title} placeholder={ph} style={{ marginTop: 10, width: `${field?.width ? field.width - 5 : 50}%` }} error={errors[rx.field.key]} value={values[rx.field.key]} onChange={(e) => fieldChanged(rx.field.key, e.currentTarget.value)} size="xs" />;
-  }
-};
-
-const WizGroup = (rx: IFieldProps) => {
-  const { classes } = wizStyles();
-  return (
-    <Group key={rx.field.key} spacing={12} position="left">
-      {rx.field.fields.map((field) => {
-        return <WizField key={field.key} field={field} fieldChanged={rx.fieldChanged} values={rx.values} />;
-      })}
-    </Group>
-  );
-};
-/* #endregion */
-
-//---------------------------------------------------wizard------------------------------------------------------------
-
-/* #region  YUP */
-
-const yupObj = (fd: IFormSchemaField) => {
-  switch (fd.fieldType) {
-    default:
-      return Yup['string']();
-  }
-};
-
-const buildYupObj = (fd: IFormSchemaField, vs: any) => {
-  if (fd.rules) {
-    let vdr = yupObj(fd);
-    fd.rules.forEach((vd) => {
-      const { type, data } = vd;
-      if (!(vdr as any)[type]) {
-        return;
-      }
-      //console.log(type, data);
-      vdr = (vdr as any)[type](...data);
-    });
-    vs[fd.key] = vdr;
-  }
-};
-/* #endregion */
-
 export interface RenderWizardProps {
   title: string;
   schemaKey: string;
@@ -373,7 +196,7 @@ export interface RenderWizardProps {
 }
 
 const RenderWizard: React.FC<RenderWizardProps> = (rx) => {
-  const { classes } = wizStyles();
+  const { classes } = formStyles();
   const modals = useModals();
   const [loading, setLoading] = useState(false);
   const [processState, setProcessState] = useState<ResultState>('INIT');
@@ -390,12 +213,10 @@ const RenderWizard: React.FC<RenderWizardProps> = (rx) => {
   const closeModal = () => {
     modals.closeModal(rx.modalId);
   };
-
   const getVal = (fd: IFormSchemaField, vs: any) => {
     buildYupObj(fd, vs);
     return '';
   };
-
   useEffect(() => {
     if (page < pages.length - 1) {
       const newData = rx.schema.fields[page];
@@ -446,7 +267,6 @@ const RenderWizard: React.FC<RenderWizardProps> = (rx) => {
         return state;
       });
     }
-    //--
     if (current) current.state = Object.values(errors).filter((x) => x !== undefined).length > 0 ? 'ERROR' : 'SUCCESS';
   };
 
@@ -454,15 +274,14 @@ const RenderWizard: React.FC<RenderWizardProps> = (rx) => {
     setErrors({});
     try {
       ys.validateSync(values, { abortEarly: false });
-      //pages[page].valid = true;
       return {};
     } catch (err) {
       const evals = yupToFormErrors(err);
-      //pages[page].valid = false;
       setErrors(evals);
       return evals;
     }
   };
+
   const canGoNext = () => {
     const errs = validate();
     const isValid = Object.keys(errs).length > 0 ? false : true;
@@ -471,7 +290,7 @@ const RenderWizard: React.FC<RenderWizardProps> = (rx) => {
   };
 
   const [apiError, setApiError] = useState('');
-  const [domResponse, setDomResponse] = useState<IDomainResponse | undefined>(undefined);
+  const [, setDomResponse] = useState<IDomainResponse | undefined>(undefined);
   const submitData = useCallback(async () => {
     try {
       setLoading(true);
@@ -500,13 +319,15 @@ const RenderWizard: React.FC<RenderWizardProps> = (rx) => {
       <div className={classes.wzSummary}>
         <Collapse in={processState === 'INIT'}>
           <List size="sm">
-            {Object.entries(values).map(([key, value]) => {
-              return (
-                <List.Item>
-                  {key}: {value}{' '}
-                </List.Item>
-              );
-            })}
+            {Object.entries(values)
+              .filter(([key, value]) => value !== null && value.length >0 )
+              .map(([key, value]) => {
+                return (
+                  <List.Item>
+                    {key}: {value}{' '}
+                  </List.Item>
+                );
+              })}
           </List>
         </Collapse>
         <Collapse in={processState === 'ERROR'}>
@@ -545,10 +366,14 @@ const RenderWizard: React.FC<RenderWizardProps> = (rx) => {
           <LoadingOverlay visible={loading} />
           <div className={classes.wizard}>
             <div className={classes.wzheader}>
-              <Text color="dotars" weight="bold">
-                {page === pages.length - 1 ? 'Review and submit' : pages[page].title}
-              </Text>
-              {current?.state}
+              <Group position="apart">
+                <Group position="left">
+                  <Text color="dotars" weight="bold">
+                    {page === pages.length - 1 ? 'Review and submit' : pages[page].title}
+                  </Text>{' '}
+                </Group>
+                <Group position="right">{current?.state && current?.state === 'ERROR' && <AlertCircle color="red" />}</Group>
+              </Group>
             </div>
             <div className={classes.ptContent}>
               <ScrollArea style={{ height: 350 }} type="auto" offsetScrollbars>
