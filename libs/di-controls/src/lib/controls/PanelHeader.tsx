@@ -6,6 +6,7 @@ export interface PanelHeaderProps {
   title: string;
   icon?: ReactNode;
   desc: string;
+  renderStatus?:()=>ReactNode;
   renderCmds?: () => ReactNode;
 }
 
@@ -31,9 +32,13 @@ export const PanelHeader: React.FC<PanelHeaderProps> = (rx) => {
             <Text size="sm" color="dotars" weight={500}>
               {rx.title}
             </Text>
+            <Group>
             <Text color="dimmed" size="xs">
               {rx.desc}
             </Text>
+            {rx.renderStatus && rx.renderStatus()}
+            </Group>
+            
           </div>
         </Group>
         <Group position="right" spacing={3}>

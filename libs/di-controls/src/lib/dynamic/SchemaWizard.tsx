@@ -1,5 +1,5 @@
 import { getErrorMsg, IApiResponse, IDomainResponse, IFormSchema, IFormSchemaField } from '@dotars/di-core';
-import { Alert, Avatar, Button, Collapse, Grid, Group, List, LoadingOverlay, ScrollArea, Table, Text, UnstyledButton } from '@mantine/core';
+import { Alert, Avatar, Button, Collapse, Divider, Grid, Group, List, LoadingOverlay, ScrollArea, Table, Text, UnstyledButton } from '@mantine/core';
 import { useModals } from '@mantine/modals';
 import axios from 'axios';
 import { yupToFormErrors } from 'formik';
@@ -28,7 +28,7 @@ export const SchemaWizardForm: React.FC<ISchemaWizardFormProps> = (rx) => {
   let modalId = '';
   const queryClient = new QueryClient();
   const { isLoading, error, data, isSuccess } = useQuery([rx.schema], () => getCreateSchemaData(rx.schema), { keepPreviousData: false, staleTime: Infinity });
-  
+
   const openWizard = () => {
     modalId = modals.openModal({
       title: `${rx.title}`,
@@ -364,9 +364,11 @@ const RenderSchemaWizard: React.FC<RenderSchemaWizardProps> = (rx) => {
                   pageData.fields.map((field) => {
                     switch (field.layout) {
                       case 2:
-                        return <SchemaFieldGroup key={field.key} field={field} fieldChanged={onFieldChange} values={values} />;
+                        return <SchemaFieldGroup key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} />;
+                      case 4:
+                        return <Divider title={field.title} />;
                       default:
-                        return <SchemaFieldFactory key={field.key} field={field} fieldChanged={onFieldChange} values={values} />;
+                        return <SchemaFieldFactory key={field.key} field={field} fieldChanged={onFieldChange} values={values}  errors={errors} />;
                     }
                   })}
               </ScrollArea>

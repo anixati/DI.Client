@@ -5,6 +5,6 @@ import { Receipt } from 'tabler-icons-react';
 export const AppointeePage: React.FC = () => {
   const { entityId } = useParams();
 
-  return <SchemaForm title="Appointee Details"  
+  return <SchemaForm title="Appointee Details"  listUrl="/boards/appointees"
   schema="appointee" entityId={entityId} icon={<Receipt />} canEdit={true} />;
 };

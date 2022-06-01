@@ -8,7 +8,8 @@ export const AppointeeList: React.FC = () => {
     listRef.current?.refresh();
   };
   return (
-    <PageView title="Appointees" desc="" icon={<Receipt />} renderCmds={() => <SchemaWizardForm title="New Appointee" schema="create_appointee" onClose={onClose} />}>
+    <PageView title="Appointees" desc="" icon={<Receipt />} renderCmds={() => <SchemaWizardForm title="New Appointee"
+     schema="appointee" onClose={onClose}  />}>
       <SchemaListTable
         ref={listRef}
         schemas={[

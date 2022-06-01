@@ -1,11 +1,11 @@
 import { getErrorMsg, IApiResponse, IChangeRequest, IDataResponse, IFormSchemaResult } from '@dotars/di-core';
 import { showNotification } from '@mantine/notifications';
 import axios from 'axios';
-import { AlertOctagon } from 'tabler-icons-react';
+import { AlertOctagon, CircleCheck } from 'tabler-icons-react';
 
 export const getCreateSchemaData = async (schemaName: string) => {
   try {
-    const rsp = await axios.get<IDataResponse<IFormSchemaResult>>(`/forms/schema/${schemaName}`);
+    const rsp = await axios.get<IDataResponse<IFormSchemaResult>>(`/forms/create/${schemaName}`);
     if (rsp.data.failed) throw new Error(`Failed to get ${rsp.data.messages} `);
     if (rsp.data?.result?.schema) return rsp.data.result.schema;
     throw new Error(`Failed to retrieve form schema`);
@@ -25,32 +25,44 @@ export const getViewSchemaData = async (schemaName: string, entityId: string) =>
   }
 };
 
-export const submiUpdateForm = async (schemaName: string, entityId: number) => {
+export const submiUpdateForm = async (schemaName: string, entityId: number,changeSet:any) => {
   try {
-    const rsp = await axios.get<IDataResponse<IFormSchemaResult>>(`/forms/update`);
-    if (rsp.data.failed) throw new Error(`Failed to get ${rsp.data.messages} `);
-    if (rsp.data?.result) return rsp.data.result;
-    throw new Error(`Failed to retrieve form schema`);
-  } catch (ex) {
-    throw new Error(`API error:${getErrorMsg(ex)}`);
+    const patchResp = await axios.patch<IApiResponse>(`/forms/update/${schemaName}/${entityId}`,changeSet);
+    const data = patchResp.data;
+    if (data.failed) {
+      console.log(data);
+      ShowError('Failed to update', `${data.messages}`);
+      return false;
+    } else {
+      ShowInfo('Updated Sucessfully!', `${data?.result?.message}`);
+      return true;
+    }
+  } catch (err) {
+    ShowError('Failed', `API error:${getErrorMsg(err)}`);
+    return false;
   }
 };
 
 export const submitChangeForm = async (schemaName: string, request: IChangeRequest) => {
-  const resp = await axios.post<IApiResponse>(`/forms/change/${schemaName}`, request);
-  const data = resp.data;
-  if (data.failed) {
-    console.log(data);
-    ShowError('Failed to change state', `${data.messages}`);
-  } else {
-    ShowNotify(request.action, data);
+  try {
+    const resp = await axios.post<IApiResponse>(`/forms/change/${schemaName}`, request);
+    const data = resp.data;
+    if (data.failed) {
+      console.log(data);
+      ShowError('Failed to change state', `${data.messages}`);
+      return false;
+    } else {
+      ShowNotify(request.action, data);
+      return true;
+    }
+  } catch (err) {
+    ShowError('Failed', `API error:${getErrorMsg(err)}`);
+    return false;
   }
-  return data;
 };
 
 const ShowNotify = (action: number, data: IApiResponse) => {
   let title = '';
-  let notifyMsg = 'RELOAD';
   switch (action) {
     case 2: {
       title = 'Enabled Sucessfully!';
@@ -70,12 +82,14 @@ const ShowNotify = (action: number, data: IApiResponse) => {
     }
     case 6: {
       title = 'Deleted Sucessfully!';
-      notifyMsg = 'ONDELETE';
       break;
     }
   }
-  showNotification({ autoClose: 5000, title: `${title}`, message: `${data?.result?.message}`, color: 'blue', icon: <AlertOctagon /> });
+  ShowInfo(`${title}`, `${data?.result?.message}`);
 };
 const ShowError = (title: string, message: string) => {
   showNotification({ autoClose: 5000, title, message, color: 'red', icon: <AlertOctagon /> });
+};
+const ShowInfo = (title: string, message: string) => {
+  showNotification({ autoClose: 5000, title, message, color: 'blue', icon: <CircleCheck /> });
 };

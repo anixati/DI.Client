@@ -1,17 +1,21 @@
 import { getErrorMsg, IEntityState, IFormSchemaField, IFormSchemaResult } from '@dotars/di-core';
-import { Alert, Button, Card, Group, LoadingOverlay, Tabs } from '@mantine/core';
+import { Alert, Badge, Button, Card, Container, Divider, Group, LoadingOverlay, Tabs } from '@mantine/core';
 import * as jpatch from 'fast-json-patch';
 import { hasOwnProperty } from 'fast-json-patch/module/helpers';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
-import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
-import { AspectRatio } from 'tabler-icons-react';
+import { QueryClient, QueryClientProvider, useQuery, useQueryClient } from 'react-query';
+import { AlertOctagon, AspectRatio } from 'tabler-icons-react';
 import { ConfirmBtn, PanelHeader } from '../controls';
 import { panelStyles } from '../styles';
 import { getViewSchemaData, submitChangeForm, submiUpdateForm } from './api';
-import { PageInfo } from './Context';
+import { PageInfo, WizardFormContext } from './Context';
 import { SchemaFieldFactory } from './SchemaFieldFactory';
 import { SchemaFieldGroup } from './SchemaFieldGroup';
 import { buildYupObj } from './Validation';
+import * as Yup from 'yup';
+import { yupToFormErrors } from 'formik';
+import { showNotification } from '@mantine/notifications';
+import { useNavigate } from 'react-router-dom';
 
 export interface ISchemaFormProps {
   title: string;
@@ -19,11 +23,12 @@ export interface ISchemaFormProps {
   schema: string;
   entityId?: string;
   canEdit: boolean;
+  listUrl: string;
 }
 
 export const SchemaForm: React.FC<ISchemaFormProps> = (rx) => {
   const queryClient = new QueryClient();
-  return <QueryClientProvider client={queryClient}>{rx.entityId && <SchemaFormView canEdit={rx.canEdit} title={rx.title} schema={rx.schema} icon={rx.icon} entityId={rx.entityId} />}</QueryClientProvider>;
+  return <QueryClientProvider client={queryClient}>{rx.entityId && <SchemaFormView canEdit={rx.canEdit} title={rx.title} schema={rx.schema} icon={rx.icon} entityId={rx.entityId} listUrl={rx.listUrl} />}</QueryClientProvider>;
 };
 export interface ISchemaFormViewProps {
   title: string;
@@ -31,11 +36,20 @@ export interface ISchemaFormViewProps {
   schema: string;
   entityId: string;
   canEdit: boolean;
+  listUrl: string;
 }
 
 const SchemaFormView: React.FC<ISchemaFormViewProps> = (rx) => {
-  const viewSchema = useMemo<string>(() => `view_${rx.schema}`, [rx]);
-  const { isLoading, error, data, isSuccess } = useQuery([viewSchema], () => getViewSchemaData(viewSchema, rx.entityId), { keepPreviousData: false, staleTime: Infinity });
+  const navigate = useNavigate();
+  const viewSchema = useMemo<string>(() => `${rx.schema}`, [rx]);
+  const { isLoading, error, data, isSuccess, refetch } = useQuery([viewSchema], () => getViewSchemaData(viewSchema, rx.entityId), { keepPreviousData: false, staleTime: Infinity });
+  const refresh = () => {
+    refetch();
+  };
+  const backToList = () => {
+    navigate(rx.listUrl, {});
+  };
+
   return (
     <>
       {isLoading && <LoadingOverlay visible={true} />}
@@ -44,7 +58,7 @@ const SchemaFormView: React.FC<ISchemaFormViewProps> = (rx) => {
           {getErrorMsg(error)}{' '}
         </Alert>
       )}
-      {isSuccess && data && <RenderSchemaForm title={rx.title} schema={rx.schema} result={data} canEdit={rx.canEdit} />}
+      {isSuccess && data && <RenderSchemaForm title={rx.title} schema={rx.schema} result={data} canEdit={rx.canEdit} onRefresh={refresh} goToList={backToList} />}
     </>
   );
 };
@@ -56,6 +70,8 @@ interface RenderSchemaFormProps {
   schema: string;
   result: IFormSchemaResult;
   canEdit: boolean;
+  onRefresh: () => void;
+  goToList: () => void;
 }
 
 const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
@@ -103,7 +119,7 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
               obj[sf.key] = getVal(sf, vs);
             }
           } else {
-            obj[fd.key] = getVal(fd, vs);
+            if (fd.layout === 0) obj[fd.key] = getVal(fd, vs);
           }
           return obj;
         }, {} as Record<string, string>);
@@ -136,13 +152,32 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
       return Object.assign({}, pgdata);
     });
     //---
-
-    const changeSet = jpatch.compare(initVals, values);
-    console.log('cs', changeSet);
+    try {
+      ys.validateSyncAt(fkey, values, { abortEarly: false });
+      setErrors((prevState) => {
+        const state = { ...prevState };
+        state[fkey] = undefined;
+        return state;
+      });
+    } catch (err) {
+      const evals = yupToFormErrors(err);
+      setErrors((prevState) => {
+        const state = { ...prevState };
+        state[fkey] = (evals as any)[fkey];
+        return state;
+      });
+    }
+    if (current) current.state = Object.values(errors).filter((x) => x !== undefined).length > 0 ? 'ERROR' : 'SUCCESS';
+    //const changeSet = jpatch.compare(initVals, values);
+    //console.log('cs', changeSet);
   };
 
   const onClickUpdate = async () => {
-    await execUpdate();
+    const rs = validateForm();
+    const isValid = Object.keys(rs).length > 0 ? false : true;
+    if (current) current.state = !isValid ? 'ERROR' : 'SUCCESS';
+    if (isValid) await execUpdate();
+    else showNotification({ autoClose: 5000, title: 'Validation errors', message: 'Please fix all errors', color: 'red', icon: <AlertOctagon /> });
   };
   const onClickLock = () => {
     execAction(4, 'Lock entity');
@@ -163,22 +198,42 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
   /* #endregion */
 
   /* #region  Handlers */
+  const ys = Yup.object().shape(valSchema);
+  const validateForm = () => {
+    setErrors({});
+    try {
+      ys.validateSync(values, { abortEarly: false });
+      return {};
+    } catch (err) {
+      const evals = yupToFormErrors(err);
+      setErrors(evals);
+      return evals;
+    }
+  };
+
+  // --- change state
   const execAction = async (action: number, reason: string) => {
     try {
       setLoading(true);
       if (entity.id) {
-        await submitChangeForm(`${rx.schema}`, { id: entity.id, name: 'User Action', reason: reason, action: action });
+        const rs = await submitChangeForm(`${rx.schema}`, { id: entity.id, name: 'User Action', reason: reason, action: action });
+        if (rs) {
+          if (action === 6) rx.goToList();
+          else rx.onRefresh();
+        }
       }
     } finally {
       setLoading(false);
     }
   };
-
+  // --- update
   const execUpdate = async () => {
     try {
       setLoading(true);
-      if (entity.id) {
-        await submiUpdateForm(`${rx.schema}`,entity.id);
+      const changeSet = jpatch.compare(initVals, values);
+      if (Array.isArray(changeSet)) {
+        const rs = await submiUpdateForm(rx.schema, entity.id, changeSet);
+        if (rs) rx.onRefresh();
       }
     } finally {
       setLoading(false);
@@ -194,10 +249,30 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
         title={entity.title}
         desc={rx.title}
         icon={rx.icon}
+        renderStatus={() => {
+          return (
+            <>
+              {!entity.disabled && (
+                <Badge color="green" radius="md" variant="dot" size="xs">
+                  Active
+                </Badge>
+              )}
+              {entity.disabled && (
+                <Badge color="gray" radius="md" variant="dot" size="xs">
+                  Inactive
+                </Badge>
+              )}
+              {entity.locked && (
+                <Badge color="red" radius="md" variant="dot" size="xs">
+                  Locked
+                </Badge>
+              )}
+            </>
+          );
+        }}
         renderCmds={() => {
           return (
             <Group spacing={0} position="right">
-              
               {!entity.disabled && !entity.locked && (
                 <Button color="dotars" className={classes.vwbutton} onClick={onClickUpdate} compact disabled={!canEdit}>
                   Update
@@ -225,10 +300,8 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
                   Enable
                 </Button>
               )}
-              {!entity.disabled && !entity.locked && <ConfirmBtn color="red" className={classes.vwbutton} style={{marginLeft:10}}
-              compact OnConfirm={onClickDelete} disabled={!canEdit} btnTxt="Delete" confirmTxt="Are you sure you want to delete?" />}
-             
-              </Group>
+              {!entity.disabled && !entity.locked && <ConfirmBtn color="red" className={classes.vwbutton} style={{ marginLeft: 10 }} compact OnConfirm={onClickDelete} disabled={!canEdit} btnTxt="Delete" confirmTxt="Are you sure you want to delete?" />}
+            </Group>
           );
         }}
       />
@@ -241,8 +314,8 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
     <Card withBorder className={classes.Card}>
       <LoadingOverlay visible={loading} />
       <RenderButtons />
-      <Card.Section className={classes.Content} style={{paddingTop:50}}>
-        <Tabs position="right" color="indigo" tabPadding="sm" active={tab} onTabChange={setTab} style={{ fontWeight: 500, minHeight: 550 }}>
+      <Card.Section className={classes.Content} style={{ paddingTop: 25 }}>
+        <Tabs position="left" color="indigo" tabPadding="sm" active={tab} onTabChange={setTab} style={{ fontWeight: 500, minHeight: 550 }}>
           {tabs &&
             tabs.length > 0 &&
             tabs.map((tb) => {
@@ -252,9 +325,11 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
                     pageData.fields.map((field) => {
                       switch (field.layout) {
                         case 2:
-                          return <SchemaFieldGroup key={field.key} field={field} fieldChanged={onFieldChange} values={values} />;
+                          return <SchemaFieldGroup key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} />;
+                        case 4:
+                          return <Divider title={field.title} style={{ marginTop: 15 }} />;
                         default:
-                          return <SchemaFieldFactory key={field.key} field={field} fieldChanged={onFieldChange} values={values} />;
+                          return <SchemaFieldFactory key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} />;
                       }
                     })}
                 </Tabs.Tab>
