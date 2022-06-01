@@ -9,10 +9,25 @@
                     "route": "/dashboard",
                     "label": "Dashboard"
                 },
-                {
-                    "route": "/appointees",
-                    "label": "Appointees"
+                 {
+                    "route": "",
+                    "label": "Contacts",
+                    "links": [
+                        {
+                            "route": "/appointees",
+                            "label": "Appointees"
+                        },
+                        {
+                            "route": "/ministers",
+                            "label": "Ministers"
+                        },
+                        {
+                            "route": "/secretaries",
+                            "label": "Secretaries"
+                        }
+                    ]
                 }
+                
             ]
         },
         {
