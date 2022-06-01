@@ -276,7 +276,7 @@ const RenderSchemaWizard: React.FC<RenderSchemaWizardProps> = (rx) => {
   const submitData = useCallback(async () => {
     try {
       setLoading(true);
-      const resp = await axios.post<IApiResponse>(`/forms/process`, { schema: rx.schemaKey, data: values });
+      const resp = await axios.post<IApiResponse>(`/forms/create`, { schema: rx.schemaKey, data: values });
       if (resp.data.failed || resp.data.result === null) {
         if (resp.data.result == null) setApiError('No response received');
         else setApiError(`${resp.data.messages}`);
