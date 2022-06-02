@@ -1,7 +1,6 @@
 import React from 'react';
 import { Outlet, Route } from 'react-router-dom';
 import { AuditsPage } from './audit/AuditsPage';
-import { PortfolioPage } from './boards';
 import { OptionsPage } from './refdata';
 import { RolesPage, TeamsPage, UsersPage } from './security';
 
@@ -17,8 +16,6 @@ export const AdminRouteList = (
   <>
     <Route path="options" element={<OptionsPage />} />
     <Route path="logs" element={<AuditsPage />} />
-    <Route path="portfolios" element={<PortfolioPage />} />
-
     <Route path="roles" element={<RolesPage />} />
     <Route path="users" element={<UsersPage />} />
     <Route path="teams" element={<TeamsPage />} />

@@ -23,7 +23,10 @@
     "./src/app/pages/admin/security/TeamsPage.tsx",
     "./src/app/pages/boards/board/UpcomingPage.tsx",
     "./src/app/pages/boards/board/VacanciesPage.tsx",
-    "./src/app/pages/boards/board/ActiveBoardsPage.tsx"
+    "src/app/pages/boards/board/BoardsList.tsx",
+    "./src/app/pages/boards/board/BoardsPage.tsx",
+    "./src/app/pages/boards/board/BoardAppointmentsList.tsx",
+    "./src/app/pages/boards/board/BoardRolessList.tsx"
   ],
   "exclude": [
     "**/*.spec.ts",

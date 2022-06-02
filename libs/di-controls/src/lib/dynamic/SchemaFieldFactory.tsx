@@ -1,5 +1,6 @@
 import { IFormSchemaField } from '@dotars/di-core';
 import { NumberInput, Radio, RadioGroup, Select, Textarea, TextInput } from '@mantine/core';
+import { LookupControl } from './LookupControl';
 
 export interface ISchemaFieldProps {
   field: IFormSchemaField;
@@ -10,13 +11,13 @@ export interface ISchemaFieldProps {
 
 export const SchemaFieldFactory = (rx: ISchemaFieldProps) => {
   //const { errors } = useContext(WizardFormContext);
-  const { field, fieldChanged, values,errors } = rx;
+  const { field, fieldChanged, values, errors } = rx;
   const ph = `Please enter ${field.title}`;
   switch (rx.field.fieldType) {
     case 1:
       return <Textarea required={field.required ? field.required : false} label={field.title} placeholder={ph} style={{ marginTop: 10 }} value={values[rx.field.key]} error={errors[rx.field.key]} onChange={(e) => fieldChanged(rx.field.key, e.currentTarget.value)} size="xs" autosize minRows={3} />;
     case 2:
-      return <NumberInput required={field.required ? field.required : false} label={field.title} placeholder={ph} style={{ marginTop: 10 }} value={values[rx.field.key]} error={errors[rx.field.key]} onChange={(val) => fieldChanged(rx.field.key, val)} size="xs" />;
+      return <NumberInput required={field.required ? field.required : false} label={field.title} placeholder={field.title} style={{ marginTop: 10, width: `${field?.width ? field.width - 5 : 50}%` }} value={values[rx.field.key]} error={errors[rx.field.key]} onChange={(val) => fieldChanged(rx.field.key, val)} size="xs" />;
     case 3:
       return (
         <RadioGroup required={field.required ? field.required : false} label={field.title} description={field.description} style={{ marginTop: 10, width: `${field?.width ? field.width - 5 : 50}%` }} value={values[rx.field.key]} error={errors[rx.field.key]} onChange={(e) => fieldChanged(rx.field.key, e)} size="sm">
@@ -25,7 +26,9 @@ export const SchemaFieldFactory = (rx: ISchemaFieldProps) => {
         </RadioGroup>
       );
     case 7:
-      return <Select required={field.required ? field.required : false} label={field.title} placeholder={`Select one option`} style={{ marginTop: 10, width: `${field?.width ? field.width - 5 : 50}%`  }} value={values[rx.field.key]} error={errors[rx.field.key]} onChange={(v) => fieldChanged(rx.field.key, v)} size="xs" data={field.options} />;
+      return <Select required={field.required ? field.required : false} label={field.title} placeholder={`Select one option`} style={{ marginTop: 10, width: `${field?.width ? field.width - 5 : 50}%` }} value={values[rx.field.key]} error={errors[rx.field.key]} onChange={(v) => fieldChanged(rx.field.key, v)} size="xs" data={field.options} />;
+    case 8:
+      return <LookupControl {...rx} />;
     default:
       return <TextInput required={field.required ? field.required : false} label={field.title} placeholder={ph} style={{ marginTop: 10, width: `${field?.width ? field.width - 5 : 50}%` }} error={errors[rx.field.key]} value={values[rx.field.key]} onChange={(e) => fieldChanged(rx.field.key, e.currentTarget.value)} size="xs" />;
   }

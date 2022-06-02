@@ -11,7 +11,7 @@ import { ConfirmBtn } from '../controls';
 import { formStyles } from '../styles/formStyles';
 import { dataUiStyles } from '../styles/Styles';
 import { getCreateSchemaData } from './api';
-import { PageInfo, ResultState, WizardFormContext } from './Context';
+import { MdlContext, PageInfo, ResultState, WizardFormContext } from './Context';
 import { SchemaFieldFactory } from './SchemaFieldFactory';
 import { SchemaFieldGroup } from './SchemaFieldGroup';
 import { buildYupObj } from './Validation';
@@ -25,19 +25,21 @@ export interface ISchemaWizardFormProps {
 export const SchemaWizardForm: React.FC<ISchemaWizardFormProps> = (rx) => {
   const { classes } = dataUiStyles();
   const modals = useModals();
-  let modalId = '';
+  const [modalId, SetModalId] = useState<string>('');
+
   const queryClient = new QueryClient();
   const { isLoading, error, data, isSuccess } = useQuery([rx.schema], () => getCreateSchemaData(rx.schema), { keepPreviousData: false, staleTime: Infinity });
 
   const openWizard = () => {
-    modalId = modals.openModal({
+    const mid = modals.openModal({
       title: `${rx.title}`,
       centered: true,
-      size: '75%',
+      size: '85%',
       overflow: 'outside',
       withCloseButton: false,
       closeOnClickOutside: false,
       closeOnEscape: false,
+      zIndex:100,
       onClose: () => {
         if (rx.onClose) rx.onClose();
       },
@@ -50,11 +52,17 @@ export const SchemaWizardForm: React.FC<ISchemaWizardFormProps> = (rx) => {
                 {getErrorMsg(error)}{' '}
               </Alert>
             )}
-            {isSuccess && <RenderSchemaWizard schemaKey={rx.schema} schema={data} modalId={modalId} title={rx.title} />}
+            {isSuccess && (
+              <MdlContext.Provider value={{modalId}}>
+                <RenderSchemaWizard schemaKey={rx.schema} schema={data} modalId={modalId} title={rx.title} />
+              </MdlContext.Provider>
+            )}
           </>
         </QueryClientProvider>
       ),
     });
+    SetModalId(mid);
+    setTimeout(SetModalId, 500, mid);
   };
 
   return (
@@ -102,7 +110,7 @@ const WizardCmdBar: React.FC = () => {
           <Button variant="default" size="xs" className={classes.wzButton} rightIcon={<ChevronRight />} onClick={onNext} disabled={page === pages.length - 1}>
             Next
           </Button>
-          <ConfirmBtn variant="light" color="red" size="xs" style={{ marginLeft: 5 }} OnConfirm={onCancel} disabled={processState === 'SUCCESS'} btnTxt="Cancel" confirmTxt="Are you sure you want to cancel" />
+          <ConfirmBtn variant="light" color="red" size="xs" style={{ marginLeft: 5 }} OnOk={onCancel} disabled={processState === 'SUCCESS'} btnTxt="Cancel" confirmTxt="Are you sure you want to cancel" />
         </Group>
       </Group>
     </div>
@@ -188,6 +196,7 @@ const RenderSchemaWizard: React.FC<RenderSchemaWizardProps> = (rx) => {
   const [errors, setErrors] = useState<Record<string, any>>({});
   const [pageData, setPageData] = useState<IFormSchemaField>(rx.schema.fields[page]);
   const [valSchema, setValSchema] = useState({});
+  const [modalId] = useState<string>(rx.modalId);
   const [pages] = useState<Array<PageInfo>>(() => {
     const pages = rx.schema.fields.map((x) => ({ id: x.key, title: x.title, desc: x.description, state: 'INIT' } as PageInfo));
     return [...pages, { id: 'summary', title: 'Summary', desc: 'Review and submit', state: 'INIT' }];
@@ -200,6 +209,7 @@ const RenderSchemaWizard: React.FC<RenderSchemaWizardProps> = (rx) => {
     return '';
   };
   useEffect(() => {
+    console.log('#########', modalId);
     if (page < pages.length - 1) {
       const newData = rx.schema.fields[page];
       const _valSchema = {};
@@ -339,7 +349,7 @@ const RenderSchemaWizard: React.FC<RenderSchemaWizardProps> = (rx) => {
   };
 
   return (
-    <WizardFormContext.Provider value={{ current, pages, page, setPage, closeModal, values, errors, canGoNext, submit, processState }}>
+    <WizardFormContext.Provider value={{ modalId, current, pages, page, setPage, closeModal, values, errors, canGoNext, submit, processState }}>
       <Grid justify="space-between">
         <Grid.Col span={3} className={classes.navPanel}>
           <WizardNavBar />
@@ -368,7 +378,7 @@ const RenderSchemaWizard: React.FC<RenderSchemaWizardProps> = (rx) => {
                       case 4:
                         return <Divider title={field.title} />;
                       default:
-                        return <SchemaFieldFactory key={field.key} field={field} fieldChanged={onFieldChange} values={values}  errors={errors} />;
+                        return <SchemaFieldFactory key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} />;
                     }
                   })}
               </ScrollArea>

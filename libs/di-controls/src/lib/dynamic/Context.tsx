@@ -11,6 +11,7 @@ export type PageInfo = {
 };
 
 export interface IWizFormContext {
+  modalId:string;
   processState: ResultState;
   current?: PageInfo;
   pages: Array<PageInfo>;
@@ -24,6 +25,7 @@ export interface IWizFormContext {
 }
 
 export const WizardFormContext = createContext<IWizFormContext>({
+  modalId:'',
   processState: 'INIT',
   pages: [],
   page: 0,
@@ -33,3 +35,9 @@ export const WizardFormContext = createContext<IWizFormContext>({
     return true;
   },
 });
+
+
+export interface IMdlContext {
+  modalId:string;
+}
+export const MdlContext = createContext<IMdlContext>({  modalId:''});

@@ -8,7 +8,6 @@
         "**/Thumbs.db": true,
         "apps/di-boards-e2e": true,
         "apps/.gitkeep": true,
-        "apps/di-boards/tsconfig.app.json": true,
         "apps/di-boards/.babelrc": true,
         "apps/di-boards/.browserslistrc": true,
         "apps/di-boards/jest.config.js": true,
@@ -60,7 +59,6 @@
     "hide-files.files": [
         "apps/di-boards-e2e",
         "apps/.gitkeep",
-        "apps/di-boards/tsconfig.app.json",
         "apps/di-boards/.babelrc",
         "apps/di-boards/.browserslistrc",
         "apps/di-boards/jest.config.js",

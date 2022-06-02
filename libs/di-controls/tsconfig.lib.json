@@ -32,7 +32,8 @@
     "./src/lib/composite/ContactDetails.tsx",
     "./src/lib/composite/UserName.tsx",
     "./src/lib/controls/TableCmdBar.tsx",
-    "./src/lib/data/dynamic/DynFormGroup.tsx"
+    "./src/lib/data/dynamic/DynFormGroup.tsx",
+    "./src/lib/dynamic/LookupControl.tsx"
   ],
   "exclude": [
     "**/*.spec.ts",

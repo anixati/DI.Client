@@ -37,3 +37,9 @@ export interface IComponent {
   error?: Error;
 }
 
+
+export interface ISelectedItem {
+  value: number;
+  label: string;
+  route?: string;
+}

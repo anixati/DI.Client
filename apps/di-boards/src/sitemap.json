@@ -9,6 +9,11 @@
                     "route": "/dashboard",
                     "label": "Dashboard"
                 },
+                {
+                    "route": "/boards",
+                    "label": "Board's"
+                },
+               
                  {
                     "route": "",
                     "label": "Contacts",
@@ -26,7 +31,12 @@
                             "label": "Secretaries"
                         }
                     ]
+                },
+                {
+                    "route": "/portfolios",
+                    "label": "Portfolio's"
                 }
+                
                 
             ]
         },
@@ -85,16 +95,8 @@
                             "label": "Teams"
                         }
                     ]
-                },
-                {
-                    "label": "Reference Data",
-                    "links": [
-                        {
-                            "route": "/portfolios",
-                            "label": "Portfolios"
-                        }
-                    ]
                 }
+                
             ]
         }
     ],

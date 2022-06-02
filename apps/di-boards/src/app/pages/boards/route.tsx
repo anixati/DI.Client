@@ -1,12 +1,18 @@
 import { Outlet, Route } from 'react-router-dom';
-import { AppointeeList } from './appointee/appointeeList';
 import { AppointeePage } from './appointee/appointee';
-import { ActiveBoardsPage, UpcomingPage, VacanciesPage } from './board';
+import { AppointeeList } from './appointee/appointeeList';
+import { BoardAppointmenList } from './appointments/BoardAppointmentsList';
+import { BoardsList } from './board';
+import { BoardsPage } from './board/BoardsPage';
 import { DashboardPage } from './dashboard';
-import { MinisterList } from './ministers/ministerList';
 import { MinisterPage } from './ministers/minister';
-import { SecretaryList } from './secretaries/secretaryList';
+import { MinisterList } from './ministers/ministerList';
+import { PortfolioPage } from './portfolios/portfolio';
+import { PotyfolioList } from './portfolios/portfolioList';
+import { BoardRolesList } from './roles/BoardRolesList';
 import { SecretaryPage } from './secretaries/secretary';
+import { SecretaryList } from './secretaries/secretaryList';
+
 
 export const BoardsLayout: React.FC = () => {
   return <Outlet />;
@@ -15,9 +21,19 @@ export const BoardsLayout: React.FC = () => {
 export const BoardRouteList = (
   <>
     <Route path="dashboard" element={<DashboardPage />} />
-    <Route path="active" element={<ActiveBoardsPage />} />
-    <Route path="vacancies" element={<VacanciesPage />} />
-    <Route path="upcoming" element={<UpcomingPage />} />
+    <Route path="boards">
+      <Route index={true} element={<BoardsList />} />
+      <Route path=":entityId" element={<BoardsPage />} />
+    </Route>
+    <Route path="appointments">
+      <Route index={true} element={<BoardAppointmenList />} />
+      <Route path=":entityId" element={<AppointeePage />} />
+    </Route>
+    <Route path="brdroles">
+      <Route index={true} element={<BoardRolesList />} />
+      <Route path=":entityId" element={<AppointeePage />} />
+    </Route>
+
     <Route path="appointees">
       <Route index={true} element={<AppointeeList />} />
       <Route path=":entityId" element={<AppointeePage />} />
@@ -30,6 +46,9 @@ export const BoardRouteList = (
       <Route index={true} element={<SecretaryList />} />
       <Route path=":entityId" element={<SecretaryPage />} />
     </Route>
-    <Route path="events" element={<UpcomingPage />} />
+    <Route path="portfolios">
+      <Route index={true} element={<PotyfolioList />} />
+      <Route path=":entityId" element={<PortfolioPage />} />
+    </Route>
   </>
 );

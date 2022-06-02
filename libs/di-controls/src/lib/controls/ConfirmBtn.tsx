@@ -5,17 +5,28 @@ import {} from 'tabler-icons-react';
 export interface ConfirmBtnProps extends SharedButtonProps {
   confirmTxt: string;
   btnTxt: string;
-  OnConfirm: () => void;
+  OnOk: () => void;
 }
 
 export const ConfirmBtn: React.FC<ConfirmBtnProps> = (rx) => {
   const [opened, setOpened] = useState(false);
+
+  const openPopOver = () => {
+    setOpened(true);
+  };
+  const closePopOver = () => {
+    setOpened(false);
+  };
+  const confirmYes = () => {
+    setOpened(false);
+    rx.OnOk();
+  };
   return (
     <Popover
       opened={opened}
-      onClose={() => setOpened(false)}
+      onClose={closePopOver}
       target={
-        <Button {...rx} onClick={() => setOpened(true)}>
+        <Button {...rx} onClick={openPopOver}>
           {rx.btnTxt}
         </Button>
       }
@@ -31,27 +42,15 @@ export const ConfirmBtn: React.FC<ConfirmBtnProps> = (rx) => {
     >
       <Stack>
         <Group spacing={8} position="center">
-          <Text size="lg" color="dotars" weight="bold">
+          <Text size="lg" color="dotars" weight="500">
             {rx.confirmTxt}
           </Text>
         </Group>
         <Group spacing={8} position="right">
-          <Button
-            variant="filled"
-            color="red"
-            onClick={() => {
-              setOpened(false);
-              rx.OnConfirm();
-            }}
-          >
+          <Button variant="filled" color="red" onClick={confirmYes}>
             Yes
           </Button>
-          <Button
-            variant="default"
-            onClick={() => {
-              setOpened(false);
-            }}
-          >
+          <Button variant="default" onClick={closePopOver}>
             No
           </Button>
         </Group>

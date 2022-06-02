@@ -300,7 +300,7 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
                   Enable
                 </Button>
               )}
-              {!entity.disabled && !entity.locked && <ConfirmBtn color="red" className={classes.vwbutton} style={{ marginLeft: 10 }} compact OnConfirm={onClickDelete} disabled={!canEdit} btnTxt="Delete" confirmTxt="Are you sure you want to delete?" />}
+              {!entity.disabled && !entity.locked && <ConfirmBtn color="red" className={classes.vwbutton} style={{ marginLeft: 10 }} compact OnOk={onClickDelete} disabled={!canEdit} btnTxt="Delete" confirmTxt="Are you sure you want to delete?" />}
             </Group>
           );
         }}
