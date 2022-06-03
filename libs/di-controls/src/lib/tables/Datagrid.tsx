@@ -3,7 +3,7 @@ import { ActionIcon, Alert, Anchor, Text, Box, Center, Checkbox, Group, LoadingO
 import axios from 'axios';
 import React, { createContext, forwardRef, ReactNode, useCallback, useContext, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { useQuery } from 'react-query';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { CellProps, Column, usePagination, useRowSelect, useSortBy, useTable } from 'react-table';
 import { ChevronDown, ChevronUp, Refresh, Search, Selector } from 'tabler-icons-react';
 import { ScrollContent } from '../panels';
@@ -111,12 +111,15 @@ const RowSelector = forwardRef<HTMLInputElement, IIndeterminateInputProps>(({ in
 //---------------------------------------------------COLUMNS------------------------------------------------------------
 
 const LinkCol = (def: IColumnDef): Column<any> => {
+  const location = useLocation();
+const rp= def.linkPath ? `/${def.linkPath}` : `${location.pathname}/`;
+console.log(rp,"-----")
   return {
     Header: `${def.Header}`,
     id: `${def.accessor}-link`,
     accessor: `${def.accessor}`,
     Cell: ({ row }: CellProps<any>) => (
-      <Anchor component={Link} to={`${row.original['Id']}`} size="xs">
+      <Anchor component={Link} to={`${rp}${row.original[def.linkId]}`} size="xs">
         {row.original[def.accessor]}
       </Anchor>
     ),
@@ -300,7 +303,6 @@ export const RenderDataGrid = forwardRef<SchemaListRef, RenderTableProps>((rx, r
                             <Group position="left" spacing={4}>
                               {column.render('Header')}
                             </Group>
-
                             <Group position="right" spacing={4}>
                               {column.Header !== '' && <Center className={classes.tableicon}>{column.isSorted ? column.isSortedDesc ? <ChevronUp size={14} /> : <ChevronDown size={14} /> : <Selector size={14} />}</Center>}
                             </Group>

@@ -208,8 +208,15 @@ const RenderSchemaWizard: React.FC<RenderSchemaWizardProps> = (rx) => {
     buildYupObj(fd, vs);
     return '';
   };
+
+
   useEffect(() => {
-    console.log('#########', modalId);
+    console.log('#########', values);
+
+  },[values]);
+
+  useEffect(() => {
+    
     if (page < pages.length - 1) {
       const newData = rx.schema.fields[page];
       const _valSchema = {};

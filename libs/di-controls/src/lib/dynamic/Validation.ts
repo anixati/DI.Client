@@ -12,7 +12,7 @@ export const buildYupObj = (fd: IFormSchemaField, vs: any) => {
   if (fd.rules) {
     let vdr = yupObj(fd);
     if (fd.required) vdr.required();
-    else vdr.nullable(true);
+    else vdr.nullable(true).trim();
     fd.rules.forEach((vd) => {
       const { type, data } = vd;
       if (type === 'regex') {

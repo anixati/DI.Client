@@ -39,6 +39,8 @@ export interface IColumnDef {
   type: number;
   typeCode: string | null;
   options: any;
+  linkPath: string;
+  linkId: string;
 }
 
 export interface IListResponse {

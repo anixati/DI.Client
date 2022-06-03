@@ -10,7 +10,7 @@ export const BoardsList: React.FC = () => {
 
   return (
     <PageView title="Boards" desc="" icon={<Receipt />} renderCmds={() => <SchemaWizardForm title="New Board"
-     schema="boards" onClose={onClose}  />}>
+     schema="board" onClose={onClose}  />}>
       <SchemaListTable
         ref={listRef}
         schemas={[

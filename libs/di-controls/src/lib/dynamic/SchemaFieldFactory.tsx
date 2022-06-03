@@ -1,6 +1,7 @@
 import { IFormSchemaField } from '@dotars/di-core';
 import { NumberInput, Radio, RadioGroup, Select, Textarea, TextInput } from '@mantine/core';
 import { LookupControl } from './LookupControl';
+import { PicklistControl } from './PicklistControl';
 
 export interface ISchemaFieldProps {
   field: IFormSchemaField;
@@ -29,6 +30,8 @@ export const SchemaFieldFactory = (rx: ISchemaFieldProps) => {
       return <Select required={field.required ? field.required : false} label={field.title} placeholder={`Select one option`} style={{ marginTop: 10, width: `${field?.width ? field.width - 5 : 50}%` }} value={values[rx.field.key]} error={errors[rx.field.key]} onChange={(v) => fieldChanged(rx.field.key, v)} size="xs" data={field.options} />;
     case 8:
       return <LookupControl {...rx} />;
+      case 9:
+        return <PicklistControl {...rx} />;
     default:
       return <TextInput required={field.required ? field.required : false} label={field.title} placeholder={ph} style={{ marginTop: 10, width: `${field?.width ? field.width - 5 : 50}%` }} error={errors[rx.field.key]} value={values[rx.field.key]} onChange={(e) => fieldChanged(rx.field.key, e.currentTarget.value)} size="xs" />;
   }

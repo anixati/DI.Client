@@ -1,4 +1,4 @@
-import { Outlet, Route } from 'react-router-dom';
+import { Navigate, Outlet, Route } from 'react-router-dom';
 import { AppointeePage } from './appointee/appointee';
 import { AppointeeList } from './appointee/appointeeList';
 import { BoardAppointmenList } from './appointments/BoardAppointmentsList';
@@ -13,15 +13,18 @@ import { BoardRolesList } from './roles/BoardRolesList';
 import { SecretaryPage } from './secretaries/secretary';
 import { SecretaryList } from './secretaries/secretaryList';
 
-
 export const BoardsLayout: React.FC = () => {
   return <Outlet />;
 };
 
+export const IndexPage: React.FC = () => {
+  return <Navigate to="/boards" replace />;
+};
 export const BoardRouteList = (
   <>
+    <Route path="boards" element={<IndexPage />} />
     <Route path="dashboard" element={<DashboardPage />} />
-    <Route path="boards">
+    <Route path="list">
       <Route index={true} element={<BoardsList />} />
       <Route path=":entityId" element={<BoardsPage />} />
     </Route>

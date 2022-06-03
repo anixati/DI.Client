@@ -10,7 +10,7 @@
                     "label": "Dashboard"
                 },
                 {
-                    "route": "/boards",
+                    "route": "/list",
                     "label": "Board's"
                 },
                
