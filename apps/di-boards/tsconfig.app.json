@@ -26,7 +26,8 @@
     "src/app/pages/boards/board/BoardsList.tsx",
     "./src/app/pages/boards/board/BoardsPage.tsx",
     "./src/app/pages/boards/board/BoardAppointmentsList.tsx",
-    "./src/app/pages/boards/board/BoardRolessList.tsx"
+    "./src/app/pages/boards/board/BoardRolessList.tsx",
+    "./src/app/LandingPage.tsx"
   ],
   "exclude": [
     "**/*.spec.ts",

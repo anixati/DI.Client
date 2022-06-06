@@ -23,7 +23,7 @@ export const SearchCmdBar: React.FC<SearchCmdBarProps> = (rx) => {
         </Group>
         <Group position="right" spacing={3}>
           <TextInput size="xs" placeholder="Search" icon={<Search size={14} color="#071E3E" />} value={rx.searchStr} onChange={handleSearchChange} />
-          <ActionIcon variant="filled" color="dotars" onClick={rx.OnRefresh}>
+          <ActionIcon variant="filled" color="cyan" onClick={rx.OnRefresh}>
             <Refresh size={16} />
           </ActionIcon>
           {/* <Button leftIcon={<Plus />} size="xs" variant="filled" color="indigo" onClick={rx.OnCreate}>

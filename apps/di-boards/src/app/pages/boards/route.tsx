@@ -12,6 +12,8 @@ import { PotyfolioList } from './portfolios/portfolioList';
 import { BoardRolesList } from './roles/BoardRolesList';
 import { SecretaryPage } from './secretaries/secretary';
 import { SecretaryList } from './secretaries/secretaryList';
+import { UsersList } from './users/UsersList';
+import { UsersPage } from './users/UsersPage';
 
 export const BoardsLayout: React.FC = () => {
   return <Outlet />;
@@ -52,6 +54,10 @@ export const BoardRouteList = (
     <Route path="portfolios">
       <Route index={true} element={<PotyfolioList />} />
       <Route path=":entityId" element={<PortfolioPage />} />
+    </Route>
+    <Route path="appusers">
+      <Route index={true} element={<UsersList />} />
+      <Route path=":entityId" element={<UsersPage />} />
     </Route>
   </>
 );

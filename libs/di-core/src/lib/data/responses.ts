@@ -107,6 +107,7 @@ export interface IFormSchemaField {
   width?: number;
   fields: IFormSchemaField[];
   valType: string;
+  viewId: string;
   required: boolean;
   rules?: Array<IRule>;
 }

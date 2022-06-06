@@ -381,11 +381,11 @@ const RenderSchemaWizard: React.FC<RenderSchemaWizardProps> = (rx) => {
                   pageData.fields.map((field) => {
                     switch (field.layout) {
                       case 2:
-                        return <SchemaFieldGroup key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} />;
+                        return <SchemaFieldGroup key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} disabled={false} />;
                       case 4:
                         return <Divider title={field.title} />;
                       default:
-                        return <SchemaFieldFactory key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} />;
+                        return <SchemaFieldFactory key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} disabled={false} />;
                     }
                   })}
               </ScrollArea>

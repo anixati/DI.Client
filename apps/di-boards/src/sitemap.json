@@ -35,8 +35,11 @@
                 {
                     "route": "/portfolios",
                     "label": "Portfolio's"
+                },
+                {
+                    "route": "/appusers",
+                    "label": "User's"
                 }
-                
                 
             ]
         },

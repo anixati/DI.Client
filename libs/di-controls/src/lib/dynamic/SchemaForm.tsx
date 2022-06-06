@@ -16,6 +16,7 @@ import * as Yup from 'yup';
 import { yupToFormErrors } from 'formik';
 import { showNotification } from '@mantine/notifications';
 import { useNavigate } from 'react-router-dom';
+import { SubgridControl } from './Subgrid';
 
 export interface ISchemaFormProps {
   title: string;
@@ -315,21 +316,24 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
       <LoadingOverlay visible={loading} />
       <RenderButtons />
       <Card.Section className={classes.Content} style={{ paddingTop: 25 }}>
-        <Tabs position="left" color="indigo" tabPadding="sm" active={tab} onTabChange={setTab} style={{ fontWeight: 500, minHeight: 550 }}>
+        <Tabs position="left" color="cyan" tabPadding="sm" active={tab}  
+        onTabChange={setTab} style={{ fontWeight: 500, minHeight: 550 }}>
           {tabs &&
             tabs.length > 0 &&
             tabs.map((tb) => {
               return (
-                <Tabs.Tab key={tb.title} label={tb.title} title={tb.desc} icon={<AspectRatio />}>
+                <Tabs.Tab key={tb.title} label={tb.title} title={tb.desc} >
                   {tab < tabs.length - 1 &&
                     pageData.fields.map((field) => {
                       switch (field.layout) {
                         case 2:
-                          return <SchemaFieldGroup key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} />;
+                          return <SchemaFieldGroup key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} disabled={entity.locked ||entity.disabled}/>;
                         case 4:
-                          return <Divider title={field.title} style={{ marginTop: 15 }} />;
+                          return <Divider  key={field.key} title={field.title} style={{ marginTop: 15 }} />;
+                          case 5:
+                            return <SubgridControl  key={field.key}  field={field} fieldChanged={onFieldChange} values={values} errors={errors} disabled={entity.locked ||entity.disabled}/>;
                         default:
-                          return <SchemaFieldFactory key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} />;
+                          return <SchemaFieldFactory key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} disabled={entity.locked ||entity.disabled}/>;
                       }
                     })}
                 </Tabs.Tab>

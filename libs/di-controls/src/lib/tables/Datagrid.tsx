@@ -3,12 +3,13 @@ import { ActionIcon, Alert, Anchor, Text, Box, Center, Checkbox, Group, LoadingO
 import axios from 'axios';
 import React, { createContext, forwardRef, ReactNode, useCallback, useContext, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { useQuery } from 'react-query';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import { CellProps, Column, usePagination, useRowSelect, useSortBy, useTable } from 'react-table';
 import { ChevronDown, ChevronUp, Refresh, Search, Selector } from 'tabler-icons-react';
 import { ScrollContent } from '../panels';
 import { dataUiStyles } from '../styles/Styles';
 import { RenderPagingBar } from './PagingBar';
+import { getTableData, getTableSchema, SortInfo } from './api';
 
 //---------------------------------------------CONTEXT------------------------------------------------------------------
 export type RenderMode = 'DEFAULT' | 'LOOKUP' | 'SUBGRID';
@@ -29,20 +30,17 @@ export interface SchemaListTableProps {
 export const SchemaListTable = forwardRef<SchemaListRef, SchemaListTableProps>((rx, ref) => {
   const [schema, setSchema] = useState<string>(rx.schemas[0].value);
   const [schemas] = useState<Array<SelectItem>>(rx.schemas);
-
-  const [mode, setMode] = useState<RenderMode>(rx.mode?rx.mode:'DEFAULT');
-
-  // useEffect(() => {
-
-  //   if (rx.mode) setMode(rx.mode);
-  //   else setMode('DEFAULT');
-  // }, [rx.mode]);
+  const [mode, setMode] = useState<RenderMode>(rx.mode ? rx.mode : 'DEFAULT');
+  const { entityId } = useParams();
+  useEffect(() => {
+    if (rx.mode && rx.mode === 'SUBGRID' && (entityId === undefined || entityId.length <= 0)) throw new Error('Subgrid must have valid entity id');
+  }, [rx.mode, entityId]);
   const changeSchema = (name: string) => {
     setSchema(name);
   };
   return (
     <SchemaContext.Provider value={{ mode, schema, schemas, changeSchema }}>
-      <SchemaTable ref={ref} schemaName={schema} renderCmds={rx.renderCmds} />
+      <SchemaTable ref={ref} schemaName={schema} renderCmds={rx.renderCmds} entityId={entityId}/>
     </SchemaContext.Provider>
   );
 });
@@ -54,30 +52,15 @@ export interface SchemaListRef {
   getSelectedRow(): ISelectedItem | null;
 }
 
-type SortInfo = {
-  id: string;
-  desc: boolean;
-};
-
 //----------------------------------------------------SCHEMA LOADER-----------------------------------------------------------
 export interface SchemaTableProps {
   schemaName: string;
   renderCmds?: () => ReactNode;
+  entityId?:string;
 }
 
 export const SchemaTable = forwardRef<SchemaListRef, SchemaTableProps>((rx, ref) => {
-  const fetchData = async () => {
-    try {
-      const rsp = await axios.get<IDataResponse<ITableDef>>(`/qry/schema/${rx.schemaName}`);
-      if (rsp.data.failed) throw new Error(`Failed to get ${rsp.data.messages} `);
-      if (rsp.data?.result?.schema) return rsp.data.result.schema;
-      throw new Error(`Failed to retrive `);
-    } catch (ex) {
-      throw new Error(`API error:${getErrorMsg(ex)}`);
-    }
-  };
-  const { isLoading, error, data, isSuccess } = useQuery([rx.schemaName], () => fetchData(), { keepPreviousData: false, staleTime: Infinity });
-
+  const { isLoading, error, data, isSuccess } = useQuery([rx.schemaName], async () => await getTableSchema(rx.schemaName), { keepPreviousData: false, staleTime: Infinity });
   return (
     <>
       {isLoading && <LoadingOverlay visible={true} />}
@@ -86,7 +69,7 @@ export const SchemaTable = forwardRef<SchemaListRef, SchemaTableProps>((rx, ref)
           {getErrorMsg(error)}{' '}
         </Alert>
       )}
-      {isSuccess && <RenderDataGrid ref={ref} queryKey={rx.schemaName} schema={data} renderCmds={rx.renderCmds} />}
+      {isSuccess && data && <RenderDataGrid ref={ref} queryKey={rx.schemaName} schema={data} renderCmds={rx.renderCmds} entityId={rx.entityId}/>}
     </>
   );
 });
@@ -112,8 +95,8 @@ const RowSelector = forwardRef<HTMLInputElement, IIndeterminateInputProps>(({ in
 
 const LinkCol = (def: IColumnDef): Column<any> => {
   const location = useLocation();
-const rp= def.linkPath ? `/${def.linkPath}` : `${location.pathname}/`;
-console.log(rp,"-----")
+  const rp = def.linkPath ? `/${def.linkPath}` : `${location.pathname}/`;
+  console.log(rp, '-----');
   return {
     Header: `${def.Header}`,
     id: `${def.accessor}-link`,
@@ -132,10 +115,10 @@ export interface RenderTableProps {
   queryKey: string;
   schema: ISchemaDef;
   renderCmds?: () => ReactNode;
+  entityId?:string;
 }
 
 export const RenderDataGrid = forwardRef<SchemaListRef, RenderTableProps>((rx, ref) => {
-  //function RenderDataGrid(rx: RenderTableProps): ReactElement {
   const { classes, cx } = dataUiStyles();
   const [pgSearch, setPgSearch] = useState('');
   const [loading, setLoading] = useState(false);
@@ -146,31 +129,28 @@ export const RenderDataGrid = forwardRef<SchemaListRef, RenderTableProps>((rx, r
   const [items, setItems] = useState<any[]>([]);
   const hiddenColumns: Array<string> = [];
   const { mode, schema, schemas, changeSchema } = useContext(SchemaContext);
-  //const [{pgIndex, pgSize, pgSearch, pgSort}, SetState] = useState<TableState>(initialState);
-  const QueryKey = `${rx.queryKey}`;
+  const schemaKey = `${rx.queryKey}`;
+
   const fetchData = useCallback(
     async (index: number, size: number) => {
       try {
         setLoading(true);
-        let sortBy: Array<SortInfo> = [];
+        let SortBy: Array<SortInfo> = [];
         if (pgSort.length > 0) {
-          sortBy = pgSort.map((x) => ({ id: x.id, desc: x.desc } as SortInfo));
+          SortBy = pgSort.map((x) => ({ id: x.id, desc: x.desc } as SortInfo));
         }
-        const resp = await axios.post<IGenericListResponse<any>>(`/qry/schema/${QueryKey}`, { index, size, sortBy, SearchStr: pgSearch });
-        if (resp.data?.result) {
-          const rs = resp.data?.result;
-          setPgIndex(rs.pageIndex);
-          setPgSize(rs.pageSize);
-          setPgCount(rs.pageCount);
-          setItems(resp.data?.result?.items);
-        } else throw new Error(`Failed to retrive `);
-      } catch (ex) {
-        throw new Error(`API error:${getErrorMsg(ex)}`);
+        const resp = await getTableData({ schemaKey, index, size, SortBy,entityId: rx.entityId, SearchStr: pgSearch});
+        if (resp) {
+          setPgIndex(resp.pageIndex);
+          setPgSize(resp.pageSize);
+          setPgCount(resp.pageCount);
+          setItems(resp.items);
+        }
       } finally {
         setLoading(false);
       }
     },
-    [QueryKey, pgSort, pgSearch]
+    [schemaKey, pgSort, pgSearch]
   );
 
   const memoizedColumns = useMemo(() => {
@@ -187,15 +167,16 @@ export const RenderDataGrid = forwardRef<SchemaListRef, RenderTableProps>((rx, r
     if (mode === 'LOOKUP') {
       colList = [
         {
-          id: 'selection',accessor: `id`,
-          Header: '',//({ getToggleAllRowsSelectedProps }) => <div></div>,
+          id: 'selection',
+          accessor: `id`,
+          Header: '', //({ getToggleAllRowsSelectedProps }) => <div></div>,
           Cell: ({ row }) => <RowSelector name={''} {...row.getToggleRowSelectedProps()} />,
         },
         ...colList,
       ];
     }
     return colList;
-  }, [rx.schema.columns,mode]);
+  }, [rx.schema.columns, mode]);
 
   const {
     getTableProps,
@@ -213,7 +194,7 @@ export const RenderDataGrid = forwardRef<SchemaListRef, RenderTableProps>((rx, r
     nextPage,
     previousPage,
     setPageSize,
-    state: { sortBy, pageIndex, pageSize ,selectedRowIds},
+    state: { sortBy, pageIndex, pageSize, selectedRowIds },
   } = useTable<any>(
     {
       columns: memoizedColumns,
@@ -232,7 +213,7 @@ export const RenderDataGrid = forwardRef<SchemaListRef, RenderTableProps>((rx, r
     },
     useSortBy,
     usePagination,
-    useRowSelect,
+    useRowSelect
   );
 
   useEffect(() => {
@@ -254,11 +235,10 @@ export const RenderDataGrid = forwardRef<SchemaListRef, RenderTableProps>((rx, r
     fetchData(pageIndex, pageSize);
   };
   const getSelectedRow = (): ISelectedItem | null => {
-    const rows=selectedFlatRows.map((d) => d.original);
-    if(rows &&rows.length>0 )
-    {
-      const rx=rows[0]
-      return { value: rx['Id'],  label: rx['Name']}
+    const rows = selectedFlatRows.map((d) => d.original);
+    if (rows && rows.length > 0) {
+      const rx = rows[0];
+      return { value: rx['Id'], label: rx['Name'] };
     }
     return null;
   };
@@ -279,8 +259,8 @@ export const RenderDataGrid = forwardRef<SchemaListRef, RenderTableProps>((rx, r
               {mode !== 'DEFAULT' && <Text weight={500}>{rx.schema.title}</Text>}
             </Group>
             <Group position="right" spacing={3}>
-              <TextInput size="xs" placeholder="Search" icon={<Search size={14} color="#071E3E" />} onChange={handleSearchChange} />
-              <ActionIcon variant="filled" color="dotars" onClick={refresh}>
+              <TextInput size="xs" placeholder="Search" icon={<Search size={14}  />} onChange={handleSearchChange} />
+              <ActionIcon variant="filled" color="cyan" onClick={refresh}>
                 <Refresh size={16} />
               </ActionIcon>
               {rx.renderCmds && rx.renderCmds()}

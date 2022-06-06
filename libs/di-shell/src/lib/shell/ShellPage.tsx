@@ -10,7 +10,8 @@ export const ShellPage: React.FC<SecurityCtx> = (rx) => {
     <AppShell
       styles={{
         main: {
-          background: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[1],
+          backgroundColor:theme.colors.gray[1],
+         // background: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[1],
         },
       }}
       padding={8}

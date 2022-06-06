@@ -1,12 +1,10 @@
 import { ISelectedItem } from '@dotars/di-core';
 import { ActionIcon, Button, Group, Modal, TextInput } from '@mantine/core';
+import { Console } from 'console';
 import { createRef, useEffect, useState } from 'react';
 import { Search } from 'tabler-icons-react';
 import { SchemaListRef, SchemaListTable } from '../tables';
 import { ISchemaFieldProps } from './SchemaFieldFactory';
-
-
-
 
 export const LookupControl = (rx: ISchemaFieldProps) => {
   const { field, fieldChanged, values, errors } = rx;
@@ -16,10 +14,12 @@ export const LookupControl = (rx: ISchemaFieldProps) => {
   useEffect(() => {
     const cx = values[rx.field.key];
     if (cx && cx.length > 0) {
+      console.log(cx, JSON.parse(cx), '--');
       setSelect(JSON.parse(cx));
     } else {
       setSelect(undefined);
     }
+    console.log(select, '--');
   }, [values[rx.field.key]]);
 
   const clickOn = () => {
@@ -59,6 +59,9 @@ export const LookupControl = (rx: ISchemaFieldProps) => {
       </Modal>
       <TextInput
         disabled
+        styles={{
+          disabled: { opacity: '0.9 !important', color: 'black !important' ,backgroundColor:'#f9fafb !important' },
+        }}
         required={field.required ? field.required : false}
         label={field.title}
         size="xs"
@@ -68,7 +71,7 @@ export const LookupControl = (rx: ISchemaFieldProps) => {
         value={select?.label}
         //onChange={(e) => fieldChanged(rx.field.key, e.currentTarget.value)}
         rightSection={
-          <ActionIcon size={24} radius="xs" color="dotars" variant="filled" onClick={clickOn}>
+          <ActionIcon size={18} radius="xs" color="cyan" variant="filled" onClick={clickOn} disabled={rx.disabled}>
             <Search />
           </ActionIcon>
         }

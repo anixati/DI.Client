@@ -22,7 +22,7 @@ export const TableCmdBar: React.FC<TableCmdBarProps> = (rx) => {
         </Group>
         <Group position="right" spacing={3}>
           <TextInput size="xs" placeholder="Search" icon={<Search size={14} color="#071E3E" />} onChange={handleSearchChange} />
-          <ActionIcon variant="filled" color="dotars" onClick={rx.OnRefresh}>
+          <ActionIcon variant="filled" color="cyan" onClick={rx.OnRefresh}>
             <Refresh size={16} />
           </ActionIcon>
           {rx.renderCmds && rx.renderCmds()}
