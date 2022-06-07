@@ -5,6 +5,7 @@ import axios from 'axios';
 import { yupToFormErrors } from 'formik';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
+import { useParams } from 'react-router-dom';
 import { AlertCircle, ChevronLeft, ChevronRight, CircleCheck, CircleDot, CircleMinus } from 'tabler-icons-react';
 import * as Yup from 'yup';
 import { ConfirmBtn } from '../controls';
@@ -17,7 +18,7 @@ import { SchemaFieldGroup } from './SchemaFieldGroup';
 import { buildYupObj } from './Validation';
 
 export interface ISchemaWizardFormProps {
-  title: string;
+  title?: string;
   schema: string;
   onClose?: () => void;
 }
@@ -26,7 +27,7 @@ export const SchemaWizardForm: React.FC<ISchemaWizardFormProps> = (rx) => {
   const { classes } = dataUiStyles();
   const modals = useModals();
   const [modalId, SetModalId] = useState<string>('');
-
+  const { entityId } = useParams();
   const queryClient = new QueryClient();
   const { isLoading, error, data, isSuccess } = useQuery([rx.schema], () => getCreateSchemaData(rx.schema), { keepPreviousData: false, staleTime: Infinity });
 
@@ -39,7 +40,7 @@ export const SchemaWizardForm: React.FC<ISchemaWizardFormProps> = (rx) => {
       withCloseButton: false,
       closeOnClickOutside: false,
       closeOnEscape: false,
-      zIndex:100,
+      zIndex: 100,
       onClose: () => {
         if (rx.onClose) rx.onClose();
       },
@@ -53,8 +54,8 @@ export const SchemaWizardForm: React.FC<ISchemaWizardFormProps> = (rx) => {
               </Alert>
             )}
             {isSuccess && (
-              <MdlContext.Provider value={{modalId}}>
-                <RenderSchemaWizard schemaKey={rx.schema} schema={data} modalId={modalId} title={rx.title} />
+              <MdlContext.Provider value={{ modalId }}>
+                <RenderSchemaWizard schemaKey={rx.schema} schema={data} modalId={modalId} title={rx.title} entityId={entityId}/>
               </MdlContext.Provider>
             )}
           </>
@@ -66,7 +67,7 @@ export const SchemaWizardForm: React.FC<ISchemaWizardFormProps> = (rx) => {
   };
 
   return (
-    <Button variant="filled" color="dotars" className={classes.toolButton} onClick={() => openWizard()}>
+    <Button size="xs" variant="filled" color="dotars" className={classes.toolButton} onClick={() => openWizard()}>
       {rx.title}
     </Button>
   );
@@ -179,10 +180,11 @@ const WizardNavBar: React.FC = () => {
 };
 
 interface RenderSchemaWizardProps {
-  title: string;
+  title?: string;
   schemaKey: string;
   schema: IFormSchema;
   modalId: string;
+  entityId?:string;
 }
 
 const RenderSchemaWizard: React.FC<RenderSchemaWizardProps> = (rx) => {
@@ -197,6 +199,7 @@ const RenderSchemaWizard: React.FC<RenderSchemaWizardProps> = (rx) => {
   const [pageData, setPageData] = useState<IFormSchemaField>(rx.schema.fields[page]);
   const [valSchema, setValSchema] = useState({});
   const [modalId] = useState<string>(rx.modalId);
+ 
   const [pages] = useState<Array<PageInfo>>(() => {
     const pages = rx.schema.fields.map((x) => ({ id: x.key, title: x.title, desc: x.description, state: 'INIT' } as PageInfo));
     return [...pages, { id: 'summary', title: 'Summary', desc: 'Review and submit', state: 'INIT' }];
@@ -209,14 +212,7 @@ const RenderSchemaWizard: React.FC<RenderSchemaWizardProps> = (rx) => {
     return '';
   };
 
-
   useEffect(() => {
-    console.log('#########', values);
-
-  },[values]);
-
-  useEffect(() => {
-    
     if (page < pages.length - 1) {
       const newData = rx.schema.fields[page];
       const _valSchema = {};
@@ -293,7 +289,9 @@ const RenderSchemaWizard: React.FC<RenderSchemaWizardProps> = (rx) => {
   const submitData = useCallback(async () => {
     try {
       setLoading(true);
-      const resp = await axios.post<IApiResponse>(`/forms/create`, { schema: rx.schemaKey, data: values });
+      const payLoad = { schema: rx.schemaKey, data: values, entityId:rx.entityId };
+      console.log(payLoad,'##')
+      const resp = await axios.post<IApiResponse>(`/forms/create`, payLoad);
       if (resp.data.failed || resp.data.result === null) {
         if (resp.data.result == null) setApiError('No response received');
         else setApiError(`${resp.data.messages}`);

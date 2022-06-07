@@ -4,15 +4,17 @@ import * as Yup from 'yup';
 const yupObj = (fd: IFormSchemaField) => {
   switch (fd.fieldType) {
     default:
-      return Yup.string();
+      {
+        if (fd.required)  return Yup.string().nullable().required();
+        else  return Yup.string().nullable().trim();
+      }
   }
 };
 
 export const buildYupObj = (fd: IFormSchemaField, vs: any) => {
   if (fd.rules) {
     let vdr = yupObj(fd);
-    if (fd.required) vdr.required();
-    else vdr.nullable(true).trim();
+
     fd.rules.forEach((vd) => {
       const { type, data } = vd;
       if (type === 'regex') {

@@ -34,7 +34,8 @@
     "./src/lib/controls/TableCmdBar.tsx",
     "./src/lib/data/dynamic/DynFormGroup.tsx",
     "./src/lib/dynamic/LookupControl.tsx",
-    "./src/lib/dynamic/PicklistControl.tsx"
+    "./src/lib/dynamic/PicklistControl.tsx",
+    "./src/lib/dynamic/DatePickerControl.tsx"
   ],
   "exclude": [
     "**/*.spec.ts",

@@ -4,7 +4,7 @@ import * as jpatch from 'fast-json-patch';
 import { hasOwnProperty } from 'fast-json-patch/module/helpers';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { QueryClient, QueryClientProvider, useQuery, useQueryClient } from 'react-query';
-import { AlertOctagon, AspectRatio } from 'tabler-icons-react';
+import { AlertOctagon, AspectRatio, Bookmark, Photo } from 'tabler-icons-react';
 import { ConfirmBtn, PanelHeader } from '../controls';
 import { panelStyles } from '../styles';
 import { getViewSchemaData, submitChangeForm, submiUpdateForm } from './api';
@@ -140,6 +140,11 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
       setCurrent(cp);
     }
   }, [tab, tabs]);
+
+
+  useEffect(() => {
+    console.log(values,"--");
+  }, [values]);
   /* #endregion */
 
   /* #region  Events */
@@ -322,7 +327,7 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
             tabs.length > 0 &&
             tabs.map((tb) => {
               return (
-                <Tabs.Tab key={tb.title} label={tb.title} title={tb.desc} >
+                <Tabs.Tab key={tb.title} label={tb.title} title={tb.desc} icon={<Bookmark size={16} />}>
                   {tab < tabs.length - 1 &&
                     pageData.fields.map((field) => {
                       switch (field.layout) {

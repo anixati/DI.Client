@@ -1,7 +1,7 @@
 import { Navigate, Outlet, Route } from 'react-router-dom';
 import { AppointeePage } from './appointee/appointee';
 import { AppointeeList } from './appointee/appointeeList';
-import { BoardAppointmenList } from './appointments/BoardAppointmentsList';
+import { BoardAppointmentList, BoardAppointmentPage } from './appointments/BoardAppointmentsList';
 import { BoardsList } from './board';
 import { BoardsPage } from './board/BoardsPage';
 import { DashboardPage } from './dashboard';
@@ -9,7 +9,7 @@ import { MinisterPage } from './ministers/minister';
 import { MinisterList } from './ministers/ministerList';
 import { PortfolioPage } from './portfolios/portfolio';
 import { PotyfolioList } from './portfolios/portfolioList';
-import { BoardRolesList } from './roles/BoardRolesList';
+import { BoardRolePage, BoardRolesList } from './roles/BoardRolesList';
 import { SecretaryPage } from './secretaries/secretary';
 import { SecretaryList } from './secretaries/secretaryList';
 import { UsersList } from './users/UsersList';
@@ -31,12 +31,12 @@ export const BoardRouteList = (
       <Route path=":entityId" element={<BoardsPage />} />
     </Route>
     <Route path="appointments">
-      <Route index={true} element={<BoardAppointmenList />} />
-      <Route path=":entityId" element={<AppointeePage />} />
+      <Route index={true} element={<BoardAppointmentList />} />
+      <Route path=":entityId" element={<BoardAppointmentPage />} />
     </Route>
     <Route path="brdroles">
       <Route index={true} element={<BoardRolesList />} />
-      <Route path=":entityId" element={<AppointeePage />} />
+      <Route path=":entityId" element={<BoardRolePage />} />
     </Route>
 
     <Route path="appointees">

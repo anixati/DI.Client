@@ -82,7 +82,6 @@ export function NavbarNested() {
   const sideNav = SiteUi.Ctx?.navigation && SiteUi.Ctx?.navigation.filter((x) => x.route === root)[0];
 
   const items = sideNav?.links && sideNav.links.map((x) => <SideNavGroup {...x} key={x.label} />);
-  console.log(root,nav,sideNav,items,'@@@@@')
   return (
     <div>
       {nav && (

@@ -67,28 +67,3 @@ export function RenderPagingBar(rx: pagingProps) {
     </Group>
   );
 }
-
-// const useStyles = createStyles((theme) => ({
-  
-// }));
-
-// export function RenderTableHeader<T extends object>(groups: Array<HeaderGroup<T>>): ReactElement {
-//   const { classes } = useStyles();
-//   console.log(groups);
-//   return (
-//     <>
-//       {groups.map((headerGroup) => {
-//         return <tr {...headerGroup.getHeaderGroupProps()}>
-//           {headerGroup.headers.map((column) => {
-//             return <th {...column.getHeaderProps(column.getSortByToggleProps())} className={classes.tableTh}>
-//               <Group position="left" spacing={4}>
-//                 {column.render('Header')}
-//                 {column.Header !== '' && <Center className={classes.tableicon}>{column.isSorted ? column.isSortedDesc ? <ChevronUp size={14} /> : <ChevronDown size={14} /> : <Selector size={14} />}</Center>}
-//               </Group>
-//             </th>;
-//           })}
-//         </tr>;
-//       })}
-//     </>
-//   );
-// }

@@ -15,8 +15,6 @@ export const BoardsList: React.FC = () => {
         ref={listRef}
         schemas={[
           { label: 'Active Boards', value: 'ActiveBoards' },
-          // { label: 'Current Vacancies', value: 'CurrentVacancies' },
-          // { label: 'Upcoming Vacancies', value: 'UpcomingVacancies' },
           { label: 'Inactive Boards', value: 'InActiveBoards' },
         ]}
       />

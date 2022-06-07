@@ -96,7 +96,6 @@ const RowSelector = forwardRef<HTMLInputElement, IIndeterminateInputProps>(({ in
 const LinkCol = (def: IColumnDef): Column<any> => {
   const location = useLocation();
   const rp = def.linkPath ? `/${def.linkPath}` : `${location.pathname}/`;
-  console.log(rp, '-----');
   return {
     Header: `${def.Header}`,
     id: `${def.accessor}-link`,

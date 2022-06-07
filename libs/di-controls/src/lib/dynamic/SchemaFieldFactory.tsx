@@ -1,7 +1,8 @@
 import { IFormSchemaField } from '@dotars/di-core';
 import { NumberInput, Select, Textarea, TextInput } from '@mantine/core';
 import { LookupControl } from './LookupControl';
-import { PicklistControl, RadioGroupControl } from './PicklistControl';
+import { DecimalControl, PicklistControl, RadioGroupControl } from './PicklistControl';
+import { DatePickerControl } from "./DatePickerControl";
 
 export interface ISchemaFieldProps {
   field: IFormSchemaField;
@@ -22,13 +23,14 @@ export const SchemaFieldFactory = (rx: ISchemaFieldProps) => {
           required={field.required ? field.required : false}
           label={field.title}
           styles={{
-            disabled: { opacity: '0.9 !important', color: 'black !important',backgroundColor:'#f9fafb !important'  },
+            disabled: { opacity: '0.9 !important', color: 'black !important', backgroundColor: '#f9fafb !important' },
           }}
           disabled={rx.disabled}
           placeholder={ph}
-          style={{ marginTop: 10 }}
+          //style={{ marginTop: 10 }}
           value={values[rx.field.key]}
           error={errors[rx.field.key]}
+          style={{ marginTop: 10, width: `98.5%` }}
           onChange={(e) => fieldChanged(rx.field.key, e.currentTarget.value)}
           size="xs"
           autosize
@@ -40,26 +42,31 @@ export const SchemaFieldFactory = (rx: ISchemaFieldProps) => {
         <NumberInput
           required={field.required ? field.required : false}
           styles={{
-            disabled: { opacity: '0.9 !important', color: 'black !important' ,backgroundColor:'#f9fafb !important' },
+            disabled: { opacity: '0.9 !important', color: 'black !important', backgroundColor: '#f9fafb !important' },
           }}
           label={field.title}
           disabled={rx.disabled}
           placeholder={field.title}
           style={{ marginTop: 10, width: `${field?.width ? field.width - 5 : 50}%` }}
-          value={values[rx.field.key]}
+          value={values[field.key]?Number(values[field.key]):undefined}
           error={errors[rx.field.key]}
           onChange={(val) => fieldChanged(rx.field.key, val)}
-          size="xs" color="cyan"
+          size="xs"
+          color="cyan"
         />
       );
     case 3:
       return <RadioGroupControl {...rx} />;
+    case 6:
+      return <DatePickerControl {...rx} />;
+    case 11:
+      return <DecimalControl {...rx} />;
     case 7:
       return (
         <Select
           required={field.required ? field.required : false}
           styles={{
-            disabled: { opacity: '0.9 !important', color: 'black !important' ,backgroundColor:'#f9fafb !important' },
+            disabled: { opacity: '0.9 !important', color: 'black !important', backgroundColor: '#f9fafb !important' },
           }}
           disabled={rx.disabled}
           label={field.title}
@@ -84,7 +91,7 @@ export const SchemaFieldFactory = (rx: ISchemaFieldProps) => {
           label={field.title}
           placeholder={ph}
           styles={{
-            disabled: { opacity: '0.9 !important', color: 'black !important',backgroundColor:'#f9fafb !important'  },
+            disabled: { opacity: '0.9 !important', color: 'black !important', backgroundColor: '#f9fafb !important' },
           }}
           style={{ marginTop: 10, width: `${field?.width ? field.width - 5 : 50}%` }}
           error={errors[rx.field.key]}

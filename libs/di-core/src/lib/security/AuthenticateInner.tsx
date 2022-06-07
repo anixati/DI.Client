@@ -17,7 +17,6 @@ export const AuthenticateInner: React.FC<SecurityCtx> = (rx) => {
     const xpath = rx.basename ? window.location.href.replace(rx.basename, '') : window.location.pathname;
     localStorage.setItem(REDIRECT_URL_KEY, xpath);
     const user = await rx.manager.getUser();
-    //console.log(user);
     if (!user || user.expired) {
       await rx.manager.removeUser();
       throw new Error('No user account');
