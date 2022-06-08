@@ -93,9 +93,9 @@ const RowSelector = forwardRef<HTMLInputElement, IIndeterminateInputProps>(({ in
 
 //---------------------------------------------------COLUMNS------------------------------------------------------------
 
-const LinkCol = (def: IColumnDef): Column<any> => {
-  const location = useLocation();
-  const rp = def.linkPath ? `/${def.linkPath}` : `${location.pathname}/`;
+const LinkCol = (def: IColumnDef,pathname:string): Column<any> => {
+  
+  const rp = def.linkPath ? `/${def.linkPath}` : `${pathname}/`;
   return {
     Header: `${def.Header}`,
     id: `${def.accessor}-link`,
@@ -152,12 +152,13 @@ export const RenderDataGrid = forwardRef<SchemaListRef, RenderTableProps>((rx, r
     [schemaKey, pgSort, pgSearch]
   );
 
+  const location = useLocation();
   const memoizedColumns = useMemo(() => {
     let colList = rx.schema.columns.map((x) => {
       if (x.type === 1) hiddenColumns.push(x.accessor);
       if (x.type === 2) {
         hiddenColumns.push(x.accessor);
-        return LinkCol(x);
+        return LinkCol(x,location.pathname);
       } else {
         return { Header: x.Header, accessor: x.accessor, width: x.width };
       }

@@ -1,7 +1,9 @@
 import { IFormSchemaField } from '@dotars/di-core';
 import { NumberInput, Select, Textarea, TextInput } from '@mantine/core';
 import { LookupControl } from './LookupControl';
-import { DecimalControl, PicklistControl, RadioGroupControl } from './PicklistControl';
+import { PicklistControl } from './PicklistControl';
+import { DecimalControl } from "./DecimalControl";
+import { RadioGroupControl } from "./RadioGroupControl";
 import { DatePickerControl } from "./DatePickerControl";
 
 export interface ISchemaFieldProps {

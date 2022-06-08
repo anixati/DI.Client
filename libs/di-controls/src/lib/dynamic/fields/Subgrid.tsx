@@ -1,8 +1,8 @@
 import { Group } from '@mantine/core';
 import { createRef } from 'react';
-import { SchemaListRef, SchemaListTable } from '../tables';
+import { SchemaListRef, SchemaListTable } from '../../tables';
 import { ISchemaFieldProps } from './SchemaFieldFactory';
-import { SchemaWizardForm } from './SchemaWizard';
+import { SchemaWizardForm } from '../SchemaWizard';
 
 export const SubgridControl = (rx: ISchemaFieldProps) => {
   const { field } = rx;

@@ -1,6 +1,5 @@
-import { NavLink, rootNav, SecurityCtx, SiteUi } from '@dotars/di-core';
+import { NavLink, SecurityCtx, SiteUi, useAppContext } from '@dotars/di-core';
 import { Avatar, Divider, Group, Header, Menu, Text, UnstyledButton } from '@mantine/core';
-import { useAtom } from 'jotai';
 import { User } from 'oidc-client';
 import { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -8,16 +7,17 @@ import { ChevronDown, Logout, Settings, SwitchHorizontal } from 'tabler-icons-re
 import { AppLogo } from './Logo';
 import { shellStyles } from './ShellStyles';
 
+
+
 export const HeaderNav: React.FC<SecurityCtx> = (rx) => {
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const { classes, cx } = shellStyles();
-  const [root, SetRoot] = useAtom(rootNav);
   const [user, setUser] = useState<User | null>(null);
   const location = useLocation();
+  const {setNavRoot} = useAppContext();
   useEffect(() => {
     async function getUser() {
       const user = await rx.manager?.getUser();
-      //console.log(user);
       setUser(user);
     }
     getUser();
@@ -25,12 +25,11 @@ export const HeaderNav: React.FC<SecurityCtx> = (rx) => {
 
   const navigate = useNavigate();
   const onClickLink = (route?: string) => {
-    if (route) {
-      SetRoot(route);
+    if (setNavRoot && route) {
+    
       navigate(route);
     }
   };
-
   const isCurrent = (link: NavLink): boolean => {
     if (link.route && location.pathname.startsWith(link.route)) {
       return true;
@@ -68,14 +67,12 @@ export const HeaderNav: React.FC<SecurityCtx> = (rx) => {
     <Header height={56} className={classes.header}>
       <div className={classes.inner}>
         <Group>
-          {/* <Burger opened={opened} onClick={() => toggleOpened()} size="sm" /> */}
           <AppLogo />
         </Group>
         <Group>
           <Group ml={50} spacing={5} className={classes.links}>
             {mainMenu}
           </Group>
-
           <Menu
             size={260}
             placement="end"

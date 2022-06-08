@@ -13,8 +13,8 @@ import { formStyles } from '../styles/formStyles';
 import { dataUiStyles } from '../styles/Styles';
 import { getCreateSchemaData } from './api';
 import { MdlContext, PageInfo, ResultState, WizardFormContext } from './Context';
-import { SchemaFieldFactory } from './SchemaFieldFactory';
-import { SchemaFieldGroup } from './SchemaFieldGroup';
+import { SchemaFieldFactory } from './fields/SchemaFieldFactory';
+import { SchemaFieldGroup } from './fields/SchemaFieldGroup';
 import { buildYupObj } from './Validation';
 
 export interface ISchemaWizardFormProps {

@@ -9,14 +9,14 @@ import { ConfirmBtn, PanelHeader } from '../controls';
 import { panelStyles } from '../styles';
 import { getViewSchemaData, submitChangeForm, submiUpdateForm } from './api';
 import { PageInfo, WizardFormContext } from './Context';
-import { SchemaFieldFactory } from './SchemaFieldFactory';
-import { SchemaFieldGroup } from './SchemaFieldGroup';
+import { SchemaFieldFactory } from './fields/SchemaFieldFactory';
+import { SchemaFieldGroup } from './fields/SchemaFieldGroup';
 import { buildYupObj } from './Validation';
 import * as Yup from 'yup';
 import { yupToFormErrors } from 'formik';
 import { showNotification } from '@mantine/notifications';
 import { useNavigate } from 'react-router-dom';
-import { SubgridControl } from './Subgrid';
+import { SubgridControl } from './fields/Subgrid';
 
 export interface ISchemaFormProps {
   title: string;
@@ -174,8 +174,6 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
       });
     }
     if (current) current.state = Object.values(errors).filter((x) => x !== undefined).length > 0 ? 'ERROR' : 'SUCCESS';
-    //const changeSet = jpatch.compare(initVals, values);
-    //console.log('cs', changeSet);
   };
 
   const onClickUpdate = async () => {

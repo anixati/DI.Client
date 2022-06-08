@@ -1,16 +1,12 @@
-import { AuthenticateInner, createUserManager, LoginComplete, LogoutPage, Protected, rootNav, setUserManager, useAppContext } from '@dotars/di-core';
-import { useAtom } from 'jotai';
+import { AuthenticateInner, createUserManager, LoginComplete, LogoutPage, Protected, setUserManager, useAppContext } from '@dotars/di-core';
 import { UserManager, WebStorageStateStore } from 'oidc-client';
-import React, { useEffect, useState } from 'react';
-import { Route, Routes, useLocation, useNavigationType } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Route, Routes } from 'react-router-dom';
 import { NotFoundPage, SignOutPage } from '../pages';
 import { ShellPage } from '../shell/ShellPage';
 
 export const AuthRouter: React.FC = (rx) => {
-
-
   const ctx = useAppContext();
-
 
   const [mgr] = useState<UserManager>(() => {
     const oidc_config = {
@@ -30,7 +26,6 @@ export const AuthRouter: React.FC = (rx) => {
     if (usm) setUserManager(usm);
     return usm;
   });
-
 
   // useEffect(() => {
   //   const oidc_config = {

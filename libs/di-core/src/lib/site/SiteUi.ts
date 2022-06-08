@@ -1,4 +1,3 @@
-import { atom,useAtom } from 'jotai';
 
 export interface NavLink {
   route?: string;
@@ -14,9 +13,6 @@ export class SiteSettings {
   footer?: NavLink;
 }
 
-export const rootNav = atom<string | undefined>('/');
-export const currentNav = atom<string | undefined>('/');
-export const showNavigation = atom<boolean>(true);
 
 export class SiteUi {
   settings: SiteSettings;

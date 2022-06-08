@@ -1,6 +1,6 @@
 import { PagedTable, PageView, ScrollPanel } from '@dotars/di-controls';
 import { IAuditLog, IAuditProp } from '@dotars/di-core';
-import { ActionIcon, Grid, Group, Table, Text } from '@mantine/core';
+import { ActionIcon, Button, Grid, Group, Table, Text } from '@mantine/core';
 import moment from 'moment';
 import { useState } from 'react';
 import { CellProps, Column } from 'react-table';
@@ -42,9 +42,9 @@ export const AuditsPage: React.FC = () => {
       Header: '', // No header
       id: 'edit_action', // It needs an ID
       Cell: ({ row }: CellProps<IAuditLog>) => (
-        <ActionIcon size="xs" variant="transparent" color="dotars" onClick={() => viewItem(row.original)}>
-          <Eye size={16} />
-        </ActionIcon>
+        <Button size="xs" variant="subtle" color="cyan" compact onClick={() => viewItem(row.original)}>
+         View
+        </Button>
       ),
     },
   ];

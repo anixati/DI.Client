@@ -1,14 +1,11 @@
 import React, { useCallback } from 'react';
 import Async from 'react-async';
 import { Navigate, useLocation } from 'react-router-dom';
-import { REDIRECT_URL_KEY, SecurityCtx } from './types';
-import { LogoutPage } from './Logout';
 import { AuthLoader } from './AuthLoader';
-import { useAtom } from 'jotai';
-import { rootNav } from '../site';
+import { LogoutPage } from './Logout';
+import { REDIRECT_URL_KEY, SecurityCtx } from './types';
 
 export const LoginComplete: React.FC<SecurityCtx> = (rx) => {
-  const [root, SetRoot] = useAtom(rootNav);
   const location = useLocation();
 
   const redirectTo = localStorage.getItem(REDIRECT_URL_KEY) || '/';
@@ -21,7 +18,6 @@ export const LoginComplete: React.FC<SecurityCtx> = (rx) => {
     await rx.manager.storeUser(user);
     if (redirectTo) {
       const rx = redirectTo.substring(0, redirectTo.indexOf('/', 1));
-      SetRoot(rx);
     }
 
     return user;

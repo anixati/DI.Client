@@ -1,17 +1,17 @@
-import { IApiResponse, IChangeRequest, IEntity, IGenericListResponse, NoOpResponse, useEntityContext } from '@dotars/di-core';
-import { ActionIcon, Alert, Group, Loader, Text } from '@mantine/core';
+import { getErrorMsg, IApiResponse, IChangeRequest, IEntity, NoOpResponse, useEntityContext } from '@dotars/di-core';
+import { ActionIcon, Alert, Group, LoadingOverlay, Text } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { UseFormInput, UseFormReturnType } from '@mantine/form/lib/use-form';
 import { useModals } from '@mantine/modals';
 import { showNotification } from '@mantine/notifications';
 import axios from 'axios';
 import * as jpatch from 'fast-json-patch';
-import { useAtom } from 'jotai';
-import { ReactElement, useEffect } from 'react';
-import { useAsync } from 'react-async-hook';
+import { ReactElement } from 'react';
+import { useQuery } from 'react-query';
 import { CellProps, Column } from 'react-table';
 import { AlertOctagon, CircleCheck, Edit, Eraser } from 'tabler-icons-react';
-import { FormOpType, MdlForm, showMdlForm } from '../controls';
+import { DialogForm, DialogFormProvider, FormOpType, useDialogFormContext } from '../forms/DialogForm';
+import { getCodes } from './api';
 import { DataTable } from './DataTable';
 
 export interface SubCodeTableProps<T extends IEntity> {
@@ -23,28 +23,51 @@ export interface SubCodeTableProps<T extends IEntity> {
 }
 
 export function SubCodeTable<T extends IEntity>(rx: SubCodeTableProps<T>): ReactElement {
+  const { entity } = useEntityContext();
+  const { isLoading, error, data, isSuccess, refetch } = useQuery([rx.baseUrl, entity], async () => await getCodes(rx.baseUrl, entity?.id), { keepPreviousData: false, staleTime: Infinity });
+
+  if (isLoading) return <LoadingOverlay visible={true} />;
+  if (error)
+    return (
+      <Alert title="Error!" color="red">
+        {getErrorMsg(error)}{' '}
+      </Alert>
+    );
+  const OnRefresh = () => {
+    refetch();
+  };
+
+  return (
+    <div>
+      {isSuccess && data && (
+        <DialogFormProvider>
+          <RenderTableView<T> {...rx} data={data.items as T[]} OnRefresh={OnRefresh} entity={entity} />
+        </DialogFormProvider>
+      )}
+    </div>
+  );
+}
+
+interface RenderTableProps<T extends IEntity> extends SubCodeTableProps<T> {
+  data: T[];
+  OnRefresh: () => void;
+  entity?: IEntity;
+}
+
+function RenderTableView<T extends IEntity>(rx: RenderTableProps<T>): ReactElement {
   const modals = useModals();
   const form = useForm<T>(rx.config);
-  const ectx = useEntityContext();
-
-  const [{ entity }, setMdl] = useAtom(showMdlForm);
+  const { openModel } = useDialogFormContext();
+  //if(entity === undefined) return <>.</>
+  //const [{ entity }, setMdl] = useAtom(showMdlForm);
 
   /* #region  get Table data */
-  const getCodes = async () => {
-    const request = { keyId: ectx?.entity?.id, index: 0, size: 100 };
-    const resp = await axios.post<IGenericListResponse<T>>(rx.baseUrl, request);
-    const data = resp.data;
-    if (data.failed) {
-      console.log(data);
-      showNotification({ message: `${data.messages}`, color: 'red', icon: <AlertOctagon /> });
-    }
-    return data;
-  };
-  const asyncApi = useAsync(getCodes, []);
-  useEffect(() => {
-    asyncApi.execute();
-  }, [ectx?.entity,asyncApi]);
-  
+
+  // const asyncApi = useAsync(getCodes, []);
+  // useEffect(() => {
+  //   asyncApi.execute();
+  // }, [entity, asyncApi]);
+
   /* #endregion */
 
   /* #region  Delete */
@@ -62,7 +85,7 @@ export function SubCodeTable<T extends IEntity>(rx: SubCodeTableProps<T>): React
       labels: { confirm: 'Yes', cancel: 'No' },
       confirmProps: { color: 'red' },
       onConfirm: async () => {
-        if (row.id) await deleteEntity({ name: `Delete`, id: row.id, action: 6, reason: '' }).then(() => asyncApi.execute());
+        if (row.id) await deleteEntity({ name: `Delete`, id: row.id, action: 6, reason: '' }).then(() => OnRefresh());
       },
     });
 
@@ -90,16 +113,16 @@ export function SubCodeTable<T extends IEntity>(rx: SubCodeTableProps<T>): React
   const editItem = (row: T) => {
     form.clearErrors();
     form.setValues(row);
-    setMdl({ flag: true, title: 'Update item', type: 'Update', entity: row });
+    openModel({ flag: true, title: 'Update item', type: 'Update', entity: row });
   };
   const UpdateItem = async (item: T): Promise<IApiResponse> => {
-    if (entity) {
-      const changeSet = jpatch.compare(entity, item);
+    if (rx.entity) {
+      const changeSet = jpatch.compare(rx.entity, item);
       if (Array.isArray(changeSet)) {
-        const patchResp = await axios.patch<IApiResponse>(`${rx.baseUrl}/${entity.id}`, changeSet);
+        const patchResp = await axios.patch<IApiResponse>(`${rx.baseUrl}/${rx.entity.id}`, changeSet);
         if (!patchResp.data.failed) {
           showNotification({ message: `Updated Sucessfully`, color: 'green', icon: <CircleCheck /> });
-          asyncApi.execute();
+          rx.OnRefresh();
         }
         return patchResp.data;
       }
@@ -110,36 +133,27 @@ export function SubCodeTable<T extends IEntity>(rx: SubCodeTableProps<T>): React
   const createItem = () => {
     form.clearErrors();
     form.reset();
-    setMdl({ flag: true, title: 'Create a new item', type: 'Create', entity: undefined });
+    openModel({ flag: true, title: 'Create a new item', type: 'Create', entity: undefined });
   };
 
   const CreateItem = async (item: T): Promise<IApiResponse> => {
     const response = await axios.post<IApiResponse>(`${rx.baseUrl}/create`, item);
     if (!response.data.failed) {
       showNotification({ message: `Created Sucessfully`, color: 'green', icon: <CircleCheck /> });
-      asyncApi.execute();
+      rx.OnRefresh();
     }
     return response.data;
   };
-
+  const OnRefresh = () => {
+    rx.OnRefresh();
+  };
   return (
-    <div>
-      <MdlForm form={form} processItem={processItem}>
+    <>
+      <DialogForm form={form} processItem={processItem}>
         {rx.renderForm(form)}
-      </MdlForm>
-      {ectx && ectx.entity && (
-        <>
-          {asyncApi.loading && <Loader />}
-          {asyncApi.error && (
-            <Alert title="Error!" color="red">
-              {asyncApi.error.message}
-            </Alert>
-          )}
-          {asyncApi.result && asyncApi.result?.result && (
-            <DataTable<T> title={rx.title} OnRefresh={() => asyncApi.execute()} OnCreate={createItem} data={asyncApi.result?.result?.items} columns={[...rx.columns, ...actionCol]} />
-          )}
-        </>
-      )}
-    </div>
+      </DialogForm>
+
+      <DataTable<T> title={rx.title} OnRefresh={OnRefresh} OnCreate={createItem} data={rx.data} columns={[...rx.columns, ...actionCol]} />
+    </>
   );
 }

@@ -2,8 +2,8 @@ import { ISelectedItem } from '@dotars/di-core';
 import { ActionIcon, Anchor, Box, Button, Group, InputWrapper, Modal } from '@mantine/core';
 import { createRef, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ClearAll, Search, X } from 'tabler-icons-react';
-import { SchemaListRef, SchemaListTable } from '../tables';
+import { Search, X } from 'tabler-icons-react';
+import { SchemaListRef, SchemaListTable } from '../../tables';
 import { ISchemaFieldProps } from './SchemaFieldFactory';
 
 export const LookupControl = (rx: ISchemaFieldProps) => {
@@ -13,7 +13,6 @@ export const LookupControl = (rx: ISchemaFieldProps) => {
   const [select, setSelect] = useState<ISelectedItem | undefined>(undefined);
   useEffect(() => {
     const cx = values[field.key];
-   
     if (cx && cx.length > 0) {
       setSelect(JSON.parse(cx));
     } else {
@@ -30,7 +29,6 @@ export const LookupControl = (rx: ISchemaFieldProps) => {
       const rv = listRef.current.getSelectedRow();
       if (rv !== null) {
         setSelect(rv);
-        console.log(rv,"rv....");
         fieldChanged(rx.field.key, JSON.stringify(rv));
         setOpened(false);
       }
@@ -91,16 +89,18 @@ export const LookupControl = (rx: ISchemaFieldProps) => {
                 </Anchor>
               )}
             </Group>
-            <Group spacing={5} position="right">
-              {select?.label && (
-                <ActionIcon size={18} radius="xs" color="cyan" onClick={clickClear} disabled={rx.disabled}>
-                  <X />
+            {!rx.disabled && (
+              <Group spacing={5} position="right">
+                {select?.label && (
+                  <ActionIcon size={18} radius="xs" color="cyan" onClick={clickClear} disabled={rx.disabled}>
+                    <X />
+                  </ActionIcon>
+                )}
+                <ActionIcon size={18} radius="xs" color="cyan" variant="filled" onClick={clickOn} disabled={rx.disabled}>
+                  <Search />
                 </ActionIcon>
-              )}
-              <ActionIcon size={18} radius="xs" color="cyan" variant="filled" onClick={clickOn} disabled={rx.disabled}>
-                <Search />
-              </ActionIcon>
-            </Group>
+              </Group>
+            )}
           </Group>
         </Box>
       </InputWrapper>

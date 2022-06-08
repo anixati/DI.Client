@@ -1,7 +1,5 @@
-import { ActionIcon, Center, createStyles, Group, NativeSelect, NumberInput, Text } from '@mantine/core';
-import { ReactElement } from 'react';
-import { HeaderGroup } from 'react-table';
-import { ChevronDown, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, ChevronUp, Selector } from 'tabler-icons-react';
+import { ActionIcon, Group, NativeSelect, NumberInput, Text } from '@mantine/core';
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'tabler-icons-react';
 
 export interface pagingProps {
   canPreviousPage: boolean;

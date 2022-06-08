@@ -1,5 +1,5 @@
-import { createContext } from "react";
-
+import { IEntity } from '@dotars/di-core';
+import { createContext, useContext, useState } from 'react';
 
 export type ResultState = 'INIT' | 'ERROR' | 'SUBMITTING' | 'SUCCESS';
 export type PageState = 'INIT' | 'ERROR' | 'CURRENT' | 'SUCCESS';
@@ -11,7 +11,7 @@ export type PageInfo = {
 };
 
 export interface IWizFormContext {
-  modalId:string;
+  modalId: string;
   processState: ResultState;
   current?: PageInfo;
   pages: Array<PageInfo>;
@@ -25,7 +25,7 @@ export interface IWizFormContext {
 }
 
 export const WizardFormContext = createContext<IWizFormContext>({
-  modalId:'',
+  modalId: '',
   processState: 'INIT',
   pages: [],
   page: 0,
@@ -36,8 +36,7 @@ export const WizardFormContext = createContext<IWizFormContext>({
   },
 });
 
-
 export interface IMdlContext {
-  modalId:string;
+  modalId: string;
 }
-export const MdlContext = createContext<IMdlContext>({  modalId:''});
+export const MdlContext = createContext<IMdlContext>({ modalId: '' });

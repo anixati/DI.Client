@@ -35,7 +35,9 @@
     "./src/lib/data/dynamic/DynFormGroup.tsx",
     "./src/lib/dynamic/LookupControl.tsx",
     "./src/lib/dynamic/PicklistControl.tsx",
-    "./src/lib/dynamic/DatePickerControl.tsx"
+    "./src/lib/dynamic/DatePickerControl.tsx",
+    "./src/lib/dynamic/fields/RadioGroupControl.tsx",
+    "./src/lib/dynamic/fields/DecimalControl.tsx"
   ],
   "exclude": [
     "**/*.spec.ts",

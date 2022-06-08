@@ -45,9 +45,9 @@ export const EntityBar: React.FC<EntityToolbarProps> = (rx) => {
   let payload: IChangeRequest;
   //const [payload, setPayload] = useState<IChangeRequest>();
 
-  useEffect(() => {
-    setDisabled(rx.disabled);
-  }, [rx]);
+  // useEffect(() => {
+  //   setDisabled(rx.disabled);
+  // }, [rx]);
 
   const changeState = async (request: IChangeRequest) => {
     const resp = await axios.post<IApiResponse>(rx.url, request);
@@ -96,7 +96,7 @@ export const EntityBar: React.FC<EntityToolbarProps> = (rx) => {
         ectx.showLoading(true);
         const id = ectx.entity.id;
         if (id) {
-          await  changeState({ id, name: 'User Action', reason: reason, action: action });
+          await changeState({ id, name: 'User Action', reason: reason, action: action });
         }
       } finally {
         ectx.showLoading(false);
@@ -140,26 +140,23 @@ export const EntityBar: React.FC<EntityToolbarProps> = (rx) => {
       labels: { confirm: 'Yes', cancel: 'No' },
       confirmProps: { color: 'red' },
       onConfirm: () => {
-              execAction(6, 'Delete entity');
+        execAction(6, 'Delete entity');
       },
     });
-
-
-  
   };
 
   return (
     <Group spacing={0} position="right">
       {rx.actions}
       {isNew && (
-        <Button  color="dotars" className={classes.button} compact onClick={onClickCreate}>
+        <Button color="dotars" className={classes.button} compact onClick={onClickCreate}>
           Create
         </Button>
       )}
       {!isNew && (
         <>
           {ectx?.entity?.isDisabled === false && ectx?.entity?.isLocked === false && (
-            <Button  color="dotars" className={classes.button} compact onClick={onClickUpdate} disabled={disabled}>
+            <Button color="dotars" className={classes.button} compact onClick={onClickUpdate} disabled={disabled}>
               Update
             </Button>
           )}

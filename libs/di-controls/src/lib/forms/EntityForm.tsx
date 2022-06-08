@@ -1,5 +1,5 @@
 import { IApiResponse, IEntity, useEntityContext } from '@dotars/di-core';
-import { Container } from '@mantine/core';
+import { Container, LoadingOverlay } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { UseFormInput, UseFormReturnType } from '@mantine/form/lib/use-form';
 import { PropsWithChildren, useEffect, useRef } from 'react';
@@ -14,36 +14,60 @@ import { dataUiStyles } from '../styles/Styles';
 
 export interface EntityFormProps<T extends IEntity> {
   baseUrl: string;
-  canLock:boolean;
+  canLock: boolean;
   config: UseFormInput<T>;
   submitData?: (values: T) => void;
   renderForm: (form: UseFormReturnType<T>) => React.ReactNode;
 }
 
 export const EntityForm = <T extends IEntity>(rx: PropsWithChildren<EntityFormProps<T>>) => {
+  const { loading, entity } = useEntityContext();
+
+  return (
+    <>
+      <RenderEntityForm entity={entity} baseUrl={rx.baseUrl} config={rx.config} renderForm={rx.renderForm} canLock={rx.canLock}>
+        {rx.children}
+      </RenderEntityForm>
+      <LoadingOverlay visible={loading} />
+    </>
+  );
+};
+
+interface RenderEntityFormProps<T extends IEntity> {
+  baseUrl: string;
+  canLock: boolean;
+  config: UseFormInput<T>;
+  submitData?: (values: T) => void;
+  renderForm: (form: UseFormReturnType<T>) => React.ReactNode;
+  entity?: IEntity;
+}
+
+const RenderEntityForm = <T extends IEntity>(rx: PropsWithChildren<RenderEntityFormProps<T>>) => {
   const { classes } = dataUiStyles();
   const form = useForm<T>(rx.config);
-  const ectx = useEntityContext();
-  const isNew = ectx?.entity === undefined;
+  const { showLoading } = useEntityContext();
+  // const isNew = entity === undefined;
+
   useEffect(() => {
-    form.clearErrors();
-    if (ectx?.entity) {
-      form.setValues(ectx.entity as T);
+    //form.clearErrors();
+    if (rx.entity) {
+      form.setValues(rx.entity as T);
     } else {
       form.reset();
     }
-  }, [form,ectx]);
+  }, [rx]);
+
   const refSub = useRef<HTMLButtonElement>(null);
 
   const handleSubmit = (values: typeof form.values) => {
     const data = values as T;
     if (data) {
       try {
-        ectx?.showLoading(true);
+        showLoading(true);
         if (data.id === 0) createItem(data);
         else UpdateItem(data);
       } finally {
-        ectx?.showLoading(false);
+        showLoading(false);
       }
     }
   };
@@ -61,7 +85,7 @@ export const EntityForm = <T extends IEntity>(rx: PropsWithChildren<EntityFormPr
     const resp = await axios.post<IApiResponse>(`${rx.baseUrl}/create`, item);
     const data = resp.data;
     if (data.failed) {
-      showNotification({  message: `${data.messages}`, color: 'red', icon: <AlertOctagon /> });
+      showNotification({ message: `${data.messages}`, color: 'red', icon: <AlertOctagon /> });
     } else {
       form.reset();
       showNotification({ message: 'Created Sucessfully!', color: 'green', icon: <CircleCheck /> });
@@ -78,18 +102,20 @@ export const EntityForm = <T extends IEntity>(rx: PropsWithChildren<EntityFormPr
     if (Object.keys(form.errors).length === 0) refSub?.current?.click();
   };
   const UpdateItem = async (item: T) => {
-    const original = ectx?.entity as T;
-    if (original) {
-      const changeSet = jpatch.compare(original, item);
-      if (Array.isArray(changeSet)) {
-        const patchResp = await axios.patch<IApiResponse>(`${rx.baseUrl}/${original.id}`, changeSet);
-        const data = patchResp.data;
-        if (data.failed) {
-          console.log(data);
-          showNotification({ autoClose: 5000, title: 'Failed to update', message: `${data.messages}`, color: 'red', icon: <AlertOctagon /> });
-        } else {
-          showNotification({ autoClose: 5000, title: 'Updated Sucessfully!', message: `${data?.result?.message}`, color: 'green', icon: <CircleCheck /> });
-          dispatch({ type: 'RELOADSELECTED', payload: item });
+    if (rx.entity) {
+      const original = rx.entity as T;
+      if (original) {
+        const changeSet = jpatch.compare(original, item);
+        if (Array.isArray(changeSet)) {
+          const patchResp = await axios.patch<IApiResponse>(`${rx.baseUrl}/${original.id}`, changeSet);
+          const data = patchResp.data;
+          if (data.failed) {
+            console.log(data);
+            showNotification({ autoClose: 5000, title: 'Failed to update', message: `${data.messages}`, color: 'red', icon: <AlertOctagon /> });
+          } else {
+            showNotification({ autoClose: 5000, title: 'Updated Sucessfully!', message: `${data?.result?.message}`, color: 'green', icon: <CircleCheck /> });
+            dispatch({ type: 'RELOADSELECTED', payload: item });
+          }
         }
       }
     }
@@ -102,7 +128,10 @@ export const EntityForm = <T extends IEntity>(rx: PropsWithChildren<EntityFormPr
         <button hidden={true} ref={refSub} type={'submit'} />
         {rx.renderForm(form)}
       </form>
-      {!isNew && <Container fluid={true} sx={{ paddingTop:10 }}>{rx.children}</Container>}
+
+      <Container fluid={true} sx={{ paddingTop: 10 }}>
+        {rx.children}
+      </Container>
     </EntityView>
   );
 };

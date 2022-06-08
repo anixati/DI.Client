@@ -10,7 +10,8 @@
     "./src/lib/shell/UserButton.tsx",
     "./src/lib/shell/LinksGroup.tsx",
     "./src/lib/shell/Footer.tsx",
-    "./src/lib/shell/useStyles.tsx"
+    "./src/lib/shell/useStyles.tsx",
+    "./src/lib/myTheme.tsx"
   ],
   "exclude": [
     "**/*.spec.ts",

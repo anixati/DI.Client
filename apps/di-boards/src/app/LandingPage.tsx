@@ -91,7 +91,7 @@ export const LandingPage: React.FC = () => {
 
         <div className={classes.controls}>
           <Button className={classes.control} size="lg" variant="default" color="gray" onClick={()=>{navigate('boards')}}>
-            Dashboard
+            Start
           </Button>
         </div>
       </div>

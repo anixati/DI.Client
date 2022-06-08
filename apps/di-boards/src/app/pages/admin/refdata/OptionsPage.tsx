@@ -40,7 +40,7 @@ function renderOptionValue(form: UseFormReturnType<OptionValue>): ReactNode {
 }
 
 const OptionDetails: React.FC = () => {
-  const ectx = useEntityContext();
+  const { entity } = useEntityContext();
   const columns: Array<Column<OptionValue>> = [
     {
       Header: 'Name',
@@ -87,15 +87,14 @@ const OptionDetails: React.FC = () => {
 
   return (
     <EntityForm baseUrl="/options" config={okConfig} renderForm={renderForm} canLock={true}>
-      {ectx && ectx.entity && <SubCodeTable<OptionValue> baseUrl="/optval" title="Optionset Values" columns={columns} 
-        config={getConfig(ectx.entity.id)} renderForm={renderOptionValue} />}
+      {entity && <SubCodeTable<OptionValue> baseUrl="/optval" title="Optionset Values" columns={columns} config={getConfig(entity.id)} renderForm={renderOptionValue} />}
     </EntityForm>
   );
 };
 
 export const OptionsPage: React.FC = () => {
   return (
-    <PageView title="Optionset Management" desc="Manage application refrence data" icon={<Receipt />}>
+    <PageView title="Optionset Management" desc="Manage application reference data" icon={<Receipt />}>
       <Grid justify="space-between">
         <Grid.Col span={4} style={{ minHeight: 280, padding: 5 }}>
           <RenderList url="/options" title="Option Sets" />

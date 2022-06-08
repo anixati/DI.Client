@@ -1,17 +1,9 @@
-import { Global, MantineProvider, MantineThemeOverride } from '@mantine/core';
+import { Global, MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { NotificationsProvider } from '@mantine/notifications';
 import { BrowserRouter } from 'react-router-dom';
+import { myTheme } from './Theme';
 import { AuthRouter } from './routes/AuthRouter';
-
-const myTheme: MantineThemeOverride = {
-  colorScheme: 'light',
-  colors: {
-    'dotars': ['#071E3E', '#071E3E', '#071E3E', '#071E3E', '#071E3E', '#071E3E', '#071E3E', '#071E3E', '#071E3E', '#071E3E'],
-  },
-  primaryColor: 'blue',
-  defaultRadius: 3,
-};
 
 export const AppMain: React.FC = (rx) => {
   return (

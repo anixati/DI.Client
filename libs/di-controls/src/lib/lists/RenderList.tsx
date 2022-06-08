@@ -1,13 +1,11 @@
 import { Alert, Badge, Card, Center, Group, Loader, ScrollArea, Table, Text, UnstyledButton } from '@mantine/core';
-import { ReactElement, useMemo, useState } from 'react';
-
+import { ReactElement, useCallback, useMemo, useState } from 'react';
 import { ICodeRecord, IDataListResponse, useEntityContext } from '@dotars/di-core';
 import axios from 'axios';
 import { useAsync } from 'react-async-hook';
 import useBus from 'use-bus';
 import { SearchCmdBar } from '../controls';
 import { dataUiStyles } from '../styles/Styles';
-
 export interface RenderListProps {
   title: string;
   url: string;
@@ -20,11 +18,14 @@ export function RenderList(rx: RenderListProps): ReactElement {
   const [, setScrolled] = useState(false);
   const entityCtx = useEntityContext();
 
-  const selectRow = (row?: ICodeRecord) => {
+  // const selectRow = (row?: ICodeRecord) => {
+  
+  // };
+  const handleClick = useCallback((row?: ICodeRecord) => {
     setSelection(row?.id);
     entityCtx?.select(row);
-  };
-
+  }, []);
+  
   /* #region  get */
   const getData = async () => (await axios.post<IDataListResponse>(rx.url, { index: 0, size: 100 })).data;
   const asyncData = useAsync(getData, []);
@@ -37,7 +38,7 @@ export function RenderList(rx: RenderListProps): ReactElement {
   useBus(
     'ONDELETE',
     () => {
-      selectRow(undefined);
+      handleClick(undefined);
       asyncData.execute();
     },
     [asyncData]
@@ -67,7 +68,7 @@ export function RenderList(rx: RenderListProps): ReactElement {
       return (
         <tr key={row.id} className={cx({ [classes.rowSelected]: selected })} >
           <td>
-            <UnstyledButton onClick={() => selectRow(row)} className={classes.linkbox}>
+            <UnstyledButton onClick={() => handleClick(row)} className={classes.linkbox}>
               <div>
                 <Group>
                   <Text size="sm" mb={3} sx={{ lineHeight: 1 }}>
@@ -79,7 +80,7 @@ export function RenderList(rx: RenderListProps): ReactElement {
                     </Badge>
                   )}
                   {row.isLocked && (
-                    <Badge color="dotars" size="xs">
+                    <Badge color="cyan" size="xs">
                       Locked
                     </Badge>
                   )}
@@ -107,7 +108,8 @@ export function RenderList(rx: RenderListProps): ReactElement {
       {asyncData.result && (
         <Card withBorder p="lg" className={classes.listView}>
           <Card.Section className={classes.cardHeader}>
-            <SearchCmdBar title={rx.title} searchStr={search} OnSearch={(v) => setSearch(v)} OnRefresh={() => asyncData.execute()} OnCreate={() => selectRow(undefined)} />
+            <SearchCmdBar title={rx.title} searchStr={search} OnSearch={(v) => setSearch(v)} OnRefresh={() => asyncData.execute()} 
+              OnCreate={() => handleClick(undefined)} />
           </Card.Section>
           <Card.Section className={classes.cardContent}>
             <ScrollArea sx={{ height: '76vh' }} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
