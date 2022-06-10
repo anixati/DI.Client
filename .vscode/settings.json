@@ -52,9 +52,11 @@
         "babel.config.json": true,
         "apps/di-boards/src/styles.scss": true,
         "apps/di-boards/src/polyfills.ts": true,
-        "apps/di-boards/src/index.html": true,
         "apps/di-boards/src/favicon.ico": true,
-        ".vscode": true
+        ".vscode": true,
+        "tools": true,
+        "dist/apps/di-boards": true,
+        "apps/di-boards/.eslintrc.json": true
     },
     "hide-files.files": [
         "apps/di-boards-e2e",
@@ -103,9 +105,11 @@
         "babel.config.json",
         "apps/di-boards/src/styles.scss",
         "apps/di-boards/src/polyfills.ts",
-        "apps/di-boards/src/index.html",
         "apps/di-boards/src/favicon.ico",
-        ".vscode"
+        ".vscode",
+        "tools",
+        "dist/apps/di-boards",
+        "apps/di-boards/.eslintrc.json"
     ],
     "workspace.isHidden": false
 }

@@ -1,15 +1,21 @@
+import { useLocalStorage } from '@mantine/hooks';
 import axios from 'axios';
 import { useCallback, useState } from 'react';
-import { NavLink, SiteUi } from '../site';
+import { NavLink } from '../data';
 import { AppSettings } from './AppSettings';
 import { AppContext, defaultAppState } from './IAppContext';
 
-export const AppProvider: React.FC<AppSettings> = (rx) => {
+export interface AppProviderProps {
+  title: string;
+  settings: AppSettings;
+}
+
+export const AppProvider: React.FC<AppProviderProps> = (rx) => {
   const [theme, setTheme] = useState(defaultAppState.theme);
   const [loading, setLoading] = useState(defaultAppState.loading);
-  const [settings, setSettings] = useState<AppSettings>({ ...rx });
+  const [settings] = useState<AppSettings>({ ...rx.settings });
 
-  axios.defaults.baseURL = rx.baseApiurl;
+  axios.defaults.baseURL = rx.settings.baseApiurl;
   const changeTheme = (name: string) => {
     setTheme(name);
   };
@@ -22,21 +28,32 @@ export const AppProvider: React.FC<AppSettings> = (rx) => {
   const notify = (msg: string) => {
     console.log(msg);
   };
+
+  const [rootNav, setRootNav] = useLocalStorage<NavLink[]>({
+    key: 'site-map',
+    defaultValue: [],
+  });
+
   const [navRoot, setRoot] = useState<string>('/');
   const setNavRoot = useCallback((route: string) => {
     setRoot(route);
-    if (SiteUi.Ctx?.navigation) {
-      const snv = SiteUi.Ctx?.navigation.filter((x) => x.route === route);
+    if (rootNav) {
+      const snv = rootNav.filter((x) => x.route === route);
       if (snv && snv.length > 0) setSideNav(snv[0]);
       else setSideNav(undefined);
     }
   }, []);
-  const [crtRoute, setCrtRoute] = useState<string>('/');
+
+  const [route, setCrntRoute] = useState<string>('/');
   const setRoute = useCallback((route: string) => {
-    setCrtRoute(route);
+    setCrntRoute(route);
   }, []);
   const [sideNav, setSideNav] = useState<NavLink | undefined>(undefined);
 
+  const logout = () => {
+    console.log('logging out ');
+    setRootNav([]);
+  };
 
   return (
     <AppContext.Provider
@@ -50,9 +67,11 @@ export const AppProvider: React.FC<AppSettings> = (rx) => {
         notify,
         navRoot,
         setNavRoot,
-        crtRoute,
+        route,
         setRoute,
+        rootNav,
         sideNav,
+        logout,
       }}
     >
       {rx.children}

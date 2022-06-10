@@ -1,4 +1,4 @@
-import { AuthenticateInner, createUserManager, LoginComplete, LogoutPage, Protected, setUserManager, useAppContext } from '@dotars/di-core';
+import { AuthenticateInner, createUserManager, LoginComplete, LogoutPage, ProtectedArea, setUserManager, useAppContext } from '@dotars/di-core';
 import { UserManager, WebStorageStateStore } from 'oidc-client';
 import React, { useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
@@ -57,9 +57,9 @@ export const AuthRouter: React.FC = (rx) => {
         path="/"
         element={
           <AuthenticateInner manager={mgr} basename={ctx.settings?.baseName}>
-            <Protected>
+            <ProtectedArea>
               <ShellPage manager={mgr} />
-            </Protected>
+            </ProtectedArea>
           </AuthenticateInner>
         }
       >

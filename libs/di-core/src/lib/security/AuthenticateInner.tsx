@@ -17,15 +17,18 @@ export const AuthenticateInner: React.FC<SecurityCtx> = (rx) => {
       await rx.manager.removeUser();
       throw new Error('No user account');
     }else{
-      const ix = xpath.indexOf('/', 1);
-      const rx = (ix>0)?xpath.substring(0, xpath.indexOf('/', 1)):xpath;
+     // const ix = xpath.indexOf('/', 1);
+      //const rx = (ix>0)?xpath.substring(0, xpath.indexOf('/', 1)):xpath;
     }
     return user;
   }, [rx]);
 
   return (
     <Async promiseFn={login} key="user">
-      <Async.Resolved<User>>{(user) => <OidcProvider user={user}>{rx.children}</OidcProvider>}</Async.Resolved>
+      <Async.Resolved<User>>{(user) => (
+      <OidcProvider user={user}>
+        {rx.children}
+        </OidcProvider>)}</Async.Resolved>
       <Async.Loading>
         <AuthLoader msg="loading..." />
       </Async.Loading>

@@ -62,8 +62,8 @@ export const shellStyles = createStyles((theme) => ({
 
   linkActive: {
     '&, &:hover': {
-      backgroundColor: 'white',//theme.colorScheme === 'dark' ? theme.fn.rgba(theme.colors[theme.primaryColor][9], 0.25) : theme.colors[theme.primaryColor][0],
-      color: theme.colors[theme.primaryColor][theme.colorScheme === 'dark' ? 3 : 9],
+      backgroundColor: '#071E3E',
+      color:'white'
     },
   },
 
@@ -132,15 +132,15 @@ export const shellStyles = createStyles((theme) => ({
 
   navbar_controlActive: {
     '&, &:hover': {
-      backgroundColor: theme.colorScheme === 'dark' ? theme.fn.rgba(theme.colors[theme.primaryColor][9], 0.25) : theme.colors[theme.primaryColor][0],
-      color: theme.colors[theme.primaryColor][theme.colorScheme === 'dark' ? 3 : 7],
+      backgroundColor: '#071E3E',
+      color:'white'
     },
   },
 
   navbar_linkActive: {
     '&, &:hover': {
-      backgroundColor: theme.colorScheme === 'dark' ? theme.fn.rgba(theme.colors[theme.primaryColor][9], 0.25) : theme.colors[theme.primaryColor][0],
-      color: theme.colors[theme.primaryColor][theme.colorScheme === 'dark' ? 3 : 7],
+      backgroundColor: '#071E3E',
+      color:'white'
     },
   },
 

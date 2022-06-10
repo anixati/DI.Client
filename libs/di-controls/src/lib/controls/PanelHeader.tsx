@@ -20,10 +20,10 @@ export const PanelHeader: React.FC<PanelHeaderProps> = (rx) => {
     <Card.Section className={classes.Header}>
       <Group spacing="sm" position="apart">
         <Group spacing={0} position="left">
-          <ActionIcon size="xl" onClick={()=>{navigate(-1)}}>
+          <ActionIcon size="xl" variant="hover" color="cyan" onClick={()=>{navigate(-1)}}>
             <ArrowLeft />
           </ActionIcon>
-          <Avatar
+          {/* <Avatar
             styles={{
               root: { color: '#071E3E' },
               image: { color: '#071E3E' },
@@ -34,7 +34,7 @@ export const PanelHeader: React.FC<PanelHeaderProps> = (rx) => {
             size={45}
           >
             {rx.icon}
-          </Avatar>
+          </Avatar> */}
           <div style={{marginLeft:10}}>
             <Text size="sm" color="dotars" weight={500}>
               {rx.title}

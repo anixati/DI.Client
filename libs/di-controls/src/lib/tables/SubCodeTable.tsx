@@ -1,5 +1,5 @@
 import { getErrorMsg, IApiResponse, IChangeRequest, IEntity, NoOpResponse, useEntityContext } from '@dotars/di-core';
-import { ActionIcon, Alert, Group, LoadingOverlay, Text } from '@mantine/core';
+import { ActionIcon, Alert, Button, Group, LoadingOverlay, Text } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { UseFormInput, UseFormReturnType } from '@mantine/form/lib/use-form';
 import { useModals } from '@mantine/modals';
@@ -96,12 +96,18 @@ function RenderTableView<T extends IEntity>(rx: RenderTableProps<T>): ReactEleme
       id: 'edit_action',
       Cell: ({ row }: CellProps<T>) => (
         <Group spacing={1} position="right">
-          <ActionIcon variant="transparent" color="dotars" onClick={() => editItem(row.original)}>
+          <Button size="xs" variant="subtle" color="cyan" compact onClick={() => editItem(row.original)}>
+            Edit
+          </Button>
+          <Button size="xs" variant="subtle" color="red" compact onClick={() => deleteItem(row.original)}>
+            Delete
+          </Button>
+          {/* <ActionIcon variant="transparent" color="dotars" onClick={() => editItem(row.original)}>
             <Edit size={16} />
           </ActionIcon>
           <ActionIcon variant="transparent" color="red" onClick={() => deleteItem(row.original)}>
             <Eraser size={16} />
-          </ActionIcon>
+          </ActionIcon> */}
         </Group>
       ),
     },

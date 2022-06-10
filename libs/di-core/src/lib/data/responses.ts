@@ -23,6 +23,31 @@ export interface IDataResponse<T extends object> {
   result: T | null;
 }
 
+// ---- sitemap
+
+export interface NavLink {
+  route?: string;
+  icon?: string;
+  label: string;
+  desc?: string;
+  links?: Array<NavLink>;
+}
+
+export class SiteSettings {
+  logo?: string;
+  icon?: string;
+  navigation?: Array<NavLink>;
+  footer?: NavLink;
+}
+
+
+export interface ISitemap {
+  logo: string;
+  icon: string;
+  Navigation: Array<string>;
+}
+
+
 // ---- table schema
 export interface ITableDef {
   schema: ISchemaDef;

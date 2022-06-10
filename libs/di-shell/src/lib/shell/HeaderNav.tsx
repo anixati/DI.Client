@@ -1,32 +1,33 @@
-import { NavLink, SecurityCtx, SiteUi, useAppContext } from '@dotars/di-core';
+import { NavLink, useAppContext } from '@dotars/di-core';
 import { Avatar, Divider, Group, Header, Menu, Text, UnstyledButton } from '@mantine/core';
-import { User } from 'oidc-client';
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ChevronDown, Logout, Settings, SwitchHorizontal } from 'tabler-icons-react';
 import { AppLogo } from './Logo';
 import { shellStyles } from './ShellStyles';
 
+export interface HeaderNavProps {
+  userName?: string;
+  OnLogout: () => void;
+}
 
-
-export const HeaderNav: React.FC<SecurityCtx> = (rx) => {
+export const HeaderNav: React.FC<HeaderNavProps> = (rx) => {
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const { classes, cx } = shellStyles();
-  const [user, setUser] = useState<User | null>(null);
+  //const [user, setUser] = useState<User | null>(null);
   const location = useLocation();
-  const {setNavRoot} = useAppContext();
-  useEffect(() => {
-    async function getUser() {
-      const user = await rx.manager?.getUser();
-      setUser(user);
-    }
-    getUser();
-  }, [rx]);
+  const { rootNav, setNavRoot, logout } = useAppContext();
+  // useEffect(() => {
+  //   async function getUser() {
+  //     const user = await rx.manager?.getUser();
+  //     setUser(user);
+  //   }
+  //   getUser();
+  // }, [rx]);
 
   const navigate = useNavigate();
   const onClickLink = (route?: string) => {
     if (setNavRoot && route) {
-    
       navigate(route);
     }
   };
@@ -38,8 +39,8 @@ export const HeaderNav: React.FC<SecurityCtx> = (rx) => {
   };
 
   const mainMenu =
-    SiteUi.Ctx?.navigation &&
-    SiteUi.Ctx?.navigation.map(
+    rootNav &&
+    rootNav.map(
       (link) =>
         link?.route && (
           // eslint-disable-next-line jsx-a11y/anchor-is-valid
@@ -55,13 +56,6 @@ export const HeaderNav: React.FC<SecurityCtx> = (rx) => {
           </a>
         )
     );
-
-  const onLogout = useCallback(async () => {
-    await rx.manager.clearStaleState();
-    await rx.manager.revokeAccessToken();
-    await rx.manager.removeUser();
-    await rx.manager.signoutRedirect();
-  }, [rx.manager]);
 
   return (
     <Header height={56} className={classes.header}>
@@ -84,7 +78,7 @@ export const HeaderNav: React.FC<SecurityCtx> = (rx) => {
                 <Group spacing={7}>
                   <Avatar radius="xl" size={20} />
                   <Text weight={500} size="sm" sx={{ lineHeight: 1 }} mr={3}>
-                    {user?.profile?.name}
+                    {rx.userName}
                   </Text>
                   <ChevronDown size={12} />
                 </Group>
@@ -99,7 +93,7 @@ export const HeaderNav: React.FC<SecurityCtx> = (rx) => {
               color="red"
               icon={<Logout size={14} />}
               onClick={() => {
-                onLogout();
+                rx.OnLogout();
               }}
             >
               Logout

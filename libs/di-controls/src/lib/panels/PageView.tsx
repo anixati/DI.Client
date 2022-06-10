@@ -1,5 +1,5 @@
 import { EntityCtxProvider } from '@dotars/di-core';
-import { Avatar, Box, Card, Group, Text } from '@mantine/core';
+import { Card } from '@mantine/core';
 import { ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { PanelHeader } from '../controls';
@@ -12,6 +12,7 @@ export interface IPageViewProps {
 }
 export const PageView: React.FC<IPageViewProps> = (rx) => {
   const { classes } = panelStyles();
+
   const queryClient = new QueryClient();
   return (
     <QueryClientProvider client={queryClient}>
@@ -21,6 +22,6 @@ export const PageView: React.FC<IPageViewProps> = (rx) => {
           <Card.Section className={classes.Content}>{rx.children}</Card.Section>
         </Card>
       </EntityCtxProvider>
-    </QueryClientProvider>
+      </QueryClientProvider>
   );
 };

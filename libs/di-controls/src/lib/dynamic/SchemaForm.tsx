@@ -1,22 +1,22 @@
 import { getErrorMsg, IEntityState, IFormSchemaField, IFormSchemaResult } from '@dotars/di-core';
-import { Alert, Badge, Button, Card, Container, Divider, Group, LoadingOverlay, Tabs } from '@mantine/core';
+import { Alert, Badge, Button, Card, Divider, Group, LoadingOverlay, Tabs, Notification, Text } from '@mantine/core';
+import { showNotification } from '@mantine/notifications';
 import * as jpatch from 'fast-json-patch';
 import { hasOwnProperty } from 'fast-json-patch/module/helpers';
+import { yupToFormErrors } from 'formik';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
-import { QueryClient, QueryClientProvider, useQuery, useQueryClient } from 'react-query';
-import { AlertOctagon, AspectRatio, Bookmark, Photo } from 'tabler-icons-react';
+import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
+import { useNavigate } from 'react-router-dom';
+import { AlertCircle, AlertOctagon, Bookmark } from 'tabler-icons-react';
+import * as Yup from 'yup';
 import { ConfirmBtn, PanelHeader } from '../controls';
 import { panelStyles } from '../styles';
 import { getViewSchemaData, submitChangeForm, submiUpdateForm } from './api';
-import { PageInfo, WizardFormContext } from './Context';
+import { PageInfo } from './Context';
 import { SchemaFieldFactory } from './fields/SchemaFieldFactory';
 import { SchemaFieldGroup } from './fields/SchemaFieldGroup';
-import { buildYupObj } from './Validation';
-import * as Yup from 'yup';
-import { yupToFormErrors } from 'formik';
-import { showNotification } from '@mantine/notifications';
-import { useNavigate } from 'react-router-dom';
 import { SubgridControl } from './fields/Subgrid';
+import { buildYupObj } from './Validation';
 
 export interface ISchemaFormProps {
   title: string;
@@ -28,6 +28,8 @@ export interface ISchemaFormProps {
 }
 
 export const SchemaForm: React.FC<ISchemaFormProps> = (rx) => {
+  // eslint-disable-next-line react/jsx-no-useless-fragment
+  //return <>{rx.entityId && <SchemaFormView canEdit={rx.canEdit} title={rx.title} schema={rx.schema} icon={rx.icon} entityId={rx.entityId} listUrl={rx.listUrl} />}</>;
   const queryClient = new QueryClient();
   return <QueryClientProvider client={queryClient}>{rx.entityId && <SchemaFormView canEdit={rx.canEdit} title={rx.title} schema={rx.schema} icon={rx.icon} entityId={rx.entityId} listUrl={rx.listUrl} />}</QueryClientProvider>;
 };
@@ -51,17 +53,24 @@ const SchemaFormView: React.FC<ISchemaFormViewProps> = (rx) => {
     navigate(rx.listUrl, {});
   };
 
-  return (
-    <>
-      {isLoading && <LoadingOverlay visible={true} />}
-      {error && (
-        <Alert title="Error!" color="red">
-          {getErrorMsg(error)}{' '}
-        </Alert>
-      )}
-      {isSuccess && data && <RenderSchemaForm title={rx.title} schema={rx.schema} result={data} canEdit={rx.canEdit} onRefresh={refresh} goToList={backToList} />}
-    </>
-  );
+  if (isLoading) return <Notification loading title="Loading schema. please wait ..." disallowClose></Notification>;
+
+  if (error)
+    return (
+      <Notification title="Failed loading site data" disallowClose>
+        <Group position="left">
+          <AlertCircle size={32} color="red" />
+          <Text color="red" size="lg">
+            {getErrorMsg(error)}
+          </Text>
+        </Group>
+      </Notification>
+    );
+  if (isSuccess && data) {
+    return <RenderSchemaForm title={rx.title} schema={rx.schema} result={data} canEdit={rx.canEdit} onRefresh={refresh} goToList={backToList} />;
+  }
+
+  return <>.</>;
 };
 
 ///----------
@@ -84,6 +93,8 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
   const [current, setCurrent] = useState<PageInfo | undefined>(undefined);
   const [errors, setErrors] = useState<Record<string, any>>({});
   const [valSchema, setValSchema] = useState({});
+
+  console.log(rx.result.schema, tab);
   const [pageData, setPageData] = useState<IFormSchemaField>(rx.result.schema.fields[tab]);
   const initVals = useMemo<Record<string, string>>(() => {
     if (rx.result.initialValues) return rx.result.initialValues;
@@ -141,9 +152,8 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
     }
   }, [tab, tabs]);
 
-
   useEffect(() => {
-    console.log(values,"--");
+    console.log(values, '--');
   }, [values]);
   /* #endregion */
 
@@ -319,8 +329,7 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
       <LoadingOverlay visible={loading} />
       <RenderButtons />
       <Card.Section className={classes.Content} style={{ paddingTop: 25 }}>
-        <Tabs position="left" color="cyan" tabPadding="sm" active={tab}  
-        onTabChange={setTab} style={{ fontWeight: 500, minHeight: 550 }}>
+        <Tabs position="left" color="cyan" tabPadding="sm" active={tab} onTabChange={setTab} style={{ fontWeight: 500, minHeight: 550 }}>
           {tabs &&
             tabs.length > 0 &&
             tabs.map((tb) => {
@@ -330,13 +339,13 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
                     pageData.fields.map((field) => {
                       switch (field.layout) {
                         case 2:
-                          return <SchemaFieldGroup key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} disabled={entity.locked ||entity.disabled}/>;
+                          return <SchemaFieldGroup key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} disabled={entity.locked || entity.disabled} />;
                         case 4:
-                          return <Divider  key={field.key} title={field.title} style={{ marginTop: 15 }} />;
-                          case 5:
-                            return <SubgridControl  key={field.key}  field={field} fieldChanged={onFieldChange} values={values} errors={errors} disabled={entity.locked ||entity.disabled}/>;
+                          return <Divider key={field.key} title={field.title} style={{ marginTop: 15 }} />;
+                        case 5:
+                          return <SubgridControl key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} disabled={entity.locked || entity.disabled} />;
                         default:
-                          return <SchemaFieldFactory key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} disabled={entity.locked ||entity.disabled}/>;
+                          return <SchemaFieldFactory key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} disabled={entity.locked || entity.disabled} />;
                       }
                     })}
                 </Tabs.Tab>

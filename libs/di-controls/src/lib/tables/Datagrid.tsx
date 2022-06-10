@@ -2,7 +2,7 @@ import { getErrorMsg, IColumnDef, IDataResponse, IGenericListResponse, ISchemaDe
 import { ActionIcon, Alert, Anchor, Text, Box, Center, Checkbox, Group, LoadingOverlay, NativeSelect, SelectItem, Table, TextInput } from '@mantine/core';
 import axios from 'axios';
 import React, { createContext, forwardRef, ReactNode, useCallback, useContext, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
-import { useQuery } from 'react-query';
+import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import { CellProps, Column, usePagination, useRowSelect, useSortBy, useTable } from 'react-table';
 import { ChevronDown, ChevronUp, Refresh, Search, Selector } from 'tabler-icons-react';
@@ -39,6 +39,7 @@ export const SchemaListTable = forwardRef<SchemaListRef, SchemaListTableProps>((
     setSchema(name);
   };
   return (
+    
     <SchemaContext.Provider value={{ mode, schema, schemas, changeSchema }}>
       <SchemaTable ref={ref} schemaName={schema} renderCmds={rx.renderCmds} entityId={entityId}/>
     </SchemaContext.Provider>
@@ -101,7 +102,7 @@ const LinkCol = (def: IColumnDef,pathname:string): Column<any> => {
     id: `${def.accessor}-link`,
     accessor: `${def.accessor}`,
     Cell: ({ row }: CellProps<any>) => (
-      <Anchor component={Link} to={`${rp}${row.original[def.linkId]}`} size="xs">
+      <Anchor component={Link} to={`${rp}${row.original[def.linkId]}`} size="xs" color="cyan" variant="text">
         {row.original[def.accessor]}
       </Anchor>
     ),

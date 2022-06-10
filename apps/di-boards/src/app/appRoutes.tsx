@@ -1,10 +1,10 @@
 import { AppMain } from '@dotars/di-shell';
-import { Navigate, Outlet, Route } from 'react-router-dom';
+import { Outlet, Route } from 'react-router-dom';
 import { LandingPage } from './LandingPage';
 import { AdminLayout, AdminRouteList, BoardRouteList, BoardsLayout, DashboardPage, ReportLayout, ReportRouteList } from './pages';
 import { OptionsPage } from './pages/admin/refdata';
 
-export const RootLayout: React.FC = () => {
+const RootLayout: React.FC = () => {
   return <Outlet />;
 };
 

@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { NavLink } from "../site";
+import { NavLink } from "../data";
 import { AppSettings } from "./AppSettings";
 
 
@@ -13,9 +13,11 @@ export interface IAppContext {
     notify?: (msg: string) => void;
     navRoot: string;
     setNavRoot?: (route: string) => void;
-    crtRoute: string;
+    route: string;
     setRoute?: (route: string) => void;
+    rootNav?:NavLink[];
     sideNav?:NavLink;
+    logout?: () => void;
 }
 
 
@@ -23,7 +25,7 @@ export const defaultAppState: IAppContext = {
     loading: false,
     theme: "default",
     navRoot:"/",
-    crtRoute:"/"
+    route:"/"
 };
 
 export const AppContext = createContext<IAppContext>(defaultAppState);

@@ -1,4 +1,5 @@
-import { UserManagerSettings, UserManager } from 'oidc-client';
+import axios from 'axios';
+import { UserManager, UserManagerSettings } from 'oidc-client';
 
 export let userManager: UserManager;
 const RENEW_THRESHOLD = 5000;
@@ -50,9 +51,7 @@ export function getIsExpiredFromJwt(token: string) {
 
 export function getExpiresAtDateFromJwt(token: string) {
   const parsedToken = parseJwtToken(token);
-  return parsedToken && typeof parsedToken.exp !== 'undefined'
-    ? new Date(parsedToken.exp * 1000)
-    : undefined;
+  return parsedToken && typeof parsedToken.exp !== 'undefined' ? new Date(parsedToken.exp * 1000) : undefined;
 }
 
 export function setupTokenRefreshLoop(onStop: (restart: () => void) => void) {
@@ -62,9 +61,7 @@ export function setupTokenRefreshLoop(onStop: (restart: () => void) => void) {
       onStop(checkExpiryDate);
       return;
     }
-    let expiresAt =
-      user.expires_at ||
-      getExpiresAtDateFromJwt(user.access_token || user.id_token);
+    let expiresAt = user.expires_at || getExpiresAtDateFromJwt(user.access_token || user.id_token);
 
     if (expiresAt === undefined) expiresAt = Date.now();
     const timeLeftInMs = +expiresAt - Date.now();
@@ -86,11 +83,7 @@ export function setupTokenRefreshLoop(onStop: (restart: () => void) => void) {
 
 export async function getUserSilently() {
   let user = await userManager.getUser();
-  const expired =
-    !user ||
-    ((user.id_token || user.access_token) &&
-      getIsExpiredFromJwt(user.id_token || user.access_token)) ||
-    user.expired;
+  const expired = !user || ((user.id_token || user.access_token) && getIsExpiredFromJwt(user.id_token || user.access_token)) || user.expired;
   if (!user || expired) {
     user = null;
     await userManager.removeUser();
@@ -136,3 +129,15 @@ export const doLogin = async () => {
   /** keep waiting for redirection to happen */
   return new Promise((r) => {});
 };
+
+export const setBearerToken = async () => {
+  const token = await getAppToken();
+  setAuthHeader(token);
+};
+
+export const removeBearerToken = async () => {
+  setAuthHeader(null);
+};
+export function setAuthHeader(token: string | null) {
+  axios.defaults.headers.common['Authorization'] = token ? 'Bearer ' + token : '';
+}
