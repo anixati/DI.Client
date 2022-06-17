@@ -3,11 +3,14 @@ import { showNotification } from '@mantine/notifications';
 import axios from 'axios';
 import { AlertOctagon, CircleCheck } from 'tabler-icons-react';
 
-export const getCreateSchemaData = async (schemaName: string) => {
+export const getCreateSchemaData = async (schemaName: string,entityId?:string) => {
   try {
-    const rsp = await axios.get<IDataResponse<IFormSchemaResult>>(`/forms/create/${schemaName}`);
+
+    const url = (entityId !== undefined)?`/forms/create/${schemaName}/${entityId}`:`/forms/create/${schemaName}`;
+    console.log(entityId,url,'===');
+    const rsp = await axios.get<IDataResponse<IFormSchemaResult>>(url);
     if (rsp.data.failed) throw new Error(`Failed to get ${rsp.data.messages} `);
-    if (rsp.data?.result?.schema) return rsp.data.result.schema;
+    if (rsp.data?.result) return rsp.data.result;
     throw new Error(`Failed to retrieve form schema`);
   } catch (ex) {
     throw new Error(`API error:${getErrorMsg(ex)}`);

@@ -62,8 +62,8 @@ export const shellStyles = createStyles((theme) => ({
 
   linkActive: {
     '&, &:hover': {
-      backgroundColor: '#071E3E',
-      color:'white'
+      backgroundColor: 'white',
+      color:'#071E3E'
     },
   },
 

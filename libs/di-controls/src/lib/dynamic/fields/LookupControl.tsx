@@ -1,5 +1,5 @@
 import { ISelectedItem } from '@dotars/di-core';
-import { ActionIcon, Anchor, Box, Button, Group, InputWrapper, Modal } from '@mantine/core';
+import { ActionIcon, Anchor, Box, Button, Group, InputWrapper, Modal ,Text} from '@mantine/core';
 import { createRef, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, X } from 'tabler-icons-react';
@@ -28,6 +28,7 @@ export const LookupControl = (rx: ISchemaFieldProps) => {
     if (listRef.current) {
       const rv = listRef.current.getSelectedRow();
       if (rv !== null) {
+        console.log(rv,"$$$$$$")
         setSelect(rv);
         fieldChanged(rx.field.key, JSON.stringify(rv));
         setOpened(false);
@@ -35,17 +36,18 @@ export const LookupControl = (rx: ISchemaFieldProps) => {
     }
   };
   const clickClear = () => {
-    //  setOpened(false);
     setSelect(undefined);
     fieldChanged(field.key, '');
   };
+
+
   return (
     <>
       <Modal opened={opened} onClose={() => setOpened(false)} withCloseButton={false} size="60%" overlayOpacity={0.5} closeOnClickOutside={false} closeOnEscape={false}>
         <SchemaListTable
           mode="LOOKUP"
           ref={listRef}
-          schemas={[{ label: 'Select one', value: `${field.options}` }]}
+          schemas={[{ label: 'Select one', value: `${field.viewId}` }]}
           renderCmds={() => {
             return (
               <Group spacing={2}>
@@ -61,30 +63,13 @@ export const LookupControl = (rx: ISchemaFieldProps) => {
         />
       </Modal>
 
-      <InputWrapper
-        // styles={
-        //   {
-        //     //disabled: { opacity: '0.9 !important', color: 'black !important', backgroundColor: '#f9fafb !important' },
-        //   }
-        // }
-        required={field.required ? field.required : false}
-        label={field.title}
-        size="xs"
-        placeholder={`Please select ${field.title}`}
-        style={{ marginTop: 10, width: `${field?.width ? field.width - 5 : 50}%` }}
-        error={errors[rx.field.key]}
-        //  rightSection={
-        //   <ActionIcon size={18} radius="xs" color="cyan" variant="filled" onClick={clickOn} disabled={rx.disabled}>
-        //     <Search />
-        //   </ActionIcon>
-        // }
-      >
+      <InputWrapper required={field.required ? field.required : false} label={field.title} size="xs" placeholder={`Please select ${field.title}`} style={{ marginTop: 10, width: `${field?.width ? field.width - 5 : 50}%` }} error={errors[rx.field.key]}>
         <Box style={{ width: '100%', border: '1px solid #CED4DA', height: 30, lineHeight: 28, fontSize: 12, display: 'block', paddingLeft: 10, paddingRight: 10, paddingTop: 5, borderRadius: 3 }}>
           <Group spacing={1} position="apart">
-            {/* <Input  component={Link} to="/react-router" size="xs"></Input> */}
             <Group spacing={1} position="left">
+              {/* {select?.label && field.readonly && <Text size='sm'>{select.label}</Text>} */}
               {select?.label && (
-                <Anchor component={Link} to="/react-router" size="xs">
+                <Anchor component={Link} to={`${field.options}/${select.value}`} size="xs">
                   {select.label}
                 </Anchor>
               )}
@@ -104,26 +89,6 @@ export const LookupControl = (rx: ISchemaFieldProps) => {
           </Group>
         </Box>
       </InputWrapper>
-
-      {/* 
-      <TextInput
-        disabled
-        styles={{
-          disabled: { opacity: '0.9 !important', color: 'black !important', backgroundColor: '#f9fafb !important' },
-        }}
-        required={field.required ? field.required : false}
-        label={field.title}
-        size="xs"
-        placeholder={`Please select ${field.title}`}
-        style={{ marginTop: 10, width: `${field?.width ? field.width - 5 : 50}%` }}
-        error={errors[rx.field.key]}
-        value={select?.label}
-        rightSection={
-          <ActionIcon size={18} radius="xs" color="cyan" variant="filled" onClick={clickOn} disabled={rx.disabled}>
-            <Search />
-          </ActionIcon>
-        }
-      /> */}
     </>
   );
 };

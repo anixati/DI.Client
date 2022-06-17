@@ -37,7 +37,9 @@
     "./src/lib/dynamic/PicklistControl.tsx",
     "./src/lib/dynamic/DatePickerControl.tsx",
     "./src/lib/dynamic/fields/RadioGroupControl.tsx",
-    "./src/lib/dynamic/fields/DecimalControl.tsx"
+    "./src/lib/dynamic/fields/DecimalControl.tsx",
+    "./src/lib/dynamic/fields/LinkControl.tsx",
+    "./src/lib/dynamic/fields/HeaderFieldFactory.tsx"
   ],
   "exclude": [
     "**/*.spec.ts",

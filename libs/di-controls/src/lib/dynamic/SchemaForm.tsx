@@ -1,5 +1,5 @@
 import { getErrorMsg, IEntityState, IFormSchemaField, IFormSchemaResult } from '@dotars/di-core';
-import { Alert, Badge, Button, Card, Divider, Group, LoadingOverlay, Tabs, Notification, Text } from '@mantine/core';
+import { Alert, Badge, Button, Card, Divider, Group, LoadingOverlay, Tabs, Notification, Text, Avatar } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import * as jpatch from 'fast-json-patch';
 import { hasOwnProperty } from 'fast-json-patch/module/helpers';
@@ -7,13 +7,14 @@ import { yupToFormErrors } from 'formik';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
-import { AlertCircle, AlertOctagon, Bookmark } from 'tabler-icons-react';
+import { AlertCircle, AlertOctagon, Bookmark, FileDescription } from 'tabler-icons-react';
 import * as Yup from 'yup';
 import { ConfirmBtn, PanelHeader } from '../controls';
 import { panelStyles } from '../styles';
 import { getViewSchemaData, submitChangeForm, submiUpdateForm } from './api';
 import { PageInfo } from './Context';
 import { SchemaFieldFactory } from './fields/SchemaFieldFactory';
+import { HeaderFieldFactory } from './fields/HeaderFieldFactory';
 import { SchemaFieldGroup } from './fields/SchemaFieldGroup';
 import { SubgridControl } from './fields/Subgrid';
 import { buildYupObj } from './Validation';
@@ -28,8 +29,6 @@ export interface ISchemaFormProps {
 }
 
 export const SchemaForm: React.FC<ISchemaFormProps> = (rx) => {
-  // eslint-disable-next-line react/jsx-no-useless-fragment
-  //return <>{rx.entityId && <SchemaFormView canEdit={rx.canEdit} title={rx.title} schema={rx.schema} icon={rx.icon} entityId={rx.entityId} listUrl={rx.listUrl} />}</>;
   const queryClient = new QueryClient();
   return <QueryClientProvider client={queryClient}>{rx.entityId && <SchemaFormView canEdit={rx.canEdit} title={rx.title} schema={rx.schema} icon={rx.icon} entityId={rx.entityId} listUrl={rx.listUrl} />}</QueryClientProvider>;
 };
@@ -67,7 +66,12 @@ const SchemaFormView: React.FC<ISchemaFormViewProps> = (rx) => {
       </Notification>
     );
   if (isSuccess && data) {
-    return <RenderSchemaForm title={rx.title} schema={rx.schema} result={data} canEdit={rx.canEdit} onRefresh={refresh} goToList={backToList} />;
+    return <RenderSchemaForm title={rx.title} schema={rx.schema} 
+     tabs={data.schema.fields.filter((x) => x.layout === 3)}
+     headers={data.schema.fields.filter((x) => x.layout === 6)}
+     entity={data.entity}
+     initialValues={data.initialValues}
+     canEdit={rx.canEdit} onRefresh={refresh} goToList={backToList} />;
   }
 
   return <>.</>;
@@ -78,8 +82,12 @@ interface RenderSchemaFormProps {
   title: string;
   icon?: ReactNode;
   schema: string;
-  result: IFormSchemaResult;
+  entity:IEntityState;
+ // result: IFormSchemaResult;
   canEdit: boolean;
+  tabs:IFormSchemaField[],
+  headers:IFormSchemaField[],
+  initialValues?:Record<string, string>;
   onRefresh: () => void;
   goToList: () => void;
 }
@@ -94,20 +102,28 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
   const [errors, setErrors] = useState<Record<string, any>>({});
   const [valSchema, setValSchema] = useState({});
 
-  console.log(rx.result.schema, tab);
-  const [pageData, setPageData] = useState<IFormSchemaField>(rx.result.schema.fields[tab]);
+  const [pageData, setPageData] = useState<IFormSchemaField>(() => {
+    //const list = rx.result.schema.fields.filter((x) => x.layout === 3);
+    return rx.tabs[tab];
+  });
   const initVals = useMemo<Record<string, string>>(() => {
-    if (rx.result.initialValues) return rx.result.initialValues;
+    if (rx.initialValues) return rx.initialValues;
     return {};
-  }, [rx.result]);
+  }, [rx]);
   const [values, setValues] = useState<Record<string, string>>({});
   const entity = useMemo<IEntityState>(() => {
-    return rx.result.entity;
-  }, [rx.result]);
+    return rx.entity;
+  }, [rx]);
   const tabs = useMemo<Array<PageInfo>>(() => {
-    const pages = rx.result.schema.fields.map((x) => ({ id: x.key, title: x.title, desc: x.description, state: 'INIT' } as PageInfo));
+    const pages = rx.tabs.map((x) => ({ id: x.key, title: x.title, desc: x.description, state: 'INIT' } as PageInfo));
     return [...pages, { id: 'documents', title: 'Documents', desc: 'documents & links', state: 'INIT' }];
-  }, [rx.result]);
+  }, [rx]);
+
+  // const headers = useMemo<IFormSchemaField[] | undefined>(() => {
+  //   const fs = rx.result.schema.fields.filter((x) => x.layout === 6);
+  //   if (fs && fs.length > 0) return fs[0].fields;
+  //   return undefined;
+  // }, [rx.result.schema]);
   /* #endregion */
 
   /* #region  Effects */
@@ -122,8 +138,8 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
 
   useEffect(() => {
     const vs = {};
-    for (let i = 0; i < rx.result.schema.fields.length; i++) {
-      const fdList = rx.result.schema.fields[i];
+    for (let i = 0; i < rx.tabs.length; i++) {
+      const fdList = rx.tabs[i];
       setValues((cv) => {
         const newValues = fdList.fields.reduce((obj, fd) => {
           if (fd.layout === 2) {
@@ -144,7 +160,7 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
 
   useEffect(() => {
     if (tab < tabs.length - 1) {
-      const newData = rx.result.schema.fields[tab];
+      const newData = rx.tabs[tab];
       setPageData(newData);
       const cp = tabs[tab];
       cp.state = 'CURRENT';
@@ -257,33 +273,32 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
 
   /* #region  Controls */
 
+  const RenderStatus = () => {
+    return (
+      <>
+        {!entity.disabled && (
+          <Badge color="green" radius="md" variant="dot" size="xs">
+            Active
+          </Badge>
+        )}
+        {entity.disabled && (
+          <Badge color="gray" radius="md" variant="dot" size="xs">
+            Inactive
+          </Badge>
+        )}
+        {entity.locked && (
+          <Badge color="red" radius="md" variant="dot" size="xs">
+            Locked
+          </Badge>
+        )}
+      </>
+    );
+  };
+
   const RenderButtons = () => {
     return (
       <PanelHeader
-        title={entity.title}
-        desc={rx.title}
-        icon={rx.icon}
-        renderStatus={() => {
-          return (
-            <>
-              {!entity.disabled && (
-                <Badge color="green" radius="md" variant="dot" size="xs">
-                  Active
-                </Badge>
-              )}
-              {entity.disabled && (
-                <Badge color="gray" radius="md" variant="dot" size="xs">
-                  Inactive
-                </Badge>
-              )}
-              {entity.locked && (
-                <Badge color="red" radius="md" variant="dot" size="xs">
-                  Locked
-                </Badge>
-              )}
-            </>
-          );
-        }}
+        title={rx.title}
         renderCmds={() => {
           return (
             <Group spacing={0} position="right">
@@ -322,12 +337,44 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
     );
   };
 
+  const RenderHeaders = () => {
+    return (
+      // eslint-disable-next-line react/jsx-no-useless-fragment
+      <>
+        {rx.headers && rx.headers.length >0 && 
+          rx.headers[0].fields.map((fd) => {
+            return <HeaderFieldFactory key={fd.key} field={fd} fieldChanged={onFieldChange} values={values} errors={errors} disabled={true} />;
+          })}
+      </>
+    );
+  };
+
   /* #endregion */
 
   return (
     <Card withBorder className={classes.Card}>
       <LoadingOverlay visible={loading} />
       <RenderButtons />
+      <Card.Section className={classes.Header}>
+        <Group pl={20} position="apart">
+          <Group spacing={0} position="left">
+            <Avatar radius="sm" size={45}>
+              <FileDescription />
+            </Avatar>{' '}
+            <div style={{ marginLeft: 10 }}>
+              <Text size="sm" color="dotars" weight={500}>
+                {entity.title}
+              </Text>
+              <Group>
+                <RenderStatus />
+              </Group>
+            </div>
+          </Group>
+          <Group spacing={0} position="right">
+            {rx.headers && <RenderHeaders />}
+          </Group>
+        </Group>
+      </Card.Section>
       <Card.Section className={classes.Content} style={{ paddingTop: 25 }}>
         <Tabs position="left" color="cyan" tabPadding="sm" active={tab} onTabChange={setTab} style={{ fontWeight: 500, minHeight: 550 }}>
           {tabs &&

@@ -12,6 +12,7 @@ export interface ISchemaFieldProps {
   values: Record<string, any>;
   errors: Record<string, any>;
   disabled: boolean;
+  readonly?: boolean;
 }
 
 export const SchemaFieldFactory = (rx: ISchemaFieldProps) => {

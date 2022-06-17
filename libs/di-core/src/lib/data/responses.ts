@@ -127,6 +127,7 @@ export interface IFormSchemaField {
   title?: string;
   description?: string;
   disabled: boolean;
+  readonly: boolean;
   options: any;
   value: any;
   width?: number;

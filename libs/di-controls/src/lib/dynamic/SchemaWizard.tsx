@@ -2,8 +2,9 @@ import { getErrorMsg, IApiResponse, IDomainResponse, IFormSchema, IFormSchemaFie
 import { Alert, Avatar, Button, Collapse, Divider, Grid, Group, List, LoadingOverlay, ScrollArea, Table, Text, UnstyledButton } from '@mantine/core';
 import { useModals } from '@mantine/modals';
 import axios from 'axios';
+import { hasOwnProperty } from 'fast-json-patch/module/helpers';
 import { yupToFormErrors } from 'formik';
-import { useCallback, useContext, useEffect, useState } from 'react';
+import {  useCallback, useContext, useEffect, useState ,useMemo} from 'react';
 import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 import { AlertCircle, ChevronLeft, ChevronRight, CircleCheck, CircleDot, CircleMinus } from 'tabler-icons-react';
@@ -21,16 +22,15 @@ export interface ISchemaWizardFormProps {
   title?: string;
   schema: string;
   onClose?: () => void;
+  entityId?: string;
 }
 
 export const SchemaWizardForm: React.FC<ISchemaWizardFormProps> = (rx) => {
   const { classes } = dataUiStyles();
   const modals = useModals();
   const [modalId, SetModalId] = useState<string>('');
-  const { entityId } = useParams();
   const queryClient = new QueryClient();
-  const { isLoading, error, data, isSuccess } = useQuery([rx.schema], () => getCreateSchemaData(rx.schema), { keepPreviousData: false, staleTime: Infinity });
-
+  const { entityId } = useParams();
   const openWizard = () => {
     const mid = modals.openModal({
       title: `${rx.title}`,
@@ -45,21 +45,11 @@ export const SchemaWizardForm: React.FC<ISchemaWizardFormProps> = (rx) => {
         if (rx.onClose) rx.onClose();
       },
       children: (
-        <QueryClientProvider client={queryClient}>
-          <>
-            {isLoading && <LoadingOverlay visible={true} />}
-            {error && (
-              <Alert title="Error!" color="red">
-                {getErrorMsg(error)}{' '}
-              </Alert>
-            )}
-            {isSuccess && (
-              <MdlContext.Provider value={{ modalId }}>
-                <RenderSchemaWizard schemaKey={rx.schema} schema={data} modalId={modalId} title={rx.title} entityId={entityId}/>
-              </MdlContext.Provider>
-            )}
-          </>
-        </QueryClientProvider>
+        <MdlContext.Provider value={{ modalId }}>
+          <QueryClientProvider client={queryClient}>
+            <WizardView entityId={entityId} {...rx} />
+          </QueryClientProvider>
+        </MdlContext.Provider>
       ),
     });
     SetModalId(mid);
@@ -70,6 +60,23 @@ export const SchemaWizardForm: React.FC<ISchemaWizardFormProps> = (rx) => {
     <Button size="xs" variant="filled" color="dotars" className={classes.toolButton} onClick={() => openWizard()}>
       {rx.title}
     </Button>
+  );
+};
+
+const WizardView: React.FC<ISchemaWizardFormProps> = (rx) => {
+  
+  
+  const { isLoading, error, data, isSuccess } = useQuery([rx.schema], () => getCreateSchemaData(rx.schema, rx.entityId), { keepPreviousData: false, staleTime: Infinity });
+  return (
+    <>
+      {isLoading && <LoadingOverlay visible={true} />}
+      {error && (
+        <Alert title="Error!" color="red">
+          {getErrorMsg(error)}{' '}
+        </Alert>
+      )}
+      {isSuccess && <RenderSchemaWizard schemaKey={rx.schema} schema={data.schema} initialValues={data.initialValues} title={rx.title} entityId={rx.entityId} />}
+    </>
   );
 };
 
@@ -183,8 +190,9 @@ interface RenderSchemaWizardProps {
   title?: string;
   schemaKey: string;
   schema: IFormSchema;
-  modalId: string;
-  entityId?:string;
+  // modalId: string;
+  entityId?: string;
+  initialValues?:Record<string, string>;
 }
 
 const RenderSchemaWizard: React.FC<RenderSchemaWizardProps> = (rx) => {
@@ -198,17 +206,24 @@ const RenderSchemaWizard: React.FC<RenderSchemaWizardProps> = (rx) => {
   const [errors, setErrors] = useState<Record<string, any>>({});
   const [pageData, setPageData] = useState<IFormSchemaField>(rx.schema.fields[page]);
   const [valSchema, setValSchema] = useState({});
-  const [modalId] = useState<string>(rx.modalId);
- 
+  const { modalId } = useContext(MdlContext);
+
+  const initVals = useMemo<Record<string, string>>(() => {
+    if (rx.initialValues) return rx.initialValues;
+    return {};
+  }, [rx]);
   const [pages] = useState<Array<PageInfo>>(() => {
     const pages = rx.schema.fields.map((x) => ({ id: x.key, title: x.title, desc: x.description, state: 'INIT' } as PageInfo));
     return [...pages, { id: 'summary', title: 'Summary', desc: 'Review and submit', state: 'INIT' }];
   });
   const closeModal = () => {
-    modals.closeModal(rx.modalId);
+    modals.closeModal(modalId);
   };
   const getVal = (fd: IFormSchemaField, vs: any) => {
     buildYupObj(fd, vs);
+    if (hasOwnProperty(initVals, fd.key)) {
+      return `${initVals[fd.key]}`;
+    }
     return '';
   };
 
@@ -289,8 +304,8 @@ const RenderSchemaWizard: React.FC<RenderSchemaWizardProps> = (rx) => {
   const submitData = useCallback(async () => {
     try {
       setLoading(true);
-      const payLoad = { schema: rx.schemaKey, data: values, entityId:rx.entityId };
-      console.log(payLoad,'##')
+      const payLoad = { schema: rx.schemaKey, data: values, entityId: rx.entityId };
+      console.log(payLoad, '##');
       const resp = await axios.post<IApiResponse>(`/forms/create`, payLoad);
       if (resp.data.failed || resp.data.result === null) {
         if (resp.data.result == null) setApiError('No response received');
@@ -383,7 +398,7 @@ const RenderSchemaWizard: React.FC<RenderSchemaWizardProps> = (rx) => {
                       case 4:
                         return <Divider title={field.title} />;
                       default:
-                        return <SchemaFieldFactory key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} disabled={false} />;
+                        return <SchemaFieldFactory key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} disabled={field.disabled} readonly={field.readonly}/>;
                     }
                   })}
               </ScrollArea>

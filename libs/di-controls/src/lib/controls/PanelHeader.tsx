@@ -7,7 +7,7 @@ import { panelStyles } from '../styles';
 export interface PanelHeaderProps {
   title: string;
   icon?: ReactNode;
-  desc: string;
+  desc?: string;
   renderStatus?: () => ReactNode;
   renderCmds?: () => ReactNode;
 }

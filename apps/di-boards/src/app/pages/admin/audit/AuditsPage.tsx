@@ -51,7 +51,7 @@ export const AuditsPage: React.FC = () => {
 
   return (
     <PageView title="Audit Logs" desc="" icon={<Receipt />}>
-      <Grid justify="space-between" style={{ height: '85vh' }}>
+      <Grid justify="space-between" style={{  }}>
         <Grid.Col span={6} style={{ minHeight: 280, padding: 5 }}>
           <PagedTable<IAuditLog> title="Audit logs" OnCreate={createItem} columns={columns} canCreate={false} baseUrl="/audits" />
         </Grid.Col>

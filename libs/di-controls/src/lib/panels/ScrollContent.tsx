@@ -19,9 +19,9 @@ export const ScrollContent: React.FC<ElasticScrollProps> = (rx) => {
   const { classes } = useStyles();
   const { height } = useViewportSize();
   const [scrolled, setScrolled] = useState(false);
-  const [ScrollHeight, setScrollHeight] = useState(100);
+  const [ScrollHeight, setScrollHeight] = useState(10);
   useEffect(() => {
-    setScrollHeight(height - 200);
+    setScrollHeight(height - 350);
   }, [height]);
   return (
     <div className={classes.Content}>
