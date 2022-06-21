@@ -4,189 +4,17 @@ import { useModals } from '@mantine/modals';
 import axios from 'axios';
 import { hasOwnProperty } from 'fast-json-patch/module/helpers';
 import { yupToFormErrors } from 'formik';
-import {  useCallback, useContext, useEffect, useState ,useMemo} from 'react';
-import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
-import { useParams } from 'react-router-dom';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { AlertCircle, ChevronLeft, ChevronRight, CircleCheck, CircleDot, CircleMinus } from 'tabler-icons-react';
 import * as Yup from 'yup';
 import { ConfirmBtn } from '../controls';
 import { formStyles } from '../styles/formStyles';
-import { dataUiStyles } from '../styles/Styles';
-import { getCreateSchemaData } from './api';
 import { MdlContext, PageInfo, ResultState, WizardFormContext } from './Context';
 import { SchemaFieldFactory } from './fields/SchemaFieldFactory';
 import { SchemaFieldGroup } from './fields/SchemaFieldGroup';
 import { buildYupObj } from './Validation';
 
-export interface ISchemaWizardFormProps {
-  title?: string;
-  schema: string;
-  onClose?: () => void;
-  entityId?: string;
-}
-
-export const SchemaWizardForm: React.FC<ISchemaWizardFormProps> = (rx) => {
-  const { classes } = dataUiStyles();
-  const modals = useModals();
-  const [modalId, SetModalId] = useState<string>('');
-  const queryClient = new QueryClient();
-  const { entityId } = useParams();
-  const openWizard = () => {
-    const mid = modals.openModal({
-      title: `${rx.title}`,
-      centered: true,
-      size: '85%',
-      overflow: 'outside',
-      withCloseButton: false,
-      closeOnClickOutside: false,
-      closeOnEscape: false,
-      zIndex: 100,
-      onClose: () => {
-        if (rx.onClose) rx.onClose();
-      },
-      children: (
-        <MdlContext.Provider value={{ modalId }}>
-          <QueryClientProvider client={queryClient}>
-            <WizardView entityId={entityId} {...rx} />
-          </QueryClientProvider>
-        </MdlContext.Provider>
-      ),
-    });
-    SetModalId(mid);
-    setTimeout(SetModalId, 500, mid);
-  };
-
-  return (
-    <Button size="xs" variant="filled" color="dotars" className={classes.toolButton} onClick={() => openWizard()}>
-      {rx.title}
-    </Button>
-  );
-};
-
-const WizardView: React.FC<ISchemaWizardFormProps> = (rx) => {
-  
-  
-  const { isLoading, error, data, isSuccess } = useQuery([rx.schema], () => getCreateSchemaData(rx.schema, rx.entityId), { keepPreviousData: false, staleTime: Infinity });
-  return (
-    <>
-      {isLoading && <LoadingOverlay visible={true} />}
-      {error && (
-        <Alert title="Error!" color="red">
-          {getErrorMsg(error)}{' '}
-        </Alert>
-      )}
-      {isSuccess && <RenderSchemaWizard schemaKey={rx.schema} schema={data.schema} initialValues={data.initialValues} title={rx.title} entityId={rx.entityId} />}
-    </>
-  );
-};
-
-const WizardCmdBar: React.FC = () => {
-  const { classes } = formStyles();
-  const { pages, page, setPage, closeModal, canGoNext, submit, processState } = useContext(WizardFormContext);
-  const onCancel = () => {
-    if (closeModal) closeModal();
-  };
-  const onPrev = () => {
-    if (setPage) setPage(page > 1 ? page - 1 : 0);
-  };
-  const onNext = () => {
-    if (setPage && canGoNext()) setPage(page < pages.length ? page + 1 : pages.length);
-  };
-  const onSubmit = () => {
-    if (submit) submit();
-  };
-  return (
-    <div className={classes.wzFooter}>
-      <Group spacing="sm" position="apart">
-        <Group spacing={2} position="left">
-          <Button variant="default" size="xs" className={classes.wzButton} leftIcon={<ChevronLeft />} onClick={onPrev} disabled={page === 0 || processState === 'SUCCESS'}>
-            Previous
-          </Button>
-        </Group>
-        <Group spacing={2} position="center">
-          <Text size="xs" color="dimmed">
-            Step{' '}
-            <strong>
-              {page + 1} of {pages.length}
-            </strong>{' '}
-          </Text>
-        </Group>
-        <Group spacing={0} position="right">
-          <Button variant="filled" color="dotars" size="xs" className={classes.wzButton} onClick={onSubmit} disabled={page !== pages.length - 1 || processState === 'SUCCESS'}>
-            Create
-          </Button>
-          <Button variant="default" size="xs" className={classes.wzButton} rightIcon={<ChevronRight />} onClick={onNext} disabled={page === pages.length - 1}>
-            Next
-          </Button>
-          <ConfirmBtn variant="light" color="red" size="xs" style={{ marginLeft: 5 }} OnOk={onCancel} disabled={processState === 'SUCCESS'} btnTxt="Cancel" confirmTxt="Are you sure you want to cancel" />
-        </Group>
-      </Group>
-    </div>
-  );
-};
-
-const WizardNavBar: React.FC = () => {
-  const { classes, cx } = formStyles();
-  const { current, page, pages, setPage, canGoNext, processState } = useContext(WizardFormContext);
-  const onSelect = (idx: number, pg: PageInfo) => {
-    if (setPage && canGoNext()) {
-      if (setPage) setPage(idx);
-    }
-  };
-  const RenderIcon = (pi: PageInfo) => {
-    switch (pi.state) {
-      case 'CURRENT':
-        return <CircleDot color="#071E3E" />;
-      case 'ERROR':
-        return <AlertCircle color="red" />;
-      case 'SUCCESS':
-        return <CircleCheck color="green" />;
-      default:
-        return <CircleMinus />;
-    }
-  };
-  const PageStateIcon = (pi: PageInfo) => {
-    if (processState === 'SUCCESS') return <CircleCheck color="green" />;
-    if (current?.id === pi.id) return <RenderIcon {...current} />;
-    else return <RenderIcon {...pi} />;
-  };
-
-  return (
-    <div className={classes.wzNavBar}>
-      <Table verticalSpacing="xs" width={250}>
-        <tbody>
-          {pages &&
-            pages.map((pg, index) => {
-              const selected = pages[page] && pages[page].id === pg.id;
-              return (
-                <tr key={index} className={cx({ [classes.pgSelected]: selected })} style={{ padding: 0 }}>
-                  <td style={{ padding: 0 }}>
-                    <UnstyledButton onClick={() => onSelect(index, pg)} style={{ width: '100%', padding: 10 }} disabled={processState === 'SUCCESS'}>
-                      <Group spacing="sm" position="left">
-                        <Avatar radius="sm" size={25}>
-                          <PageStateIcon {...pg} />
-                        </Avatar>
-                        <div>
-                          <Text size="sm" color={selected ? 'white' : 'dotars'} weight={500}>
-                            {pg.title}
-                          </Text>
-                          <Text color={selected ? 'white' : 'dimmed'} size="xs">
-                            {pg.desc}
-                          </Text>
-                        </div>
-                      </Group>
-                    </UnstyledButton>
-                  </td>
-                </tr>
-              );
-            })}
-        </tbody>
-      </Table>
-    </div>
-  );
-};
-
-interface RenderSchemaWizardProps {
+export interface WizardFormProps {
   title?: string;
   schemaKey: string;
   schema: IFormSchema;
@@ -195,7 +23,7 @@ interface RenderSchemaWizardProps {
   initialValues?:Record<string, string>;
 }
 
-const RenderSchemaWizard: React.FC<RenderSchemaWizardProps> = (rx) => {
+export const WizardForm: React.FC<WizardFormProps> = (rx) => {
   const { classes } = formStyles();
   const modals = useModals();
   const [loading, setLoading] = useState(false);
@@ -305,7 +133,6 @@ const RenderSchemaWizard: React.FC<RenderSchemaWizardProps> = (rx) => {
     try {
       setLoading(true);
       const payLoad = { schema: rx.schemaKey, data: values, entityId: rx.entityId };
-      console.log(payLoad, '##');
       const resp = await axios.post<IApiResponse>(`/forms/create`, payLoad);
       if (resp.data.failed || resp.data.result === null) {
         if (resp.data.result == null) setApiError('No response received');
@@ -408,5 +235,112 @@ const RenderSchemaWizard: React.FC<RenderSchemaWizardProps> = (rx) => {
         </Grid.Col>
       </Grid>
     </WizardFormContext.Provider>
+  );
+};
+
+
+const WizardCmdBar: React.FC = () => {
+  const { classes } = formStyles();
+  const { pages, page, setPage, closeModal, canGoNext, submit, processState } = useContext(WizardFormContext);
+  const onCancel = () => {
+    if (closeModal) closeModal();
+  };
+  const onPrev = () => {
+    if (setPage) setPage(page > 1 ? page - 1 : 0);
+  };
+  const onNext = () => {
+    if (setPage && canGoNext()) setPage(page < pages.length ? page + 1 : pages.length);
+  };
+  const onSubmit = () => {
+    if (submit) submit();
+  };
+  return (
+    <div className={classes.wzFooter}>
+      <Group spacing="sm" position="apart">
+        <Group spacing={2} position="left">
+          <Button variant="default" size="xs" className={classes.wzButton} leftIcon={<ChevronLeft />} onClick={onPrev} disabled={page === 0 || processState === 'SUCCESS'}>
+            Previous
+          </Button>
+        </Group>
+        <Group spacing={2} position="center">
+          <Text size="xs" color="dimmed">
+            Step{' '}
+            <strong>
+              {page + 1} of {pages.length}
+            </strong>{' '}
+          </Text>
+        </Group>
+        <Group spacing={0} position="right">
+          <Button variant="filled" color="dotars" size="xs" className={classes.wzButton} onClick={onSubmit} disabled={page !== pages.length - 1 || processState === 'SUCCESS'}>
+            Create
+          </Button>
+          <Button variant="default" size="xs" className={classes.wzButton} rightIcon={<ChevronRight />} onClick={onNext} disabled={page === pages.length - 1}>
+            Next
+          </Button>
+          <ConfirmBtn variant="light" color="red" size="xs" style={{ marginLeft: 5 }} OnOk={onCancel} disabled={processState === 'SUCCESS'} btnTxt="Cancel" confirmTxt="Are you sure you want to cancel" />
+        </Group>
+      </Group>
+    </div>
+  );
+};
+
+const WizardNavBar: React.FC = () => {
+  const { classes, cx } = formStyles();
+  const { current, page, pages, setPage, canGoNext, processState } = useContext(WizardFormContext);
+  const onSelect = (idx: number, pg: PageInfo) => {
+    if (setPage && canGoNext()) {
+      if (setPage) setPage(idx);
+    }
+  };
+  const RenderIcon = (pi: PageInfo) => {
+    switch (pi.state) {
+      case 'CURRENT':
+        return <CircleDot color="#071E3E" />;
+      case 'ERROR':
+        return <AlertCircle color="red" />;
+      case 'SUCCESS':
+        return <CircleCheck color="green" />;
+      default:
+        return <CircleMinus />;
+    }
+  };
+  const PageStateIcon = (pi: PageInfo) => {
+    if (processState === 'SUCCESS') return <CircleCheck color="green" />;
+    if (current?.id === pi.id) return <RenderIcon {...current} />;
+    else return <RenderIcon {...pi} />;
+  };
+
+  return (
+    <div className={classes.wzNavBar}>
+      <Table verticalSpacing="xs" width={250}>
+        <tbody>
+          {pages &&
+            pages.map((pg, index) => {
+              const selected = pages[page] && pages[page].id === pg.id;
+              return (
+                <tr key={index} className={cx({ [classes.pgSelected]: selected })} style={{ padding: 0 }}>
+                  <td style={{ padding: 0 }}>
+                    <UnstyledButton onClick={() => onSelect(index, pg)} style={{ width: '100%', padding: 10 }} disabled={processState === 'SUCCESS'}>
+                      <Group spacing="sm" position="left">
+                        <Avatar radius="sm" size={25}>
+                          <PageStateIcon {...pg} />
+                        </Avatar>
+                        <div>
+                          <Text size="sm" color={selected ? 'white' : 'dotars'} weight={500}>
+                            {pg.title}
+                          </Text>
+                          <Text color={selected ? 'white' : 'dimmed'} size="xs">
+                            {pg.desc}
+                          </Text>
+                        </div>
+                      </Group>
+                    </UnstyledButton>
+                  </td>
+                </tr>
+              );
+            })}
+        </tbody>
+      </Table>
+    </div>
   );
 };

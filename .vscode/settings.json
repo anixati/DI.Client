@@ -56,7 +56,9 @@
         ".vscode": true,
         "tools": true,
         "dist/apps/di-boards": true,
-        "apps/di-boards/.eslintrc.json": true
+        "apps/di-boards/.eslintrc.json": true,
+        "dist/apps": true,
+        "dist": true
     },
     "hide-files.files": [
         "apps/di-boards-e2e",
@@ -109,7 +111,9 @@
         ".vscode",
         "tools",
         "dist/apps/di-boards",
-        "apps/di-boards/.eslintrc.json"
+        "apps/di-boards/.eslintrc.json",
+        "dist/apps",
+        "dist"
     ],
     "workspace.isHidden": false
 }

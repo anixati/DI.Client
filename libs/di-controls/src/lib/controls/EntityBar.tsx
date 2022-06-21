@@ -1,11 +1,10 @@
 import { IApiResponse, IChangeRequest, useEntityContext } from '@dotars/di-core';
 import { Button, createStyles, Group, Text } from '@mantine/core';
 import { useModals } from '@mantine/modals';
-import { showNotification } from '@mantine/notifications';
 import axios from 'axios';
-import { ReactNode, useEffect, useState } from 'react';
-import { AlertOctagon } from 'tabler-icons-react';
+import { ReactNode, useState } from 'react';
 import { dispatch } from 'use-bus';
+import { ShowError, ShowInfo } from './Alerts';
 
 const useStyles = createStyles((theme) => ({
   button: {
@@ -53,8 +52,7 @@ export const EntityBar: React.FC<EntityToolbarProps> = (rx) => {
     const resp = await axios.post<IApiResponse>(rx.url, request);
     const data = resp.data;
     if (data.failed) {
-      console.log(data);
-      showNotification({ autoClose: 5000, title: 'Failed to change state', message: `${data.messages}`, color: 'red', icon: <AlertOctagon /> });
+      ShowError('Failed to change state',`${data.messages}`);
     } else {
       Notify(request.action, data);
     }
@@ -87,7 +85,7 @@ export const EntityBar: React.FC<EntityToolbarProps> = (rx) => {
         break;
       }
     }
-    showNotification({ autoClose: 5000, title: `${title}`, message: `${data?.result?.message}`, color: 'blue', icon: <AlertOctagon /> });
+    ShowInfo(`${title}`,`${data?.result?.message}`);
     dispatch(notifyMsg);
   };
   const execAction = async (action: number, reason: string) => {

@@ -78,7 +78,8 @@ export const dataUiStyles = createStyles((theme) => ({
   ptCard: {
     display: 'flex',
     flexDirection: 'column',
-    height: '88vh',
+    // height: '100',
+    padding:1
   },
   ptheader: {
     padding: theme.spacing.xs,
@@ -92,6 +93,7 @@ export const dataUiStyles = createStyles((theme) => ({
     paddingRight: 4,
   },
   ptFooter: {
+    
    // borderTop: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]}`,
     padding: 5,
     background: theme.colors.gray[1],

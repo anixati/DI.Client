@@ -1,4 +1,4 @@
-import { PageView, SchemaForm, SchemaListRef, SchemaListTable, SchemaWizardForm } from '@dotars/di-controls';
+import { PageView, SchemaForm, SchemaListRef, SchemaListTable, ActionFormBtn } from '@dotars/di-controls';
 import { createRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { Receipt } from 'tabler-icons-react';
@@ -12,7 +12,7 @@ export const BoardRolesList: React.FC = () => {
     listRef.current?.refresh();
   };
   return (
-    <PageView title="Ministers" desc="" icon={<Receipt />} renderCmds={() => <SchemaWizardForm title="New Board Role"
+    <PageView title="Ministers" desc="" icon={<Receipt />} renderCmds={() => <ActionFormBtn title="New Board Role"
       schema="boardroles" onClose={onClose} />}>
       <SchemaListTable
         ref={listRef}

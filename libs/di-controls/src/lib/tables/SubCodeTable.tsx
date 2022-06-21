@@ -1,15 +1,14 @@
 import { getErrorMsg, IApiResponse, IChangeRequest, IEntity, NoOpResponse, useEntityContext } from '@dotars/di-core';
-import { ActionIcon, Alert, Button, Group, LoadingOverlay, Text } from '@mantine/core';
+import { Alert, Button, Group, LoadingOverlay, Text } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { UseFormInput, UseFormReturnType } from '@mantine/form/lib/use-form';
 import { useModals } from '@mantine/modals';
-import { showNotification } from '@mantine/notifications';
 import axios from 'axios';
 import * as jpatch from 'fast-json-patch';
 import { ReactElement } from 'react';
 import { useQuery } from 'react-query';
 import { CellProps, Column } from 'react-table';
-import { AlertOctagon, CircleCheck, Edit, Eraser } from 'tabler-icons-react';
+import { ShowError, ShowInfo } from '../controls';
 import { DialogForm, DialogFormProvider, FormOpType, useDialogFormContext } from '../forms/DialogForm';
 import { getCodes } from './api';
 import { DataTable } from './DataTable';
@@ -58,23 +57,12 @@ function RenderTableView<T extends IEntity>(rx: RenderTableProps<T>): ReactEleme
   const modals = useModals();
   const form = useForm<T>(rx.config);
   const { openModel } = useDialogFormContext();
-  //if(entity === undefined) return <>.</>
-  //const [{ entity }, setMdl] = useAtom(showMdlForm);
-
-  /* #region  get Table data */
-
-  // const asyncApi = useAsync(getCodes, []);
-  // useEffect(() => {
-  //   asyncApi.execute();
-  // }, [entity, asyncApi]);
-
-  /* #endregion */
 
   /* #region  Delete */
   const deleteEntity = async (request: IChangeRequest) => {
     const resp = await axios.post<IApiResponse>(`${rx.baseUrl}/change`, request);
-    const message = resp.data.failed ? `${resp.data.messages}` : 'Deleted Succesfully';
-    showNotification({ message, color: resp.data.failed ? 'red' : 'green', icon: <AlertOctagon /> });
+    if (resp.data.failed) ShowError('Failed', `${resp.data.messages}`);
+    else ShowInfo('Success', `Deleted Succesfully`);
     return resp.data;
   };
   const deleteItem = (row: T) =>
@@ -102,12 +90,6 @@ function RenderTableView<T extends IEntity>(rx: RenderTableProps<T>): ReactEleme
           <Button size="xs" variant="subtle" color="red" compact onClick={() => deleteItem(row.original)}>
             Delete
           </Button>
-          {/* <ActionIcon variant="transparent" color="dotars" onClick={() => editItem(row.original)}>
-            <Edit size={16} />
-          </ActionIcon>
-          <ActionIcon variant="transparent" color="red" onClick={() => deleteItem(row.original)}>
-            <Eraser size={16} />
-          </ActionIcon> */}
         </Group>
       ),
     },
@@ -126,8 +108,9 @@ function RenderTableView<T extends IEntity>(rx: RenderTableProps<T>): ReactEleme
       const changeSet = jpatch.compare(rx.entity, item);
       if (Array.isArray(changeSet)) {
         const patchResp = await axios.patch<IApiResponse>(`${rx.baseUrl}/${rx.entity.id}`, changeSet);
-        if (!patchResp.data.failed) {
-          showNotification({ message: `Updated Sucessfully`, color: 'green', icon: <CircleCheck /> });
+        if (patchResp.data.failed) ShowError('Failed', `${patchResp.data.messages}`);
+        else {
+          ShowInfo('Success', `Updated Succesfully`);
           rx.OnRefresh();
         }
         return patchResp.data;
@@ -144,8 +127,9 @@ function RenderTableView<T extends IEntity>(rx: RenderTableProps<T>): ReactEleme
 
   const CreateItem = async (item: T): Promise<IApiResponse> => {
     const response = await axios.post<IApiResponse>(`${rx.baseUrl}/create`, item);
-    if (!response.data.failed) {
-      showNotification({ message: `Created Sucessfully`, color: 'green', icon: <CircleCheck /> });
+    if (response.data.failed) ShowError('Failed', `${response.data.messages}`);
+    else {
+      ShowInfo('Success', `Created Succesfully`);
       rx.OnRefresh();
     }
     return response.data;

@@ -1,12 +1,11 @@
 import { IApiResponse, IEntity, useEntityContext } from '@dotars/di-core';
 import { LoadingOverlay } from '@mantine/core';
-import { showNotification } from '@mantine/notifications';
 import axios from 'axios';
 import * as jpatch from 'fast-json-patch';
 import { Form, Formik, FormikHelpers, FormikProps, useFormikContext } from 'formik';
 import { PropsWithChildren, ReactNode, useState } from 'react';
-import { AlertOctagon, CircleCheck } from 'tabler-icons-react';
 import { dispatch } from 'use-bus';
+import { ShowError, ShowInfo } from '../controls';
 import { EntityBar } from '../controls/EntityBar';
 import { EntityView } from './EntityView';
 
@@ -26,10 +25,10 @@ export const DataForm = <T extends IEntity>(rx: PropsWithChildren<DataFormProps<
   const [entity, setEntity] = useState<T>(rx.initial);
   const handleApiResponse = (item: T, data: IApiResponse) => {
     if (data.failed) {
-      showNotification({ message: `${data.messages}`, color: 'red', icon: <AlertOctagon /> });
+      ShowError('Failed',`${data.messages}`);
     } else {
       setEntity(rx.initial);
-      showNotification({ message: 'Created Sucessfully!', color: 'green', icon: <CircleCheck /> });
+      ShowInfo('Created Sucessfully!',`${data.messages}`);
       dispatch({ type: 'RELOADSELECTED', payload: item });
     }
   };

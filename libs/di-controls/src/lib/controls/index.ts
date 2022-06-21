@@ -1,3 +1,4 @@
+export * from './Alerts';
 export * from './ConfirmBtn';
 export * from './EntityBar';
 export * from './PanelHeader';

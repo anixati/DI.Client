@@ -1,5 +1,16 @@
-import { IEntity } from '@dotars/di-core';
-import { createContext, useContext, useState } from 'react';
+import { createContext } from 'react';
+
+
+
+
+export interface IActionFormBtnProps {
+  title?: string;
+  schema: string;
+  onClose?: () => void;
+  entityId?: string;
+  action?: string;
+}
+
 
 export type ResultState = 'INIT' | 'ERROR' | 'SUBMITTING' | 'SUCCESS';
 export type PageState = 'INIT' | 'ERROR' | 'CURRENT' | 'SUCCESS';

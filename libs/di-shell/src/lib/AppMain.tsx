@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { myTheme } from './Theme';
 import { AuthRouter } from './routes/AuthRouter';
 
+
 export const AppMain: React.FC = (rx) => {
   return (
     <MantineProvider theme={myTheme} withGlobalStyles withNormalizeCSS>
@@ -20,7 +21,7 @@ export const AppMain: React.FC = (rx) => {
               },
             })}
           />
-          <NotificationsProvider position="bottom-center" zIndex={8077}>
+          <NotificationsProvider position="bottom-right" zIndex={8077}>
             <AuthRouter>{rx.children}</AuthRouter>
           </NotificationsProvider>
         </ModalsProvider>

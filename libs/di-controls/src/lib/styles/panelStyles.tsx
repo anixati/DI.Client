@@ -20,7 +20,7 @@ export const panelStyles = createStyles((theme) => ({
   Content: {
     background: 'white',
     flexGrow: '1',
-    padding: 8,
+    padding: 8
   },
   Footer: {
     flexBasis: '50px',

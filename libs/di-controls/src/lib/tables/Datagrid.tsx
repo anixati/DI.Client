@@ -1,18 +1,18 @@
-import { getErrorMsg, IColumnDef, IDataResponse, IGenericListResponse, ISchemaDef, ISelectedItem, ITableDef } from '@dotars/di-core';
-import { ActionIcon, Alert, Anchor, Text, Box, Center, Checkbox, Group, LoadingOverlay, NativeSelect, SelectItem, Table, TextInput } from '@mantine/core';
-import axios from 'axios';
+import { getErrorMsg, IColumnDef, ISchemaDef, ISelectedItem } from '@dotars/di-core';
+import { ActionIcon, Alert, Anchor, Box, Center, Checkbox, Group, LoadingOverlay, NativeSelect, SelectItem, Table, Text, TextInput } from '@mantine/core';
+import moment from 'moment';
 import React, { createContext, forwardRef, ReactNode, useCallback, useContext, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
-import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import { CellProps, Column, usePagination, useRowSelect, useSortBy, useTable } from 'react-table';
-import { ChevronDown, ChevronUp, Refresh, Search, Selector } from 'tabler-icons-react';
+import { ChevronDown, ChevronUp, PhoneCalling, Refresh, Search, Selector } from 'tabler-icons-react';
 import { ScrollContent } from '../panels';
 import { dataUiStyles } from '../styles/Styles';
-import { RenderPagingBar } from './PagingBar';
 import { getTableData, getTableSchema, SortInfo } from './api';
+import { RenderPagingBar } from './PagingBar';
 
 //---------------------------------------------CONTEXT------------------------------------------------------------------
-export type RenderMode = 'DEFAULT' | 'LOOKUP' | 'SUBGRID';
+export type RenderMode = 'DEFAULT' | 'LOOKUP' | 'SUBGRID' | 'MULTISELECT';
 interface ISchemaContext {
   mode: RenderMode;
   schema: string;
@@ -26,6 +26,7 @@ export interface SchemaListTableProps {
   schemas: Array<SelectItem>;
   renderCmds?: () => ReactNode;
   mode?: RenderMode;
+  showHeader?: boolean;
 }
 export const SchemaListTable = forwardRef<SchemaListRef, SchemaListTableProps>((rx, ref) => {
   const [schema, setSchema] = useState<string>(rx.schemas[0].value);
@@ -39,9 +40,8 @@ export const SchemaListTable = forwardRef<SchemaListRef, SchemaListTableProps>((
     setSchema(name);
   };
   return (
-    
     <SchemaContext.Provider value={{ mode, schema, schemas, changeSchema }}>
-      <SchemaTable ref={ref} schemaName={schema} renderCmds={rx.renderCmds} entityId={entityId}/>
+      <SchemaTable ref={ref} schemaName={schema} renderCmds={rx.renderCmds} entityId={entityId} showHeader={rx.showHeader !== undefined ? rx.showHeader : true} />
     </SchemaContext.Provider>
   );
 });
@@ -51,17 +51,19 @@ export const SchemaListTable = forwardRef<SchemaListRef, SchemaListTableProps>((
 export interface SchemaListRef {
   refresh(): void;
   getSelectedRow(): ISelectedItem | null;
+  getSelectedRows(): Array<ISelectedItem> | null;
 }
 
 //----------------------------------------------------SCHEMA LOADER-----------------------------------------------------------
 export interface SchemaTableProps {
   schemaName: string;
   renderCmds?: () => ReactNode;
-  entityId?:string;
+  entityId?: string;
+  showHeader: boolean;
 }
 
 export const SchemaTable = forwardRef<SchemaListRef, SchemaTableProps>((rx, ref) => {
-  const { isLoading, error, data, isSuccess } = useQuery([rx.schemaName], async () => await getTableSchema(rx.schemaName), { keepPreviousData: false, staleTime: Infinity });
+  const { isLoading, error, data, isSuccess } = useQuery([rx.schemaName], async () => await getTableSchema(rx.schemaName), { keepPreviousData: false, staleTime: 0 });
   return (
     <>
       {isLoading && <LoadingOverlay visible={true} />}
@@ -70,7 +72,7 @@ export const SchemaTable = forwardRef<SchemaListRef, SchemaTableProps>((rx, ref)
           {getErrorMsg(error)}{' '}
         </Alert>
       )}
-      {isSuccess && data && <RenderDataGrid ref={ref} queryKey={rx.schemaName} schema={data} renderCmds={rx.renderCmds} entityId={rx.entityId}/>}
+      {isSuccess && data && <RenderDataGrid ref={ref} queryKey={rx.schemaName} schema={data} renderCmds={rx.renderCmds} entityId={rx.entityId} showHeader={rx.showHeader} />}
     </>
   );
 });
@@ -82,7 +84,7 @@ interface IIndeterminateInputProps {
   indeterminate?: boolean;
   name: string;
 }
-const RowSelector = forwardRef<HTMLInputElement, IIndeterminateInputProps>(({ indeterminate, ...rest }, ref) => {
+const SelectBox = forwardRef<HTMLInputElement, IIndeterminateInputProps>(({ indeterminate, ...rest }, ref) => {
   const defaultRef = useRef(null);
   const resolvedRef: any = ref || defaultRef;
   useEffect(() => {
@@ -90,22 +92,34 @@ const RowSelector = forwardRef<HTMLInputElement, IIndeterminateInputProps>(({ in
   }, [resolvedRef, indeterminate]);
   return <Checkbox color="dotars" radius="xs" size="xs" ref={resolvedRef} {...rest} />;
 });
+
 /* #endregion */
 
 //---------------------------------------------------COLUMNS------------------------------------------------------------
 
-const LinkCol = (def: IColumnDef,pathname:string): Column<any> => {
-  
-  const rp = def.linkPath ? `/${def.linkPath}` : `${pathname}/`;
+const LinkCol = (def: IColumnDef, pathname: string): Column<any> => {
+  //  const rp = def.linkPath ? `/${def.linkPath}` : `${pathname}/`;
   return {
     Header: `${def.Header}`,
     id: `${def.accessor}-link`,
     accessor: `${def.accessor}`,
     Cell: ({ row }: CellProps<any>) => (
-      <Anchor component={Link} to={`${rp}${row.original[def.linkId]}`} size="xs" color="cyan" variant="text">
+      <Anchor component={Link} to={`${def.linkPath}/${row.original[def.linkId]}`} size="xs" color="cyan" variant="text">
         {row.original[def.accessor]}
       </Anchor>
     ),
+  };
+};
+
+const DateCol = (def: IColumnDef): Column<any> => {
+  //  const rp = def.linkPath ? `/${def.linkPath}` : `${pathname}/`;
+  return {
+    Header: `${def.Header}`,
+    id: `${def.accessor}-date`,
+    accessor: `${def.accessor}`,
+    Cell: (props) => {
+      return moment(props.value).local().format('DD/MM/YYYY');
+    },
   };
 };
 
@@ -115,7 +129,8 @@ export interface RenderTableProps {
   queryKey: string;
   schema: ISchemaDef;
   renderCmds?: () => ReactNode;
-  entityId?:string;
+  entityId?: string;
+  showHeader: boolean;
 }
 
 export const RenderDataGrid = forwardRef<SchemaListRef, RenderTableProps>((rx, ref) => {
@@ -139,7 +154,7 @@ export const RenderDataGrid = forwardRef<SchemaListRef, RenderTableProps>((rx, r
         if (pgSort.length > 0) {
           SortBy = pgSort.map((x) => ({ id: x.id, desc: x.desc } as SortInfo));
         }
-        const resp = await getTableData({ schemaKey, index, size, SortBy,entityId: rx.entityId, SearchStr: pgSearch});
+        const resp = await getTableData({ schemaKey, index, size, SortBy, entityId: rx.entityId, SearchStr: pgSearch });
         if (resp) {
           setPgIndex(resp.pageIndex);
           setPgSize(resp.pageSize);
@@ -159,10 +174,13 @@ export const RenderDataGrid = forwardRef<SchemaListRef, RenderTableProps>((rx, r
       if (x.type === 1) hiddenColumns.push(x.accessor);
       if (x.type === 2) {
         hiddenColumns.push(x.accessor);
-        return LinkCol(x,location.pathname);
-      } else {
-        return { Header: x.Header, accessor: x.accessor, width: x.width };
+        return LinkCol(x, location.pathname);
       }
+      if (x.type === 3) {
+        hiddenColumns.push(x.accessor);
+        return DateCol(x);
+      }
+      return { Header: x.Header, accessor: x.accessor, width: x.width };
     });
     //TODO: --- fix duplicate issue
     if (mode === 'LOOKUP') {
@@ -171,7 +189,7 @@ export const RenderDataGrid = forwardRef<SchemaListRef, RenderTableProps>((rx, r
           id: 'selection',
           accessor: `id`,
           Header: '', //({ getToggleAllRowsSelectedProps }) => <div></div>,
-          Cell: ({ row }) => <RowSelector name={''} {...row.getToggleRowSelectedProps()} />,
+          Cell: ({ row }) => <SelectBox name={''} {...row.getToggleRowSelectedProps()} />,
         },
         ...colList,
       ];
@@ -201,10 +219,12 @@ export const RenderDataGrid = forwardRef<SchemaListRef, RenderTableProps>((rx, r
       columns: memoizedColumns,
       data: items,
       stateReducer: (newState, action) => {
-        if (action.type === 'toggleRowSelected') {
-          newState.selectedRowIds = {
-            [action['id']]: true,
-          };
+        if (mode === 'LOOKUP') {
+          if (action.type === 'toggleRowSelected') {
+            newState.selectedRowIds = {
+              [action['id']]: true,
+            };
+          }
         }
         return newState;
       },
@@ -214,10 +234,31 @@ export const RenderDataGrid = forwardRef<SchemaListRef, RenderTableProps>((rx, r
     },
     useSortBy,
     usePagination,
-    useRowSelect
+    useRowSelect,
+    (hooks) => {
+      if (mode === 'MULTISELECT') {
+        hooks.visibleColumns.push((columns) => [
+          {
+            id: 'selection',
+            Header: ({ getToggleAllPageRowsSelectedProps }) => (
+              <div>
+                <SelectBox name={''} {...getToggleAllPageRowsSelectedProps()} />
+              </div>
+            ),
+            Cell: ({ row }) => (
+              <div>
+                <SelectBox name={''} {...row.getToggleRowSelectedProps()} />
+              </div>
+            ),
+          },
+          ...columns,
+        ]);
+      }
+    }
   );
 
   useEffect(() => {
+    console.log('callling fetch')
     fetchData(pageIndex, pageSize);
   }, [fetchData, pageIndex, pageSize, pgSearch, pgSort]);
 
@@ -235,6 +276,7 @@ export const RenderDataGrid = forwardRef<SchemaListRef, RenderTableProps>((rx, r
   const refresh = () => {
     fetchData(pageIndex, pageSize);
   };
+
   const getSelectedRow = (): ISelectedItem | null => {
     const rows = selectedFlatRows.map((d) => d.original);
     if (rows && rows.length > 0) {
@@ -243,7 +285,15 @@ export const RenderDataGrid = forwardRef<SchemaListRef, RenderTableProps>((rx, r
     }
     return null;
   };
-  useImperativeHandle(ref, () => ({ refresh, getSelectedRow }));
+  
+  const getSelectedRows = (): Array<ISelectedItem> | null => {
+    const rows = selectedFlatRows.map((d) => d.original);
+    if (rows && rows.length > 0) {
+      return rows.map((rx)=> {return { value: rx['Id'], label: rx['Name'] }});
+    }
+    return null;
+  };
+  useImperativeHandle(ref, () => ({ refresh, getSelectedRow,getSelectedRows }));
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const { value } = event.currentTarget;
@@ -255,12 +305,17 @@ export const RenderDataGrid = forwardRef<SchemaListRef, RenderTableProps>((rx, r
       <div className={classes.ptheader}>
         <Box>
           <Group spacing="sm" position="apart">
+            {' '}
             <Group spacing="sm" position="left">
-              {mode === 'DEFAULT' && <NativeSelect data={schemas} variant="filled" value={schema} onChange={handleSelectChange} style={{ width: 310 }} />}
-              {mode !== 'DEFAULT' && <Text weight={500}>{rx.schema.title}</Text>}
+              {rx.showHeader === true && (
+                <>
+                  {mode === 'DEFAULT' && <NativeSelect data={schemas} variant="filled" value={schema} onChange={handleSelectChange} style={{ width: 310 }} />}
+                  {mode !== 'DEFAULT' && <Text weight={500}>{rx.schema.title}</Text>}
+                </>
+              )}{' '}
             </Group>
             <Group position="right" spacing={3}>
-              <TextInput size="xs" placeholder="Search" icon={<Search size={14}  />} onChange={handleSearchChange} />
+              <TextInput size="xs" placeholder="Search" icon={<Search size={14} />} onChange={handleSearchChange} />
               <ActionIcon variant="filled" color="cyan" onClick={refresh}>
                 <Refresh size={16} />
               </ActionIcon>

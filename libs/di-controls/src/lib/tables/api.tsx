@@ -1,7 +1,6 @@
-import { getErrorMsg, IDataResponse, IEntity, IFormSchemaResult, IGenericListResponse, ITableDef } from '@dotars/di-core';
-import { showNotification } from '@mantine/notifications';
+import { getErrorMsg, IDataResponse, IEntity, IGenericListResponse, ITableDef } from '@dotars/di-core';
 import axios from 'axios';
-import { AlertOctagon, CircleCheck } from 'tabler-icons-react';
+import { ShowError } from '../controls';
 
 export type SortInfo = {
   id: string;
@@ -42,29 +41,17 @@ export const getTableData = async (rx: ITableDataPProps) => {
   return undefined;
 };
 
-
-
-
 export const getCodes = async <T extends IEntity>(baseUrl: string, id?: number) => {
   try {
     const request = { keyId: id, index: 0, size: 100 };
     const resp = await axios.post<IGenericListResponse<T>>(baseUrl, request);
     const data = resp.data;
     if (data.failed) {
-      console.log(data);
-      showNotification({ message: `${data.messages}`, color: 'red', icon: <AlertOctagon /> });
+      ShowError('Failed', `${data.messages}`);
     }
     return data.result;
   } catch (ex) {
     ShowError('Table data error', `Details:${getErrorMsg(ex)}`);
   }
   return undefined;
-};
-
-//-------
-const ShowError = (title: string, message: string) => {
-  showNotification({ autoClose: 5000, title, message, color: 'red', icon: <AlertOctagon /> });
-};
-const ShowInfo = (title: string, message: string) => {
-  showNotification({ autoClose: 5000, title, message, color: 'blue', icon: <CircleCheck /> });
 };

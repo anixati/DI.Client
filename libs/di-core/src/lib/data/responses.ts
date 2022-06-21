@@ -1,3 +1,4 @@
+import { SelectItem } from '@mantine/core';
 import { ICodeRecord, IEntity } from './requests';
 
 export interface IDomainResponse {
@@ -113,6 +114,8 @@ export interface IFormSchemaResult {
   schema: IFormSchema;
 }
 export interface IFormSchema {
+  formType:number;
+  options?: Array<SelectItem>;
   name: string;
   fields: IFormSchemaField[];
 }

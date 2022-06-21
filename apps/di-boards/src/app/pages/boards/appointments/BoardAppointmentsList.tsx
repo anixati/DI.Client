@@ -1,4 +1,4 @@
-import { PageView, SchemaForm, SchemaListRef, SchemaListTable, SchemaWizardForm } from '@dotars/di-controls';
+import { PageView, SchemaForm, SchemaListRef, SchemaListTable } from '@dotars/di-controls';
 import { createRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { Receipt } from 'tabler-icons-react';

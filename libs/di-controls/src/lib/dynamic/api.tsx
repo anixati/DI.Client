@@ -1,13 +1,11 @@
 import { getErrorMsg, IApiResponse, IChangeRequest, IDataResponse, IFormSchemaResult } from '@dotars/di-core';
-import { showNotification } from '@mantine/notifications';
 import axios from 'axios';
-import { AlertOctagon, CircleCheck } from 'tabler-icons-react';
+import { ShowError, ShowInfo, ShowNotify } from '../controls';
 
-export const getCreateSchemaData = async (schemaName: string,entityId?:string) => {
+export const getCreateSchemaData = async (action: string,schemaName: string, entityId?: string) => {
   try {
-
-    const url = (entityId !== undefined)?`/forms/create/${schemaName}/${entityId}`:`/forms/create/${schemaName}`;
-    console.log(entityId,url,'===');
+    const url = entityId !== undefined ? `/forms/${action}/${schemaName}/${entityId}` : `/forms/create/${schemaName}`;
+    console.log(entityId, url, '===');
     const rsp = await axios.get<IDataResponse<IFormSchemaResult>>(url);
     if (rsp.data.failed) throw new Error(`Failed to get ${rsp.data.messages} `);
     if (rsp.data?.result) return rsp.data.result;
@@ -28,9 +26,9 @@ export const getViewSchemaData = async (schemaName: string, entityId: string) =>
   }
 };
 
-export const submiUpdateForm = async (schemaName: string, entityId: number,changeSet:any) => {
+export const submiUpdateForm = async (schemaName: string, entityId: number, changeSet: any) => {
   try {
-    const patchResp = await axios.patch<IApiResponse>(`/forms/update/${schemaName}/${entityId}`,changeSet);
+    const patchResp = await axios.patch<IApiResponse>(`/forms/update/${schemaName}/${entityId}`, changeSet);
     const data = patchResp.data;
     if (data.failed) {
       console.log(data);
@@ -64,35 +62,3 @@ export const submitChangeForm = async (schemaName: string, request: IChangeReque
   }
 };
 
-const ShowNotify = (action: number, data: IApiResponse) => {
-  let title = '';
-  switch (action) {
-    case 2: {
-      title = 'Enabled Sucessfully!';
-      break;
-    }
-    case 3: {
-      title = 'Disabled Sucessfully!';
-      break;
-    }
-    case 4: {
-      title = 'Locked Sucessfully!';
-      break;
-    }
-    case 5: {
-      title = 'Unlocked Sucessfully!';
-      break;
-    }
-    case 6: {
-      title = 'Deleted Sucessfully!';
-      break;
-    }
-  }
-  ShowInfo(`${title}`, `${data?.result?.message}`);
-};
-const ShowError = (title: string, message: string) => {
-  showNotification({ autoClose: 5000, title, message, color: 'red', icon: <AlertOctagon /> });
-};
-const ShowInfo = (title: string, message: string) => {
-  showNotification({ autoClose: 5000, title, message, color: 'blue', icon: <CircleCheck /> });
-};

@@ -1,9 +1,9 @@
 import { IApiResponse, IEntity } from '@dotars/di-core';
 import { Button, Divider, Group, Modal, Stack } from '@mantine/core';
 import { UseFormReturnType } from '@mantine/form/lib/use-form';
-import { showNotification } from '@mantine/notifications';
 import { createContext, PropsWithChildren, useContext, useRef, useState } from 'react';
-import { Ban, ChevronsUpLeft, CircleCheck } from 'tabler-icons-react';
+import { Ban, ChevronsUpLeft } from 'tabler-icons-react';
+import { ShowError, ShowInfo } from '../controls';
 
 export type FormOpType = 'Create' | 'Update';
 
@@ -22,7 +22,7 @@ const defOptions: DialogOptions = {
 
 export interface IDialogFormContext {
   options: DialogOptions;
-  openModel:(options:DialogOptions)=>void;
+  openModel: (options: DialogOptions) => void;
   close: () => void;
 }
 export const DialogFormContext = createContext<IDialogFormContext>({
@@ -39,10 +39,10 @@ export const DialogFormProvider: React.FC = (rx) => {
     });
   };
 
-  const openModel = (options:DialogOptions) => {
+  const openModel = (options: DialogOptions) => {
     setOptions(options);
   };
-  return <DialogFormContext.Provider value={{ options, close,openModel }}>{rx.children}</DialogFormContext.Provider>;
+  return <DialogFormContext.Provider value={{ options, close, openModel }}>{rx.children}</DialogFormContext.Provider>;
 };
 
 export interface DialogFormProps<T> {
@@ -53,15 +53,15 @@ export interface DialogFormProps<T> {
 
 export const DialogForm = <T extends object>(rx: PropsWithChildren<DialogFormProps<T>>) => {
   const refSub = useRef<HTMLButtonElement>(null);
-  const { options,close } = useDialogFormContext();
-  //const [{ flag, title, type }, setMdl] = useAtom(showMdlForm);
-
+  const { options, close } = useDialogFormContext();
   const handleSubmit = async (values: typeof rx.form.values) => {
     const data = values as T;
     if (data) {
       const sx = await rx.processItem(data, options.type);
-      if (!sx.failed) close();
-      else showNotification({ title: 'Failed', message: `${sx?.messages}`, color: 'red', icon: <CircleCheck /> });
+      if (!sx.failed) {
+        ShowInfo('Updated', `${sx?.messages}`);
+        close();
+      } else ShowError('Failed', `${sx?.messages}`);
     }
   };
   const OnOkClick = () => {

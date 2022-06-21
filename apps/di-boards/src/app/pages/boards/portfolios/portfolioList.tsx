@@ -1,4 +1,4 @@
-import { PageView, SchemaListRef, SchemaListTable, SchemaWizardForm } from '@dotars/di-controls';
+import { PageView, SchemaListRef, SchemaListTable, ActionFormBtn } from '@dotars/di-controls';
 import { createRef } from 'react';
 import { Receipt } from 'tabler-icons-react';
 
@@ -8,7 +8,7 @@ export const PotyfolioList: React.FC = () => {
     listRef.current?.refresh();
   };
   return (
-    <PageView title="Portfolios" desc="" icon={<Receipt />} renderCmds={() => <SchemaWizardForm title="New Portfolio"
+    <PageView title="Portfolios" desc="" icon={<Receipt />} renderCmds={() => <ActionFormBtn title="New Portfolio"
      schema="portfolio" onClose={onClose}  />}>
       <SchemaListTable
         ref={listRef}

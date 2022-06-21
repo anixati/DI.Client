@@ -1,53 +1,22 @@
-import { EntityForm, PageView, RenderList } from '@dotars/di-controls';
-import { ICodeRecord, useEntityContext } from '@dotars/di-core';
-import { Grid, Textarea, TextInput } from '@mantine/core';
-import { UseFormReturnType } from '@mantine/form/lib/use-form';
-import { ReactNode } from 'react';
+import { PageView, SchemaForm, SchemaListRef, SchemaListTable, ActionFormBtn } from '@dotars/di-controls';
+import { createRef } from 'react';
+import { useParams } from 'react-router-dom';
 import { Receipt } from 'tabler-icons-react';
-import { appStyles } from '../../../Styles';
-
-function rendeTeamForm(form: UseFormReturnType<ICodeRecord>): ReactNode {
-  const { classes } = appStyles();
-  return (
-    <Grid justify="space-between" className={classes.grid}>
-      <Grid.Col span={6} className={classes.firstGrid}>
-        <TextInput label="Team Name" required placeholder="Team name" {...form.getInputProps('name')} />
-        <TextInput label="Code" variant="unstyled" disabled {...form.getInputProps('code')} />
-      </Grid.Col>
-      <Grid.Col span={6}>
-        <Textarea label="Team Description" placeholder="Team description" {...form.getInputProps('description')} autosize minRows={3} maxRows={6} />
-      </Grid.Col>
-    </Grid>
-  );
-}
-
-const TeamDetails: React.FC = () => {
-  const ectx = useEntityContext();
-  const teamConfig = {
-    initialValues: {
-      id: 0,
-      name: '',
-      description: '',
-      code: '',
-    },
-    validate: {
-      name: (value: string) => (value.length < 5 ? 'Name must have at least 5 letters' : null),
-    },
-  };
-  return <EntityForm baseUrl="/teams" config={teamConfig} renderForm={rendeTeamForm} canLock={true}></EntityForm>;
-};
 
 export const TeamsPage: React.FC = () => {
+  const listRef = createRef<SchemaListRef>();
+  const onClose = () => {
+    listRef.current?.refresh();
+  };
   return (
-    <PageView title="Team Management" desc="Manage application teams" icon={<Receipt />}>
-      <Grid justify="space-between">
-        <Grid.Col span={4} style={{ minHeight: 280, padding: 5 }}>
-          <RenderList url="/teams" title="Application Teams" />
-        </Grid.Col>
-        <Grid.Col span={8} style={{ minHeight: 280, padding: 5 }}>
-          <TeamDetails />
-        </Grid.Col>
-      </Grid>
+    <PageView title="Teams Management" desc="Manage application Teams" icon={<Receipt />} renderCmds={() => <ActionFormBtn title="New Team" schema="appteam" onClose={onClose} />}>
+      <SchemaListTable ref={listRef} schemas={[{ label: 'Current Teams', value: 'TeamsList' }]} />
     </PageView>
   );
+};
+
+export const TeamDetailsPage: React.FC = () => {
+  const { entityId } = useParams();
+  return <SchemaForm title="Team Details"  listUrl="/admin/teams"
+  schema="appteam" entityId={entityId} icon={<Receipt />} canEdit={true} />;
 };

@@ -2,7 +2,7 @@ import React from 'react';
 import { Outlet, Route } from 'react-router-dom';
 import { AuditsPage } from './audit/AuditsPage';
 import { OptionsPage } from './refdata';
-import { RolesPage, TeamsPage, UsersPage } from './security';
+import { RoleDetailsPage, RolesPage, TeamDetailsPage, TeamsPage, UserDetailsPage, UsersPage } from './security';
 
 export const AdminLayout: React.FC = () => {
   return (
@@ -16,8 +16,22 @@ export const AdminRouteList = (
   <>
     <Route path="options" element={<OptionsPage />} />
     <Route path="logs" element={<AuditsPage />} />
-    <Route path="roles" element={<RolesPage />} />
-    <Route path="users" element={<UsersPage />} />
-    <Route path="teams" element={<TeamsPage />} />
+
+    <Route path="users">
+      <Route index={true} element={<UsersPage />} />
+      <Route path=":entityId" element={<UserDetailsPage />} />
+    </Route>
+
+    <Route path="roles">
+      <Route index={true} element={<RolesPage />} />
+      <Route path=":entityId" element={<RoleDetailsPage />} />
+    </Route>
+
+    <Route path="teams">
+      <Route index={true} element={<TeamsPage />} />
+      <Route path=":entityId" element={<TeamDetailsPage />} />
+    </Route>
+
+   
   </>
 );

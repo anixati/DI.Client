@@ -12,6 +12,7 @@ import { PotyfolioList } from './portfolios/portfolioList';
 import { BoardRolePage, BoardRolesList } from './roles/BoardRolesList';
 import { SecretaryPage } from './secretaries/secretary';
 import { SecretaryList } from './secretaries/secretaryList';
+import { SkillsList, SkillsPage } from './Skills';
 import { UsersList } from './users/UsersList';
 import { UsersPage } from './users/UsersPage';
 
@@ -38,7 +39,6 @@ export const BoardRouteList = (
       <Route index={true} element={<BoardRolesList />} />
       <Route path=":entityId" element={<BoardRolePage />} />
     </Route>
-
     <Route path="appointees">
       <Route index={true} element={<AppointeeList />} />
       <Route path=":entityId" element={<AppointeePage />} />
@@ -58,6 +58,10 @@ export const BoardRouteList = (
     <Route path="appusers">
       <Route index={true} element={<UsersList />} />
       <Route path=":entityId" element={<UsersPage />} />
+    </Route>
+    <Route path="skills">
+      <Route index={true} element={<SkillsList />} />
+      <Route path=":entityId" element={<SkillsPage />} />
     </Route>
   </>
 );

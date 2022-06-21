@@ -1,11 +1,10 @@
 import { IEntity, IGenericListResponse } from '@dotars/di-core';
 import { Center, Group, Table } from '@mantine/core';
-import { showNotification } from '@mantine/notifications';
 import axios from 'axios';
 import { ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { Column, useGlobalFilter, usePagination, useSortBy, useTable } from 'react-table';
-import { AlertOctagon, ChevronDown, ChevronUp, Selector } from 'tabler-icons-react';
-import { SearchCmdBar } from '../controls';
+import { ChevronDown, ChevronUp, Selector } from 'tabler-icons-react';
+import { SearchCmdBar, ShowError } from '../controls';
 import { ScrollContent } from '../panels';
 import { dataUiStyles } from '../styles/Styles';
 import { RenderPagingBar } from './PagingBar';
@@ -35,7 +34,7 @@ export function PagedTable<T extends IEntity>({ columns, title, baseUrl, OnCreat
         setItems(resp.data?.result?.items);
       } else {
         if (resp.data.failed) {
-          showNotification({ message: `${resp.data.messages}`, color: 'red', icon: <AlertOctagon /> });
+          ShowError('Failed',`${resp.data.messages}`);
           setItems([]);
         }
       }

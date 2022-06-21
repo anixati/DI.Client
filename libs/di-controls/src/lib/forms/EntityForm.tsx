@@ -2,15 +2,14 @@ import { IApiResponse, IEntity, useEntityContext } from '@dotars/di-core';
 import { Container, LoadingOverlay } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { UseFormInput, UseFormReturnType } from '@mantine/form/lib/use-form';
-import { PropsWithChildren, useEffect, useRef } from 'react';
-import { EntityBar } from '../controls/EntityBar';
-import { EntityView } from './EntityView';
-import * as jpatch from 'fast-json-patch';
 import axios from 'axios';
+import * as jpatch from 'fast-json-patch';
+import { PropsWithChildren, useEffect, useRef } from 'react';
 import { dispatch } from 'use-bus';
-import { showNotification } from '@mantine/notifications';
-import { AlertOctagon, CircleCheck } from 'tabler-icons-react';
+import { ShowError, ShowInfo } from '../controls';
+import { EntityBar } from '../controls/EntityBar';
 import { dataUiStyles } from '../styles/Styles';
+import { EntityView } from './EntityView';
 
 export interface EntityFormProps<T extends IEntity> {
   baseUrl: string;
@@ -85,10 +84,10 @@ const RenderEntityForm = <T extends IEntity>(rx: PropsWithChildren<RenderEntityF
     const resp = await axios.post<IApiResponse>(`${rx.baseUrl}/create`, item);
     const data = resp.data;
     if (data.failed) {
-      showNotification({ message: `${data.messages}`, color: 'red', icon: <AlertOctagon /> });
+      ShowError('Failed', `${data.messages}`);
     } else {
+      ShowInfo('Success', `Created Succesfully`);
       form.reset();
-      showNotification({ message: 'Created Sucessfully!', color: 'green', icon: <CircleCheck /> });
       dispatch({ type: 'RELOADSELECTED', payload: item });
     }
     return data;
@@ -109,11 +108,11 @@ const RenderEntityForm = <T extends IEntity>(rx: PropsWithChildren<RenderEntityF
         if (Array.isArray(changeSet)) {
           const patchResp = await axios.patch<IApiResponse>(`${rx.baseUrl}/${original.id}`, changeSet);
           const data = patchResp.data;
+
           if (data.failed) {
-            console.log(data);
-            showNotification({ autoClose: 5000, title: 'Failed to update', message: `${data.messages}`, color: 'red', icon: <AlertOctagon /> });
+            ShowError('Failed', `${data.messages}`);
           } else {
-            showNotification({ autoClose: 5000, title: 'Updated Sucessfully!', message: `${data?.result?.message}`, color: 'green', icon: <CircleCheck /> });
+            ShowInfo('Success', `Updated Succesfully`);
             dispatch({ type: 'RELOADSELECTED', payload: item });
           }
         }

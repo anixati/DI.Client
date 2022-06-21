@@ -1,20 +1,19 @@
-import { getErrorMsg, IEntityState, IFormSchemaField, IFormSchemaResult } from '@dotars/di-core';
-import { Alert, Badge, Button, Card, Divider, Group, LoadingOverlay, Tabs, Notification, Text, Avatar } from '@mantine/core';
-import { showNotification } from '@mantine/notifications';
+import { getErrorMsg, IEntityState, IFormSchemaField } from '@dotars/di-core';
+import { Avatar, Badge, Button, Card, Divider, Group, LoadingOverlay, Notification, Tabs, Text } from '@mantine/core';
 import * as jpatch from 'fast-json-patch';
 import { hasOwnProperty } from 'fast-json-patch/module/helpers';
 import { yupToFormErrors } from 'formik';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
-import { AlertCircle, AlertOctagon, Bookmark, FileDescription } from 'tabler-icons-react';
+import { AlertCircle, Bookmark, FileDescription } from 'tabler-icons-react';
 import * as Yup from 'yup';
-import { ConfirmBtn, PanelHeader } from '../controls';
+import { ConfirmBtn, PanelHeader, ShowError, ShowWarn } from '../controls';
 import { panelStyles } from '../styles';
 import { getViewSchemaData, submitChangeForm, submiUpdateForm } from './api';
 import { PageInfo } from './Context';
-import { SchemaFieldFactory } from './fields/SchemaFieldFactory';
 import { HeaderFieldFactory } from './fields/HeaderFieldFactory';
+import { SchemaFieldFactory } from './fields/SchemaFieldFactory';
 import { SchemaFieldGroup } from './fields/SchemaFieldGroup';
 import { SubgridControl } from './fields/Subgrid';
 import { buildYupObj } from './Validation';
@@ -30,6 +29,7 @@ export interface ISchemaFormProps {
 
 export const SchemaForm: React.FC<ISchemaFormProps> = (rx) => {
   const queryClient = new QueryClient();
+
   return <QueryClientProvider client={queryClient}>{rx.entityId && <SchemaFormView canEdit={rx.canEdit} title={rx.title} schema={rx.schema} icon={rx.icon} entityId={rx.entityId} listUrl={rx.listUrl} />}</QueryClientProvider>;
 };
 export interface ISchemaFormViewProps {
@@ -44,14 +44,16 @@ export interface ISchemaFormViewProps {
 const SchemaFormView: React.FC<ISchemaFormViewProps> = (rx) => {
   const navigate = useNavigate();
   const viewSchema = useMemo<string>(() => `${rx.schema}`, [rx]);
-  const { isLoading, error, data, isSuccess, refetch } = useQuery([viewSchema], () => getViewSchemaData(viewSchema, rx.entityId), { keepPreviousData: false, staleTime: Infinity });
+  const { isLoading, error, data, isSuccess, refetch } = useQuery([viewSchema], () => getViewSchemaData(viewSchema, rx.entityId), { keepPreviousData: false });
   const refresh = () => {
     refetch();
   };
   const backToList = () => {
     navigate(rx.listUrl, {});
   };
-
+  useEffect(() => {
+    refetch();
+  }, [rx.entityId]);
   if (isLoading) return <Notification loading title="Loading schema. please wait ..." disallowClose></Notification>;
 
   if (error)
@@ -66,12 +68,7 @@ const SchemaFormView: React.FC<ISchemaFormViewProps> = (rx) => {
       </Notification>
     );
   if (isSuccess && data) {
-    return <RenderSchemaForm title={rx.title} schema={rx.schema} 
-     tabs={data.schema.fields.filter((x) => x.layout === 3)}
-     headers={data.schema.fields.filter((x) => x.layout === 6)}
-     entity={data.entity}
-     initialValues={data.initialValues}
-     canEdit={rx.canEdit} onRefresh={refresh} goToList={backToList} />;
+    return <RenderSchemaForm title={rx.title} schema={rx.schema} tabs={data.schema.fields.filter((x) => x.layout === 3)} headers={data.schema.fields.filter((x) => x.layout === 6)} entity={data.entity} initialValues={data.initialValues} canEdit={rx.canEdit} onRefresh={refresh} goToList={backToList} />;
   }
 
   return <>.</>;
@@ -82,12 +79,12 @@ interface RenderSchemaFormProps {
   title: string;
   icon?: ReactNode;
   schema: string;
-  entity:IEntityState;
- // result: IFormSchemaResult;
+  entity: IEntityState;
+  // result: IFormSchemaResult;
   canEdit: boolean;
-  tabs:IFormSchemaField[],
-  headers:IFormSchemaField[],
-  initialValues?:Record<string, string>;
+  tabs: IFormSchemaField[];
+  headers: IFormSchemaField[];
+  initialValues?: Record<string, string>;
   onRefresh: () => void;
   goToList: () => void;
 }
@@ -156,7 +153,7 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
       //---loopend
       setValSchema(vs);
     }
-  }, [rx]);
+  }, [rx.entity]);
 
   useEffect(() => {
     if (tab < tabs.length - 1) {
@@ -168,9 +165,11 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
     }
   }, [tab, tabs]);
 
-  useEffect(() => {
-    console.log(values, '--');
-  }, [values]);
+  // useEffect(() => {
+  //   console.log(values, '--');
+  // }, [values]);
+
+
   /* #endregion */
 
   /* #region  Events */
@@ -207,7 +206,7 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
     const isValid = Object.keys(rs).length > 0 ? false : true;
     if (current) current.state = !isValid ? 'ERROR' : 'SUCCESS';
     if (isValid) await execUpdate();
-    else showNotification({ autoClose: 5000, title: 'Validation errors', message: 'Please fix all errors', color: 'red', icon: <AlertOctagon /> });
+    else ShowError('Validation errors', 'Please fix all errors');
   };
   const onClickLock = () => {
     execAction(4, 'Lock entity');
@@ -259,11 +258,15 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
   // --- update
   const execUpdate = async () => {
     try {
-      setLoading(true);
       const changeSet = jpatch.compare(initVals, values);
       if (Array.isArray(changeSet)) {
-        const rs = await submiUpdateForm(rx.schema, entity.id, changeSet);
-        if (rs) rx.onRefresh();
+        if (changeSet.length > 0) {
+          setLoading(true);
+          const rs = await submiUpdateForm(rx.schema, entity.id, changeSet);
+          if (rs) rx.onRefresh();
+        } else {
+          ShowWarn('No Change', 'No changes detected to update');
+        }
       }
     } finally {
       setLoading(false);
@@ -341,7 +344,8 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
     return (
       // eslint-disable-next-line react/jsx-no-useless-fragment
       <>
-        {rx.headers && rx.headers.length >0 && 
+        {rx.headers &&
+          rx.headers.length > 0 &&
           rx.headers[0].fields.map((fd) => {
             return <HeaderFieldFactory key={fd.key} field={fd} fieldChanged={onFieldChange} values={values} errors={errors} disabled={true} />;
           })}

@@ -28,7 +28,6 @@ export const LookupControl = (rx: ISchemaFieldProps) => {
     if (listRef.current) {
       const rv = listRef.current.getSelectedRow();
       if (rv !== null) {
-        console.log(rv,"$$$$$$")
         setSelect(rv);
         fieldChanged(rx.field.key, JSON.stringify(rv));
         setOpened(false);
