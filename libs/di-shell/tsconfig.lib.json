@@ -11,7 +11,8 @@
     "./src/lib/shell/LinksGroup.tsx",
     "./src/lib/shell/Footer.tsx",
     "./src/lib/shell/useStyles.tsx",
-    "./src/lib/myTheme.tsx"
+    "./src/lib/myTheme.tsx",
+    "./src/lib/pages/AccessDeniedPage.tsx"
   ],
   "exclude": [
     "**/*.spec.ts",

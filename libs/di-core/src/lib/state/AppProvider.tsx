@@ -14,6 +14,7 @@ export const AppProvider: React.FC<AppProviderProps> = (rx) => {
   const [theme, setTheme] = useState(defaultAppState.theme);
   const [loading, setLoading] = useState(defaultAppState.loading);
   const [settings] = useState<AppSettings>({ ...rx.settings });
+  const [sideNav, setSideNav] = useState<NavLink | undefined>(undefined);
 
   axios.defaults.baseURL = rx.settings.baseApiurl;
   const changeTheme = (name: string) => {
@@ -29,30 +30,36 @@ export const AppProvider: React.FC<AppProviderProps> = (rx) => {
     console.log(msg);
   };
 
-  const [rootNav, setRootNav] = useLocalStorage<NavLink[]>({
+  const [sitemap, setSiteMap] = useLocalStorage<NavLink[]>({
     key: 'site-map',
     defaultValue: [],
   });
 
+  const setSiteData = (sitemap: NavLink[]): void => {
+    setSiteMap(sitemap);
+    console.log('getting sitemap', sitemap);
+  };
+
   const [navRoot, setRoot] = useState<string>('/');
-  const setNavRoot = useCallback((route: string) => {
+  const setNavRoot = (route: string) => {
+    console.log(route, sitemap.length, '@@@');
     setRoot(route);
-    if (rootNav) {
-      const snv = rootNav.filter((x) => x.route === route);
+    if (sitemap.length > 0) {
+      const snv = sitemap.filter((x) => x.route === route);
+      console.log(route, snv, '@@@');
       if (snv && snv.length > 0) setSideNav(snv[0]);
       else setSideNav(undefined);
     }
-  }, []);
+  };
 
   const [route, setCrntRoute] = useState<string>('/');
   const setRoute = useCallback((route: string) => {
     setCrntRoute(route);
   }, []);
-  const [sideNav, setSideNav] = useState<NavLink | undefined>(undefined);
 
   const logout = () => {
     console.log('logging out ');
-    setRootNav([]);
+    setSiteMap([]);
   };
 
   return (
@@ -69,9 +76,10 @@ export const AppProvider: React.FC<AppProviderProps> = (rx) => {
         setNavRoot,
         route,
         setRoute,
-        rootNav,
+        sitemap,
         sideNav,
         logout,
+        setSiteData,
       }}
     >
       {rx.children}

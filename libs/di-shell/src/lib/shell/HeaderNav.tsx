@@ -16,7 +16,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = (rx) => {
   const { classes, cx } = shellStyles();
   //const [user, setUser] = useState<User | null>(null);
   const location = useLocation();
-  const { rootNav, setNavRoot, logout } = useAppContext();
+  const { sitemap, setNavRoot, logout } = useAppContext();
   // useEffect(() => {
   //   async function getUser() {
   //     const user = await rx.manager?.getUser();
@@ -39,8 +39,8 @@ export const HeaderNav: React.FC<HeaderNavProps> = (rx) => {
   };
 
   const mainMenu =
-    rootNav &&
-    rootNav.map(
+  sitemap &&
+  sitemap.map(
       (link) =>
         link?.route && (
           // eslint-disable-next-line jsx-a11y/anchor-is-valid

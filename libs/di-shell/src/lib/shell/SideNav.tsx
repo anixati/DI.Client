@@ -1,6 +1,6 @@
 import { NavLink, useAppContext } from '@dotars/di-core';
 import { Box, ChevronIcon, Collapse, Group, Navbar, ScrollArea, Text, ThemeIcon, UnstyledButton } from '@mantine/core';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FileAnalytics } from 'tabler-icons-react';
 import { shellStyles } from './ShellStyles';
@@ -87,7 +87,16 @@ export function NavbarNested() {
   const { classes } = shellStyles();
   const [opened] = useState(false);
   const { sideNav } = useAppContext();
-  if (sideNav === undefined) return <></>;
+
+  // const location = useLocation();
+  // useEffect(() => {
+  //   //if (rootNav?.length === 0) onLogout();
+  //   const xp = location.pathname;
+  //   if (setNavRoot) setNavRoot(xp.indexOf('/', 1) > 0 ? xp.substring(0, xp.indexOf('/', 1)) : xp);
+  // }, []);
+
+
+  if (sideNav === undefined)return <></>;
 
   const items = sideNav?.links && sideNav.links.map((x) => <SideNavGroup {...x} key={x.label} />);
   return (

@@ -15,9 +15,10 @@ export interface IAppContext {
     setNavRoot?: (route: string) => void;
     route: string;
     setRoute?: (route: string) => void;
-    rootNav?:NavLink[];
+    sitemap?:NavLink[];
     sideNav?:NavLink;
     logout?: () => void;
+    setSiteData?: (sitemap: NavLink[]) => void;
 }
 
 

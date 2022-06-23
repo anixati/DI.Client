@@ -1,5 +1,5 @@
 import { TitledPanel } from '@dotars/di-controls';
-import { Button, createStyles, Group, Text } from '@mantine/core';
+import { Button, createStyles } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 
 export const useStyles = createStyles((theme) => ({

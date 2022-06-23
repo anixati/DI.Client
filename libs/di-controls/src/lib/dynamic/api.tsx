@@ -5,7 +5,6 @@ import { ShowError, ShowInfo, ShowNotify } from '../controls';
 export const getCreateSchemaData = async (action: string,schemaName: string, entityId?: string) => {
   try {
     const url = entityId !== undefined ? `/forms/${action}/${schemaName}/${entityId}` : `/forms/create/${schemaName}`;
-    console.log(entityId, url, '===');
     const rsp = await axios.get<IDataResponse<IFormSchemaResult>>(url);
     if (rsp.data.failed) throw new Error(`Failed to get ${rsp.data.messages} `);
     if (rsp.data?.result) return rsp.data.result;

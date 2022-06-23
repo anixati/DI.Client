@@ -31,7 +31,6 @@ export const MultiSelectForm: React.FC<MultiSelectFormProps> = (rx) => {
       if (values.length > 0) {
         const data = Object.assign({}, ...values.map((x) => ({ [x.value]: x.label })));
         const payLoad = { schema: rx.schemaKey, data: data, entityId: rx.entityId };
-        console.log(payLoad, '----');
         const resp = await axios.post<IApiResponse>(`/forms/manage`, payLoad);
         if (resp.data.failed || resp.data.result === null) {
           if (resp.data.result == null) ShowError('Failed', `No response receieved`);

@@ -2,8 +2,8 @@ import { Global, MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { NotificationsProvider } from '@mantine/notifications';
 import { BrowserRouter } from 'react-router-dom';
+import { AuthRouter } from './AuthRouter';
 import { myTheme } from './Theme';
-import { AuthRouter } from './routes/AuthRouter';
 
 
 export const AppMain: React.FC = (rx) => {

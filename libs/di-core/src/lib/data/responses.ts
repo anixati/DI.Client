@@ -35,6 +35,7 @@ export interface NavLink {
 }
 
 export class SiteSettings {
+  restricted?:boolean;
   logo?: string;
   icon?: string;
   navigation?: Array<NavLink>;

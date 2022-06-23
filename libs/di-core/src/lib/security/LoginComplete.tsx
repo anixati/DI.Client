@@ -1,13 +1,12 @@
 import { Group, Notification, Text } from '@mantine/core';
-import { useLocalStorage } from '@mantine/hooks';
 import axios from 'axios';
 import React, { useCallback } from 'react';
 import Async from 'react-async';
-import { useQuery } from 'react-query';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { AlertCircle } from 'tabler-icons-react';
-import { IDataResponse, NavLink, SiteSettings } from '../data';
+import { IDataResponse, SiteSettings } from '../data';
 import { getErrorMsg } from '../di-core';
+import { useAppContext } from '../state';
 import { AuthLoader } from './AuthLoader';
 import { removeBearerToken, setBearerToken } from './Core';
 import { LogoutPage } from './Logout';
@@ -25,16 +24,24 @@ export const getSitemap = async () => {
 };
 
 const SiteMapLoader: React.FC = (rx) => {
+  const navigate = useNavigate();
+  
+  const { setSiteData } = useAppContext();
   const redirectTo = localStorage.getItem(REDIRECT_URL_KEY) || '/';
-  const [_, setRootNav] = useLocalStorage<NavLink[]>({
-    key: 'site-map',
-    defaultValue: [],
-  });
+  // const [_, setRootNav] = useLocalStorage<NavLink[]>({
+  //   key: 'site-map',
+  //   defaultValue: [],
+  // });
 
   const loadSitemap = useCallback(async () => {
     const siteMap = await getSitemap();
     if (!siteMap) throw new Error('failed to get site data');
-    if (siteMap.navigation) setRootNav(siteMap.navigation);
+    if (siteMap.restricted) navigate('/denied');
+
+    if (siteMap.navigation && setSiteData) setSiteData(siteMap.navigation);
+    // const xp = location.pathname;
+    // if (setNavRoot) setNavRoot(xp.indexOf('/', 1) > 0 ? xp.substring(0, xp.indexOf('/', 1)) : xp);
+
     // if (redirectTo) {
     //   const rx = redirectTo.substring(0, redirectTo.indexOf('/', 1));
     // }
@@ -54,7 +61,7 @@ const SiteMapLoader: React.FC = (rx) => {
           <Group position="left">
             <AlertCircle size={32} color="red" />
             <Text color="red" size="lg">
-              todo error
+              error
             </Text>
           </Group>
         </Notification>

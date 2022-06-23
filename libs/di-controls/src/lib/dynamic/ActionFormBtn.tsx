@@ -58,7 +58,6 @@ const FormSelector: React.FC<IActionFormBtnProps> = (rx) => {
       </Alert>
     );
   if (isSuccess && data) {
-    console.log(data,"#####")
     switch (data.schema.formType) {
       case 1:
         return <WizardForm schemaKey={rx.schema} schema={data.schema} initialValues={data.initialValues} title={rx.title} entityId={rx.entityId} />;
