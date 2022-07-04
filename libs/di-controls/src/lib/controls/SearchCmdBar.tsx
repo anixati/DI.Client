@@ -28,7 +28,7 @@ export const SearchCmdBar: React.FC<SearchCmdBarProps> = (rx) => {
           </ActionIcon>
           {/* <Button leftIcon={<Plus />} size="xs" variant="filled" color="indigo" onClick={rx.OnCreate}>
           </Button> */}
-          {rx.canCreate && (
+          {rx.canCreate !== undefined && rx.canCreate ===true && (
             <ActionIcon variant="filled" color="dotars" onClick={rx.OnCreate}>
               <SquarePlus size={16} />
             </ActionIcon>

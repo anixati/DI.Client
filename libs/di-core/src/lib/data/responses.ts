@@ -112,6 +112,7 @@ export interface IEntityState {
 export interface IFormSchemaResult {
   entity: IEntityState;
   initialValues?: Record<string, string>;
+  hdrValues?: Record<string, string>;
   schema: IFormSchema;
 }
 export interface IFormSchema {

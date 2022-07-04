@@ -5,7 +5,7 @@ import { UseFormInput, UseFormReturnType } from '@mantine/form/lib/use-form';
 import { useModals } from '@mantine/modals';
 import axios from 'axios';
 import * as jpatch from 'fast-json-patch';
-import { ReactElement } from 'react';
+import { ReactElement, useState } from 'react';
 import { useQuery } from 'react-query';
 import { CellProps, Column } from 'react-table';
 import { ShowError, ShowInfo } from '../controls';
@@ -98,16 +98,19 @@ function RenderTableView<T extends IEntity>(rx: RenderTableProps<T>): ReactEleme
   const processItem = (item: T, type: FormOpType): Promise<IApiResponse> => {
     return type === 'Update' ? UpdateItem(item) : CreateItem(item);
   };
+
+  const [original, setOriginal] = useState<T|undefined>(undefined);
   const editItem = (row: T) => {
     form.clearErrors();
     form.setValues(row);
+    setOriginal(row);
     openModel({ flag: true, title: 'Update item', type: 'Update', entity: row });
   };
   const UpdateItem = async (item: T): Promise<IApiResponse> => {
-    if (rx.entity) {
-      const changeSet = jpatch.compare(rx.entity, item);
+    if (original) {
+      const changeSet = jpatch.compare(original, item);
       if (Array.isArray(changeSet)) {
-        const patchResp = await axios.patch<IApiResponse>(`${rx.baseUrl}/${rx.entity.id}`, changeSet);
+        const patchResp = await axios.patch<IApiResponse>(`${rx.baseUrl}/${original.id}`, changeSet);
         if (patchResp.data.failed) ShowError('Failed', `${patchResp.data.messages}`);
         else {
           ShowInfo('Success', `Updated Succesfully`);
@@ -143,7 +146,7 @@ function RenderTableView<T extends IEntity>(rx: RenderTableProps<T>): ReactEleme
         {rx.renderForm(form)}
       </DialogForm>
 
-      <DataTable<T> title={rx.title} OnRefresh={OnRefresh} OnCreate={createItem} data={rx.data} columns={[...rx.columns, ...actionCol]} />
+      <DataTable<T> title={rx.title} OnRefresh={OnRefresh} OnCreate={createItem} canCreate={true} data={rx.data} columns={[...rx.columns, ...actionCol]} />
     </>
   );
 }

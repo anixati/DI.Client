@@ -37,16 +37,13 @@ export const AppProvider: React.FC<AppProviderProps> = (rx) => {
 
   const setSiteData = (sitemap: NavLink[]): void => {
     setSiteMap(sitemap);
-    console.log('getting sitemap', sitemap);
   };
 
   const [navRoot, setRoot] = useState<string>('/');
   const setNavRoot = (route: string) => {
-    console.log(route, sitemap.length, '@@@');
     setRoot(route);
     if (sitemap.length > 0) {
       const snv = sitemap.filter((x) => x.route === route);
-      console.log(route, snv, '@@@');
       if (snv && snv.length > 0) setSideNav(snv[0]);
       else setSideNav(undefined);
     }

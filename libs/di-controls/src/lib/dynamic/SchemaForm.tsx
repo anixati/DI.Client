@@ -68,7 +68,10 @@ const SchemaFormView: React.FC<ISchemaFormViewProps> = (rx) => {
       </Notification>
     );
   if (isSuccess && data) {
-    return <RenderSchemaForm title={rx.title} schema={rx.schema} tabs={data.schema.fields.filter((x) => x.layout === 3)} headers={data.schema.fields.filter((x) => x.layout === 6)} entity={data.entity} initialValues={data.initialValues} canEdit={rx.canEdit} onRefresh={refresh} goToList={backToList} />;
+    return <RenderSchemaForm title={rx.title} schema={rx.schema} tabs={data.schema.fields.filter((x) => x.layout === 3)}
+     headers={data.schema.fields.filter((x) => x.layout === 6)} entity={data.entity} initialValues={data.initialValues}
+     hdrValues={data.hdrValues}
+     canEdit={rx.canEdit} onRefresh={refresh} goToList={backToList} />;
   }
 
   return <>.</>;
@@ -85,6 +88,7 @@ interface RenderSchemaFormProps {
   tabs: IFormSchemaField[];
   headers: IFormSchemaField[];
   initialValues?: Record<string, string>;
+  hdrValues?: Record<string, string>;
   onRefresh: () => void;
   goToList: () => void;
 }
@@ -347,7 +351,7 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
         {rx.headers &&
           rx.headers.length > 0 &&
           rx.headers[0].fields.map((fd) => {
-            return <HeaderFieldFactory key={fd.key} field={fd} fieldChanged={onFieldChange} values={values} errors={errors} disabled={true} />;
+            return <HeaderFieldFactory key={fd.key} field={fd} fieldChanged={onFieldChange} values={rx.hdrValues?rx.hdrValues:{}} errors={errors} disabled={true} />;
           })}
       </>
     );

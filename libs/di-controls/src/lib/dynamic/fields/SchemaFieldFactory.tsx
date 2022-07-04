@@ -64,6 +64,8 @@ export const SchemaFieldFactory = (rx: ISchemaFieldProps) => {
       return <DatePickerControl {...rx} />;
     case 11:
       return <DecimalControl {...rx} />;
+    // case 23:
+    //   return <LabelControl {...rx} />;
     case 7:
       return (
         <Select

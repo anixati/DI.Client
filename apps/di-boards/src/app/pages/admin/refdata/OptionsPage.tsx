@@ -81,7 +81,7 @@ const OptionDetails: React.FC = () => {
         value: 0,
         order: 0,
       },
-      validate: { label: (value: string) => (value.length < 10 ? 'Name must have at least 10 letters' : null), value: (val: number) => (val <= 0 ? 'value must be greater than 0' : null) },
+      validate: { label: (value: string) => (value.length < 3? 'Name must have at least 3 letters' : null), value: (val: number) => (val <= 0 ? 'value must be greater than 0' : null) },
     };
   };
 

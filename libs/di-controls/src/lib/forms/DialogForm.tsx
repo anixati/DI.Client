@@ -59,7 +59,7 @@ export const DialogForm = <T extends object>(rx: PropsWithChildren<DialogFormPro
     if (data) {
       const sx = await rx.processItem(data, options.type);
       if (!sx.failed) {
-        ShowInfo('Updated', `${sx?.messages}`);
+        //ShowInfo('Updated', `${sx?.messages}`);
         close();
       } else ShowError('Failed', `${sx?.messages}`);
     }

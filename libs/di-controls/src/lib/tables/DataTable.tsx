@@ -17,7 +17,6 @@ export function DataTable<T extends IEntity>({ columns, data, title, OnRefresh, 
   const { classes, cx } = dataUiStyles();
   const [scrolled, setScrolled] = useState(false);
   //const ectx = useEntityContext();
-
   const memoizedColumns = useMemo(() => columns, [columns]);
   const memoizedData = useMemo(() => data, [data]);
   const {
@@ -39,7 +38,7 @@ export function DataTable<T extends IEntity>({ columns, data, title, OnRefresh, 
   return (
     <Card withBorder p="lg" >
       <Card.Section className={classes.cardHeader}>
-        <SearchCmdBar title={title} searchStr={search} OnSearch={OnSearch} OnRefresh={OnRefresh} OnCreate={OnCreate}  canCreate={canCreate}/>
+        <SearchCmdBar title={title} searchStr={search} OnSearch={OnSearch} OnRefresh={OnRefresh} OnCreate={OnCreate} canCreate={canCreate}/>
       </Card.Section>
       <Card.Section className={classes.cardContent}>
         <ScrollArea sx={{ minHeight: 350, paddingRight: 20,paddingLeft:10 }} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
