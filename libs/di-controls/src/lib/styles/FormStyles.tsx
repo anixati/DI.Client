@@ -35,7 +35,7 @@ export const formStyles = createStyles((theme) => ({
   },
   ptContent: {
     background: 'white',
-    flexGrow: '1',
+    //flexGrow: '1',
     paddingLeft: 4,
     paddingRight: 4,
   },

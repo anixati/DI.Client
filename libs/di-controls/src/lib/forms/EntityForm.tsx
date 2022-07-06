@@ -104,16 +104,10 @@ const RenderEntityForm = <T extends IEntity>(rx: PropsWithChildren<RenderEntityF
     if (rx.entity) {
       const original = rx.entity as T;
       if (original) {
-
-console.log(original, item,'----')
-
         const changeSet = jpatch.compare(original, item);
-        
-console.log(changeSet,'----')
         if (Array.isArray(changeSet)) {
           const patchResp = await axios.patch<IApiResponse>(`${rx.baseUrl}/${original.id}`, changeSet);
           const data = patchResp.data;
-
           if (data.failed) {
             ShowError('Failed', `${data.messages}`);
           } else {
@@ -124,7 +118,6 @@ console.log(changeSet,'----')
       }
     }
   };
-
   /* #endregion */
   return (
     <EntityView name="Item" toolBar={<EntityBar disabled={false} url={`${rx.baseUrl}/change`} OnCreate={onCreate} onUpdate={onUpdate} canLock={rx.canLock} />}>

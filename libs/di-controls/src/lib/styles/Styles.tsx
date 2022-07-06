@@ -35,7 +35,6 @@ export const dataUiStyles = createStyles((theme) => ({
     lineHeight: 1,
   },
 
-
   tableTh: {
     minWidth: 15,
   },
@@ -79,7 +78,7 @@ export const dataUiStyles = createStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     // height: '100',
-    padding:1
+    padding: 1,
   },
   ptheader: {
     padding: theme.spacing.xs,
@@ -88,13 +87,12 @@ export const dataUiStyles = createStyles((theme) => ({
   },
   ptContent: {
     background: 'white',
-    flexGrow: '1',
+   // flexGrow: '1',
     paddingLeft: 4,
     paddingRight: 4,
   },
   ptFooter: {
-    
-   // borderTop: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]}`,
+    // borderTop: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]}`,
     padding: 5,
     background: theme.colors.gray[1],
     // flexBasis: '50px',
@@ -114,5 +112,4 @@ export const dataUiStyles = createStyles((theme) => ({
       borderBottomRightRadius: theme.radius.sm,
     },
   },
-
 }));

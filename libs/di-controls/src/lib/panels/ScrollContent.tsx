@@ -10,7 +10,7 @@ export interface ElasticScrollProps {
 const useStyles = createStyles((theme) => ({
   Content: {
     background: 'white',
-    flexGrow: '1',
+    flexGrow:1
     // paddingLeft: 4,
     // paddingRight: 4,
   },

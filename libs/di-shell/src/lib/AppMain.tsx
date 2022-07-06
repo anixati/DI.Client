@@ -4,7 +4,7 @@ import { NotificationsProvider } from '@mantine/notifications';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthRouter } from './AuthRouter';
 import { myTheme } from './Theme';
-
+import 'allotment/dist/style.css';
 
 export const AppMain: React.FC = (rx) => {
   return (

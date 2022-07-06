@@ -68,10 +68,7 @@ const SchemaFormView: React.FC<ISchemaFormViewProps> = (rx) => {
       </Notification>
     );
   if (isSuccess && data) {
-    return <RenderSchemaForm title={rx.title} schema={rx.schema} tabs={data.schema.fields.filter((x) => x.layout === 3)}
-     headers={data.schema.fields.filter((x) => x.layout === 6)} entity={data.entity} initialValues={data.initialValues}
-     hdrValues={data.hdrValues}
-     canEdit={rx.canEdit} onRefresh={refresh} goToList={backToList} />;
+    return <RenderSchemaForm title={rx.title} schema={rx.schema} tabs={data.schema.fields.filter((x) => x.layout === 3)} headers={data.schema.fields.filter((x) => x.layout === 6)} entity={data.entity} initialValues={data.initialValues} hdrValues={data.hdrValues} canEdit={rx.canEdit} onRefresh={refresh} goToList={backToList} />;
   }
 
   return <>.</>;
@@ -117,7 +114,8 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
   }, [rx]);
   const tabs = useMemo<Array<PageInfo>>(() => {
     const pages = rx.tabs.map((x) => ({ id: x.key, title: x.title, desc: x.description, state: 'INIT' } as PageInfo));
-    return [...pages, { id: 'documents', title: 'Documents', desc: 'documents & links', state: 'INIT' }];
+    return [...pages];
+    //    return [...pages, { id: 'documents', title: 'Documents', desc: 'documents & links', state: 'INIT' }];
   }, [rx]);
 
   // const headers = useMemo<IFormSchemaField[] | undefined>(() => {
@@ -172,7 +170,6 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
   // useEffect(() => {
   //   console.log(values, '--');
   // }, [values]);
-
 
   /* #endregion */
 
@@ -351,7 +348,7 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
         {rx.headers &&
           rx.headers.length > 0 &&
           rx.headers[0].fields.map((fd) => {
-            return <HeaderFieldFactory key={fd.key} field={fd} fieldChanged={onFieldChange} values={rx.hdrValues?rx.hdrValues:{}} errors={errors} disabled={true} />;
+            return <HeaderFieldFactory key={fd.key} field={fd} fieldChanged={onFieldChange} values={rx.hdrValues ? rx.hdrValues : {}} errors={errors} disabled={true} />;
           })}
       </>
     );
@@ -390,8 +387,8 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
             tabs.map((tb) => {
               return (
                 <Tabs.Tab key={tb.title} label={tb.title} title={tb.desc} icon={<Bookmark size={16} />}>
-                  {tab < tabs.length - 1 &&
-                    pageData.fields.map((field) => {
+                  {tab < tabs.length &&
+                    rx.tabs[tab].fields.map((field) => {
                       switch (field.layout) {
                         case 2:
                           return <SchemaFieldGroup key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} disabled={entity.locked || entity.disabled} />;

@@ -27,7 +27,7 @@ export function RenderList(rx: RenderListProps): ReactElement {
   }, []);
   
   /* #region  get */
-  const getData = async () => (await axios.post<IDataListResponse>(rx.url, { index: 0, size: 100 })).data;
+  const getData = async () => (await axios.post<IDataListResponse>(rx.url, { index: 0, size: 1000 })).data;
   const asyncData = useAsync(getData, []);
   const memData = useMemo(() => asyncData.result?.result?.items, [asyncData.result]);
 
@@ -109,7 +109,7 @@ export function RenderList(rx: RenderListProps): ReactElement {
         <Card withBorder p="lg" className={classes.listView}>
           <Card.Section className={classes.cardHeader}>
             <SearchCmdBar title={rx.title} searchStr={search} OnSearch={(v) => setSearch(v)} OnRefresh={() => asyncData.execute()} 
-              OnCreate={() => handleClick(undefined)} />
+              OnCreate={() => handleClick(undefined)} canCreate={true}/>
           </Card.Section>
           <Card.Section className={classes.cardContent}>
             <ScrollArea sx={{ height: '76vh' }} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>

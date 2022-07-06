@@ -24,6 +24,11 @@ export interface IDataResponse<T extends object> {
   result: T | null;
 }
 
+export interface IEntityResponse<T extends IEntity> {
+  item: T|null;
+  responseCode: number;
+  message: string;
+}
 // ---- sitemap
 
 export interface NavLink {

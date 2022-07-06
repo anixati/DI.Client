@@ -1,7 +1,7 @@
 import { createStyles } from '@mantine/core';
 import { useViewportSize } from '@mantine/hooks';
 import { Allotment } from 'allotment';
-import 'allotment/dist/style.css';
+
 import { IPageViewProps, PageView } from './PageView';
 const useStyles = createStyles((theme) => ({
   pnlctr: {
