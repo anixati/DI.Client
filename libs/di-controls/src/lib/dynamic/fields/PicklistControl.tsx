@@ -10,7 +10,6 @@ export const PicklistControl = (rx: ISchemaFieldProps) => {
         disabled: { opacity: '0.9 !important', color: 'black !important', backgroundColor: '#f9fafb !important' },
       }}
       label={field.title}
-      searchable
       nothingFound="No options"
       clearable={!rx.disabled}
       disabled={rx.disabled}

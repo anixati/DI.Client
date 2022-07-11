@@ -5,3 +5,4 @@ export * from './lib/dynamic';
 export * from './lib/tables';
 export * from './lib/lists';
 export * from './lib/forms';
+export * from './lib/datagrid';

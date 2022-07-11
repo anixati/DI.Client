@@ -15,7 +15,7 @@ export const AppMain: React.FC = (rx) => {
             styles={(theme) => ({
               body: {
                 height: '100%',
-                backgroundColor: '#ccc',
+                // backgroundColor: '#ccc',
                 overflowX: 'hidden',
                 overflowY: 'auto',
               },

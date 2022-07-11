@@ -357,10 +357,10 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
   /* #endregion */
 
   return (
-    <Card withBorder className={classes.Card}>
+    <div >
       <LoadingOverlay visible={loading} />
       <RenderButtons />
-      <Card.Section className={classes.Header}>
+      <div className={classes.FormHeader}>
         <Group pl={20} position="apart">
           <Group spacing={0} position="left">
             <Avatar radius="sm" size={45}>
@@ -379,32 +379,33 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
             {rx.headers && <RenderHeaders />}
           </Group>
         </Group>
-      </Card.Section>
-      <Card.Section className={classes.Content} style={{ paddingTop: 25 }}>
+      </div>
+      <div className={classes.Content} >
         <Tabs position="left" color="cyan" tabPadding="sm" active={tab} onTabChange={setTab} style={{ fontWeight: 500, minHeight: 550 }}>
           {tabs &&
             tabs.length > 0 &&
             tabs.map((tb) => {
               return (
-                <Tabs.Tab key={tb.title} label={tb.title} title={tb.desc} icon={<Bookmark size={16} />}>
+                <Tabs.Tab key={tb.title} label={tb.title} title={tb.desc} icon={<Bookmark size={16} />}  >
+                  
                   {tab < tabs.length &&
                     rx.tabs[tab].fields.map((field) => {
                       switch (field.layout) {
                         case 2:
-                          return <SchemaFieldGroup key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} disabled={entity.locked || entity.disabled} />;
+                          return <div className={classes.TabPane}><SchemaFieldGroup key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} disabled={entity.locked || entity.disabled} /></div>;
                         case 4:
                           return <Divider key={field.key} title={field.title} style={{ marginTop: 15 }} />;
                         case 5:
                           return <SubgridControl key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} disabled={entity.locked || entity.disabled} />;
                         default:
-                          return <SchemaFieldFactory key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} disabled={entity.locked || entity.disabled} />;
+                          return <div className={classes.TabPane}><SchemaFieldFactory key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} disabled={entity.locked || entity.disabled} /></div>;
                       }
                     })}
                 </Tabs.Tab>
               );
             })}
         </Tabs>
-      </Card.Section>
-    </Card>
+      </div>
+    </div>
   );
 };

@@ -7,7 +7,7 @@ import { ChevronDown, ChevronUp, Selector } from 'tabler-icons-react';
 import { SearchCmdBar, ShowError } from '../controls';
 import { ScrollContent } from '../panels';
 import { dataUiStyles } from '../styles/Styles';
-import { RenderPagingBar } from './PagingBar';
+import { RenderPagingBar } from '../datagrid/PagingBar';
 
 interface PagedTableProps<T extends IEntity> {
   title: string;

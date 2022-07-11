@@ -20,7 +20,6 @@ export function App() {
     oidc_scope: 'openid profile boardsapi',
   };
 
-  console.log(appSettings)
 
   return (
     <AppProvider settings={appSettings} title="Boards">

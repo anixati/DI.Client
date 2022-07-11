@@ -8,7 +8,7 @@ import { Eye, Receipt } from 'tabler-icons-react';
 
 export const AuditsPage: React.FC = () => {
   const createItem = () => {
-    console.log('.');
+    
   };
   const [auditProps, setAuditProps] = useState<Array<IAuditProp> | undefined>(undefined);
   const viewItem = (row: IAuditLog) => {

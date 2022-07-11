@@ -4,7 +4,7 @@ import { useModals } from '@mantine/modals';
 import axios from 'axios';
 import { createRef, useCallback, useContext, useState } from 'react';
 import { ShowError, ShowInfo } from '../controls';
-import { SchemaListRef, SchemaListTable } from '../tables';
+import { SchemaListRef, SchemaListTable } from '../datagrid';
 import { MdlContext } from './Context';
 
 export interface MultiSelectFormProps {

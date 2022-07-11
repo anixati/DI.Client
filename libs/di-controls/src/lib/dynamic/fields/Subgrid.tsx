@@ -1,9 +1,9 @@
 import { Group } from '@mantine/core';
 import { createRef } from 'react';
-import { SchemaListRef, SchemaListTable } from '../../tables';
 import { ISchemaFieldProps } from './SchemaFieldFactory';
 import { ActionFormBtn } from '../ActionFormBtn';
 import { DocumentGrid } from './DocumentGrid';
+import { SchemaListRef, SchemaListTable } from '../../datagrid';
 
 export const SubgridControl = (rx: ISchemaFieldProps) => {
   const { field } = rx;

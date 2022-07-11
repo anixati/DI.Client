@@ -48,7 +48,6 @@ export const submitChangeForm = async (schemaName: string, request: IChangeReque
     const resp = await axios.post<IApiResponse>(`/forms/change/${schemaName}`, request);
     const data = resp.data;
     if (data.failed) {
-      console.log(data);
       ShowError('Failed to change state', `${data.messages}`);
       return false;
     } else {

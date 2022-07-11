@@ -7,33 +7,39 @@ import * as jpatch from 'fast-json-patch';
 import { useMemo, useRef, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
-import { SearchCmdBar, ShowError, ShowInfo } from '../../controls';
+import { ConfirmBtn, SearchCmdBar, ShowError, ShowInfo } from '../../controls';
 import { ISchemaFieldProps } from './SchemaFieldFactory';
 
 const useStyles = createStyles((theme) => ({
-  container: {
-    padding: 0,
-    width: '100%',
-    height: '86vh',
+  docMain: {
+    backgroundColor: `${theme.colors['gray'][1]}`,
   },
+  docHeader: {
+    backgroundColor: theme.white,
+    paddingRight: 10,
+    paddingBottom: 4,
+    borderBottom: '1px solid #ccc',
+  },
+  docContent: {},
+
   listView: {
-    width: 300,
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+    padding:5,
+    //borderRight: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]}`,
     height: '83vh',
   },
   entityView: {
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+    backgroundColor: theme.white,
     height: '83vh',
   },
   card: {
     backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
   },
   cardHeader: {
-    padding: theme.spacing.xs,
+    padding: 6,
     borderBottom: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]}`,
   },
   rowSelected: {
-    backgroundColor: theme.colorScheme === 'dark' ? theme.fn.rgba(theme.colors[theme.primaryColor][7], 0.2) : theme.colors[theme.primaryColor][0],
+    backgroundColor: theme.colors[theme.primaryColor][1],
   },
   linkbox: { width: '100%', padding: 1, margin: 0 },
   cardContent: {},
@@ -254,7 +260,9 @@ export const DocumentGrid = (rx: ISchemaFieldProps) => {
         ShowError('Failed', `${resp.data.messages}`);
       } else {
         ShowInfo('Success', `Created Succesfully`);
+        setOriginal(undefined);
         form.reset();
+        setEditorVal('');
         refetch();
       }
     } catch (e) {
@@ -294,72 +302,83 @@ export const DocumentGrid = (rx: ISchemaFieldProps) => {
     }
   };
 
+  const onClickDelete = async () => {
+    try {
+      if (original) {
+        setLoading(true);
+        const resp = await axios.post<IApiResponse>(`/documents/change`, { id: original.id, name: 'User Action', reason: 'Delete', action: 6 });
+        const data = resp.data;
+        if (data.failed) {
+          console.log(data);
+          ShowError('Failed to change state', `${data.messages}`);
+        } else {
+          ShowInfo('Success', `Deleted Succesfully`);
+          refetch();
+        }
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
-    <Grid justify="space-between">
-      <Grid.Col span={3} style={{ minHeight: 280, padding: 5 }}>
-        <>
-          {isLoading && <LoadingOverlay visible={true} />}
-          {error && (
-            <Alert title="Error!" color="red">
-              {getErrorMsg(error)}{' '}
-            </Alert>
+    <div className={classes.docMain}>
+      <Group position="apart" className={classes.docHeader}>
+        <Group position="left">
+          <SearchCmdBar title="" searchStr={search} OnSearch={(v) => setSearch(v)} OnRefresh={() => refetch()} OnCreate={() => selectRow(undefined)} canCreate={false} />
+        </Group>
+        <Group position="left" spacing={1}>
+        <Button color="dotars" compact onClick={() => selectRow(undefined)} disabled={selection === undefined}>
+              New
+            </Button>
+          {isNew && (
+            <Button color="dotars" compact onClick={onCreate}>
+              Save
+            </Button>
           )}
-          {isSuccess && data && (
-            <Card withBorder p="lg" className={classes.listView} sx={{ margin: 10 }}>
-              <Card.Section className={classes.cardHeader}>
-                <SearchCmdBar title="" searchStr={search} OnSearch={(v) => setSearch(v)} OnRefresh={() => refetch()} OnCreate={() => selectRow(undefined)} canCreate={true} />
-              </Card.Section>
-              <Card.Section className={classes.cardContent}>
-                <ScrollArea sx={{ height: '76vh' }} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
-                  <Table sx={{}} verticalSpacing="xs" width={150}>
-                    <tbody>{rows}</tbody>
-                  </Table>
-                </ScrollArea>
-              </Card.Section>
-            </Card>
+          {!isNew && (
+            <>
+              <Button color="dotars" compact onClick={onUpdate}>
+                Update
+              </Button>
+              <ConfirmBtn color="red" style={{ marginLeft: 10 }} compact OnOk={onClickDelete} disabled={false} btnTxt="Delete" confirmTxt="Are you sure you want to delete?" />
+            </>
           )}
-        </>
-      </Grid.Col>
-      <Grid.Col span={9} style={{ minHeight: 280, padding: 5 }}>
-        <LoadingOverlay visible={loading} />
-        <Card.Section className={classes.cardHeader}>
-          <Group spacing="sm" position="apart">
-            <Group spacing="sm" position="left">
-              <div>
-                <Text size="sm" weight={500}>
-                  {/* <div>
-                          {ectx?.entity === undefined && `New ${rx.name}`}
-                          {ectx?.entity && (ectx.entity as INamedRecord) && `${(ectx.entity as INamedRecord).name}`}
-                        </div> */}
-                </Text>
+        </Group>
+      </Group>
+      <Grid className={classes.docContent}>
+        <Grid.Col span={3} style={{ minHeight: 280, padding: 10 }}>
+          <>
+            {isLoading && <LoadingOverlay visible={true} />}
+            {error && (
+              <Alert title="Error!" color="red">
+                {getErrorMsg(error)}{' '}
+              </Alert>
+            )}
+            {isSuccess && data && (
+              <div className={classes.listView}>
+                <div className={classes.cardContent}>
+                  <ScrollArea sx={{ height: '76vh' }} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
+                    <Table sx={{backgroundColor:'white'}} verticalSpacing={1}>
+                      <tbody>{rows}</tbody>
+                    </Table>
+                  </ScrollArea>
+                </div>
               </div>
-            </Group>
-            <Group spacing={0} position="right">
-              {isNew && (
-                <Button color="dotars" compact onClick={onCreate}>
-                  Create
-                </Button>
-              )}
-              {!isNew && (
-                <Button color="dotars" compact onClick={onUpdate}>
-                  Update
-                </Button>
-              )}
-            </Group>
-          </Group>
-        </Card.Section>
-        <form onSubmit={form.onSubmit(handleSubmit)} className={classes.form}>
-          <button hidden={true} ref={refSub} type={'submit'} />
-          <TextInput required label="Title" placeholder="Title" {...form.getInputProps('title')} />
-          <RichTextEditor ref={editorRef} value={notes} onChange={onNoteChange} sx={{ marginTop: 10, height: 650 }}
-           controls={[
-             ['clean'],
-            ['bold', 'italic', 'underline', 'link'],
-            [ 'h1', 'h2', 'h3']
-          ]}
-          />
-        </form>
-      </Grid.Col>
-    </Grid>
+            )}
+          </>
+        </Grid.Col>
+        <Grid.Col span={9}>
+          <div>
+            
+            <form onSubmit={form.onSubmit(handleSubmit)} className={classes.form}>
+            <LoadingOverlay visible={loading} />
+              <button hidden={true} ref={refSub} type={'submit'} />
+              <TextInput required label="Title" placeholder="Title" {...form.getInputProps('title')} />
+              <RichTextEditor ref={editorRef} value={notes} onChange={onNoteChange} sx={{ marginTop: 10, height: 650 }} controls={[['clean'], ['bold', 'italic', 'underline', 'link'], ['h1', 'h2', 'h3']]} />
+            </form>
+          </div>
+        </Grid.Col>
+      </Grid>
+    </div>
   );
 };

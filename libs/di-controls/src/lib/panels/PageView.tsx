@@ -18,10 +18,12 @@ export const PageView: React.FC<IPageViewProps> = (rx) => {
   return (
     <QueryClientProvider client={queryClient}>
       <EntityCtxProvider>
-        <Card withBorder className={classes.Card}>
+        {/* <Card className={classes.Card}> */}
           <PanelHeader title={rx.title} desc={rx.desc} icon={rx.icon} renderCmds={rx.renderCmds} />
-          <Card.Section className={classes.Content} style={{minHeight:height-160}}>{rx.children}</Card.Section>
-        </Card>
+           <Card.Section className={classes.Content} style={{paddingTop:10,minHeight:height-160}}> 
+            {rx.children}
+            </Card.Section>
+         {/*</Card> */}
       </EntityCtxProvider>
       </QueryClientProvider>
   );

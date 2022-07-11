@@ -10,7 +10,7 @@ import { useQuery } from 'react-query';
 import { CellProps, Column } from 'react-table';
 import { ShowError, ShowInfo } from '../controls';
 import { DialogForm, DialogFormProvider, FormOpType, useDialogFormContext } from '../forms/DialogForm';
-import { getCodes } from './api';
+import { getCodes } from '../datagrid/api';
 import { DataTable } from './DataTable';
 
 export interface SubCodeTableProps<T extends IEntity> {

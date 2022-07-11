@@ -6,6 +6,7 @@ export const panelStyles = createStyles((theme) => ({
   Card: {
     display: 'flex',
     flexDirection: 'column',
+    padding:'3px !important',
     //height: '94vh',
     backgroundColor: 'white',
     borderRadius: '2px',
@@ -13,14 +14,21 @@ export const panelStyles = createStyles((theme) => ({
     transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)',
   },
   Header: {
-    padding: theme.spacing.xs,
-    borderBottom: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]}`,
+    padding: '0px 10px',
+
+    borderBottom: `1px solid  ${theme.colors['gray'][3]}`,
     flexBasis: '50px',
   },
+  FormHeader: {
+    padding: 10,
+
+    borderBottom: `1px solid  ${theme.colors['gray'][3]}`,
+    flexBasis: '50px',
+  },
+  TabPane:{  paddingLeft:15},
   Content: {
     background: 'white',
-  //  flexGrow: '1',
-    padding: 8
+    padding: 4
   },
   Footer: {
     flexBasis: '50px',

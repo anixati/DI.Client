@@ -18,23 +18,11 @@ export const PanelHeader: React.FC<PanelHeaderProps> = (rx) => {
 
   return (
     <Card.Section className={classes.Header}>
-      <Group spacing="sm" position="apart">
+      <Group spacing={0} position="apart">
         <Group spacing={0} position="left">
           <ActionIcon size="xl" variant="hover" color="cyan" onClick={()=>{navigate(-1)}}>
             <ArrowLeft />
           </ActionIcon>
-          {/* <Avatar
-            styles={{
-              root: { color: '#071E3E' },
-              image: { color: '#071E3E' },
-              placeholder: { color: '#071E3E' },
-              placeholderIcon: { color: '#071E3E' },
-            }}
-            radius="sm"
-            size={45}
-          >
-            {rx.icon}
-          </Avatar> */}
           <div style={{marginLeft:10}}>
             <Text size="sm" color="dotars" weight={500}>
               {rx.title}
@@ -47,7 +35,7 @@ export const PanelHeader: React.FC<PanelHeaderProps> = (rx) => {
             </Group>
           </div>
         </Group>
-        <Group position="right" spacing={3}>
+        <Group position="right" spacing={5}>
           {rx.renderCmds && rx.renderCmds()}
         </Group>
       </Group>

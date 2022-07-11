@@ -3,7 +3,7 @@ import { ActionIcon, Anchor, Box, Button, Group, InputWrapper, Modal ,Text} from
 import { createRef, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, X } from 'tabler-icons-react';
-import { SchemaListRef, SchemaListTable } from '../../tables';
+import { SchemaListRef, SchemaListTable } from '../../datagrid';
 import { ISchemaFieldProps } from './SchemaFieldFactory';
 
 export const LookupControl = (rx: ISchemaFieldProps) => {

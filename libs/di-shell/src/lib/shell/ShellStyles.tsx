@@ -2,63 +2,35 @@ import { createStyles } from '@mantine/core';
 
 export const shellStyles = createStyles((theme) => ({
   header: {
+    paddingTop:5,
+    paddingBottom:0,
     paddingLeft: theme.spacing.md,
     paddingRight: theme.spacing.md,
     backgroundColor: '#071E3E', //theme.colors[theme.primaryColor][9],
   },
-
-  inner: {
-    height: 56,
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-
   links: {
-    [theme.fn.smallerThan('md')]: {
-      display: 'none',
-    },
   },
 
   search: {
-    [theme.fn.smallerThan('xs')]: {
-      display: 'none',
-    },
+   
   },
 
   link: {
     display: 'block',
     lineHeight: 1,
     padding: '8px 12px',
-    borderRadius: theme.radius.sm,
+    borderRadius: 0,
     textDecoration: 'none',
     color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[0],
     fontSize: theme.fontSizes.sm,
     fontWeight: 500,
 
     '&:hover': {
-      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[9],
+      backgroundColor: 'cyan',
+      color:'black'
     },
   },
 
-  userActive: {
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
-  },
-  userMenu: {
-    [theme.fn.smallerThan('xs')]: {
-      display: 'none',
-    },
-  },
-  user: {
-    color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[5],
-    padding: `${theme.spacing.xs}px ${theme.spacing.sm}px`,
-    borderRadius: theme.radius.sm,
-    transition: 'background-color 100ms ease',
-
-    '&:hover': {
-      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[5],
-    },
-  },
 
   linkActive: {
     '&, &:hover': {

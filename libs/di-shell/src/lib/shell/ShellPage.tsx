@@ -54,10 +54,10 @@ export const ShellPage: React.FC<SecurityCtx> = (rx) => {
     <AppShell
       styles={{
         main: {
-          backgroundColor: theme.colors['gray'][1],
+         // backgroundColor: theme.colors['gray'][1],
         },
       }}
-      padding={8}
+      padding={0}
       navbarOffsetBreakpoint="sm"
       asideOffsetBreakpoint="sm"
       fixed
