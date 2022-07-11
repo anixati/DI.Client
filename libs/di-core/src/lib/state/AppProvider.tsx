@@ -59,6 +59,10 @@ export const AppProvider: React.FC<AppProviderProps> = (rx) => {
     setSiteMap([]);
   };
 
+  const [navClose, setNavClose] = useState<boolean>(false);
+  const showNav = (flag: boolean) => {
+    setNavClose(flag); 
+  };
   return (
     <AppContext.Provider
       value={{
@@ -77,6 +81,8 @@ export const AppProvider: React.FC<AppProviderProps> = (rx) => {
         sideNav,
         logout,
         setSiteData,
+        navClose,
+        showNav
       }}
     >
       {rx.children}

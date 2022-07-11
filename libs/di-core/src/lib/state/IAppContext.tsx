@@ -19,10 +19,13 @@ export interface IAppContext {
     sideNav?:NavLink;
     logout?: () => void;
     setSiteData?: (sitemap: NavLink[]) => void;
+    navClose:boolean;
+    showNav?: (flag: boolean) => void;
 }
 
 
 export const defaultAppState: IAppContext = {
+    navClose:false,
     loading: false,
     theme: "default",
     navRoot:"/",

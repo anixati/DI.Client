@@ -2,7 +2,7 @@ import { NavLink, useAppContext } from '@dotars/di-core';
 import { Box, ChevronIcon, Collapse, Group, Navbar, ScrollArea, Text, ThemeIcon, UnstyledButton } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { FileAnalytics } from 'tabler-icons-react';
+import { Bookmark, FileAnalytics } from 'tabler-icons-react';
 import { shellStyles } from './ShellStyles';
 
 export function SideNavGroup(item: NavLink) {
@@ -52,7 +52,7 @@ export function SideNavGroup(item: NavLink) {
                 },
               })}
             >
-              <FileAnalytics size={18} />
+              <Bookmark size={16} />
             </ThemeIcon>
             <Box ml="md">{item.label}</Box>
           </Box>
@@ -85,9 +85,9 @@ export function SideNavGroup(item: NavLink) {
 
 export function NavbarNested() {
   const { classes } = shellStyles();
-  const [opened] = useState(false);
-  const { sideNav } = useAppContext();
+  const { sideNav, navClose } = useAppContext();
 
+  const [opened, setOpened] = useState<boolean>(false);
   // const location = useLocation();
   // useEffect(() => {
   //   //if (rootNav?.length === 0) onLogout();
@@ -95,15 +95,17 @@ export function NavbarNested() {
   //   if (setNavRoot) setNavRoot(xp.indexOf('/', 1) > 0 ? xp.substring(0, xp.indexOf('/', 1)) : xp);
   // }, []);
 
-
-  if (sideNav === undefined)return <></>;
-
   const items = sideNav?.links && sideNav.links.map((x) => <SideNavGroup {...x} key={x.label} />);
   return (
-    <Navbar p="md" hiddenBreakpoint="sm" hidden={!opened} width={{ sm: 200, lg: 200 }} className={classes.navbar}>
-      <Navbar.Section grow className={classes.navbar_links} component={ScrollArea}>
-        <div className={classes.navbar_linksInner}>{items}</div>
-      </Navbar.Section>
-    </Navbar>
+    // eslint-disable-next-line react/jsx-no-useless-fragment
+    <>
+      {navClose && sideNav && (
+        <Navbar p="md" hiddenBreakpoint="sm"  width={{ sm: 150, lg: 150 }} className={classes.navbar}>
+          <Navbar.Section grow className={classes.navbar_links} component={ScrollArea}>
+            <div className={classes.navbar_linksInner}>{items}</div>
+          </Navbar.Section>
+        </Navbar>
+      )}
+    </>
   );
 }
