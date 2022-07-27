@@ -43,7 +43,8 @@
     "./src/lib/panels/SplitPageView.tsx",
     "./src/lib/dynamic/IActionFormBtnProps.tsx",
     "./src/lib/datagrid/SchemaTable.tsx",
-    "./src/lib/datagrid/SchemaListTable.tsx"
+    "./src/lib/datagrid/SchemaListTable.tsx",
+    "./src/lib/dynamic/fields/FieldStyles.tsx"
   ],
   "exclude": [
     "**/*.spec.ts",

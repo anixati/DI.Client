@@ -10,6 +10,7 @@ export interface IPageViewProps {
   icon?: ReactNode;
   desc: string;
   renderCmds?: () => ReactNode;
+  hideNavbtn?: boolean;
 }
 export const PageView: React.FC<IPageViewProps> = (rx) => {
   const { classes } = panelStyles();
@@ -19,7 +20,7 @@ export const PageView: React.FC<IPageViewProps> = (rx) => {
     <QueryClientProvider client={queryClient}>
       <EntityCtxProvider>
         {/* <Card className={classes.Card}> */}
-          <PanelHeader title={rx.title} desc={rx.desc} icon={rx.icon} renderCmds={rx.renderCmds} />
+          <PanelHeader title={rx.title} desc={rx.desc} icon={rx.icon} renderCmds={rx.renderCmds} hideNavbtn={rx.hideNavbtn} />
            <Card.Section className={classes.Content} style={{paddingTop:10,minHeight:height-160}}> 
             {rx.children}
             </Card.Section>

@@ -14,7 +14,7 @@ import { getViewSchemaData, submitChangeForm, submiUpdateForm } from './api';
 import { PageInfo } from './Context';
 import { HeaderFieldFactory } from './fields/HeaderFieldFactory';
 import { SchemaFieldFactory } from './fields/SchemaFieldFactory';
-import { SchemaFieldGroup } from './fields/SchemaFieldGroup';
+import { SchemaFieldGroup, SchemaFieldItem } from './fields/SchemaFieldGroup';
 import { SubgridControl } from './fields/Subgrid';
 import { buildYupObj } from './Validation';
 
@@ -117,12 +117,6 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
     return [...pages];
     //    return [...pages, { id: 'documents', title: 'Documents', desc: 'documents & links', state: 'INIT' }];
   }, [rx]);
-
-  // const headers = useMemo<IFormSchemaField[] | undefined>(() => {
-  //   const fs = rx.result.schema.fields.filter((x) => x.layout === 6);
-  //   if (fs && fs.length > 0) return fs[0].fields;
-  //   return undefined;
-  // }, [rx.result.schema]);
   /* #endregion */
 
   /* #region  Effects */
@@ -357,7 +351,7 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
   /* #endregion */
 
   return (
-    <div >
+    <div>
       <LoadingOverlay visible={loading} />
       <RenderButtons />
       <div className={classes.FormHeader}>
@@ -380,27 +374,28 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
           </Group>
         </Group>
       </div>
-      <div className={classes.Content} >
+      <div className={classes.Content}>
         <Tabs position="left" color="cyan" tabPadding="sm" active={tab} onTabChange={setTab} style={{ fontWeight: 500, minHeight: 550 }}>
           {tabs &&
             tabs.length > 0 &&
             tabs.map((tb) => {
               return (
-                <Tabs.Tab key={tb.title} label={tb.title} title={tb.desc} icon={<Bookmark size={16} />}  >
-                  
-                  {tab < tabs.length &&
-                    rx.tabs[tab].fields.map((field) => {
-                      switch (field.layout) {
-                        case 2:
-                          return <div className={classes.TabPane}><SchemaFieldGroup key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} disabled={entity.locked || entity.disabled} /></div>;
-                        case 4:
-                          return <Divider key={field.key} title={field.title} style={{ marginTop: 15 }} />;
-                        case 5:
-                          return <SubgridControl key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} disabled={entity.locked || entity.disabled} />;
-                        default:
-                          return <div className={classes.TabPane}><SchemaFieldFactory key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} disabled={entity.locked || entity.disabled} /></div>;
-                      }
-                    })}
+                <Tabs.Tab key={tb.title} label={tb.title} title={tb.desc} icon={<Bookmark size={16} />}>
+                  <div className={classes.TabPane}>
+                    {tab < tabs.length &&
+                      rx.tabs[tab].fields.map((field) => {
+                        switch (field.layout) {
+                          case 2:
+                            return <SchemaFieldGroup key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} disabled={entity.locked || entity.disabled} />;
+                          case 4:
+                            return <Divider key={field.key} label={field.title} style={{ marginTop: 15 }} />;
+                          case 5:
+                            return <SubgridControl key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} disabled={entity.locked || entity.disabled} />;
+                          default:
+                            return <SchemaFieldItem key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} disabled={entity.locked || entity.disabled} />;
+                        }
+                      })}
+                  </div>
                 </Tabs.Tab>
               );
             })}

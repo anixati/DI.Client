@@ -1,2 +1,2 @@
-export * from './pages';
+export * from './Dashboard';
 export * from './route';

@@ -223,7 +223,7 @@ export const WizardForm: React.FC<WizardFormProps> = (rx) => {
                       case 2:
                         return <SchemaFieldGroup key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} disabled={false} />;
                       case 4:
-                        return <Divider title={field.title} />;
+                        return <Divider key={field.key} label={field.title} style={{ marginTop: 15 }} />;
                       default:
                         return <SchemaFieldFactory key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} disabled={field.disabled} readonly={field.readonly}/>;
                     }

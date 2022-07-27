@@ -1,7 +1,7 @@
 import { DatePicker } from '@mantine/dates';
 import moment from 'moment';
 import { Calendar } from 'tabler-icons-react';
-import { ISchemaFieldProps } from './SchemaFieldFactory';
+import { FLDWIDTH, ISchemaFieldProps } from './SchemaFieldFactory';
 
 export const DatePickerControl = (rx: ISchemaFieldProps) => {
   const { field, fieldChanged, values, errors } = rx;
@@ -21,8 +21,7 @@ export const DatePickerControl = (rx: ISchemaFieldProps) => {
       label={field.title}
       disabled={rx.disabled}
       placeholder={field.title}
-      style={{ marginTop: 10, width: `${field?.width ? field.width - 5 : 50}%` }}
-      //value={values[rx.field.key]}
+      style={{ marginTop: 10, width: `${rx.width ? rx.width  : FLDWIDTH}%` }}
       value={values[rx.field.key] ? new Date(Date.parse(values[rx.field.key])) : null}
       size="xs"
       error={errors[rx.field.key]}

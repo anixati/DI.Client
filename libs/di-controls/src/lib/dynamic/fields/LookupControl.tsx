@@ -4,7 +4,7 @@ import { createRef, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, X } from 'tabler-icons-react';
 import { SchemaListRef, SchemaListTable } from '../../datagrid';
-import { ISchemaFieldProps } from './SchemaFieldFactory';
+import { FLDWIDTH, ISchemaFieldProps } from './SchemaFieldFactory';
 
 export const LookupControl = (rx: ISchemaFieldProps) => {
   const { field, fieldChanged, values, errors } = rx;
@@ -62,7 +62,8 @@ export const LookupControl = (rx: ISchemaFieldProps) => {
         />
       </Modal>
 
-      <InputWrapper required={field.required ? field.required : false} label={field.title} size="xs" placeholder={`Please select ${field.title}`} style={{ marginTop: 10, width: `${field?.width ? field.width - 5 : 50}%` }} error={errors[rx.field.key]}>
+      <InputWrapper required={field.required ? field.required : false} label={field.title} size="xs" placeholder={`Please select ${field.title}`} 
+        style={{ marginTop: 10, width: `${rx.width ? rx.width  : FLDWIDTH}%` }} error={errors[rx.field.key]}>
         <Box style={{ width: '100%', border: '1px solid #CED4DA', height: 30, lineHeight: 28, fontSize: 12, display: 'block', paddingLeft: 10, paddingRight: 10, paddingTop: 5, borderRadius: 3 }}>
           <Group spacing={1} position="apart">
             <Group spacing={1} position="left">

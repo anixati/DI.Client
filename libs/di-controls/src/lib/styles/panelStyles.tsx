@@ -25,7 +25,10 @@ export const panelStyles = createStyles((theme) => ({
     borderBottom: `1px solid  ${theme.colors['gray'][3]}`,
     flexBasis: '50px',
   },
-  TabPane:{  paddingLeft:15},
+  TabPane:{  
+    paddingLeft:30,
+    paddingRight:30
+  },
   Content: {
     background: 'white',
     padding: 4

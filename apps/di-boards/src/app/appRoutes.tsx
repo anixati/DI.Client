@@ -1,7 +1,7 @@
-import { AppMain } from '@dotars/di-shell';
+  import { AppMain } from '@dotars/di-shell';
 import { Outlet, Route } from 'react-router-dom';
 import { LandingPage } from './LandingPage';
-import { AdminLayout, AdminRouteList, BoardRouteList, BoardsLayout, DashboardPage, ReportLayout, ReportRouteList } from './pages';
+import { AdminLayout, AdminRouteList, BoardRouteList, BoardsLayout, DashboardPage, ReportDashboard, ReportLayout, ReportRouteList } from './pages';
 import { OptionsPage } from './pages/admin/refdata';
 
 const RootLayout: React.FC = () => {
@@ -18,6 +18,7 @@ export const AppRoutes: React.FC = () => {
           {BoardRouteList}
         </Route>
         <Route path="reports" element={<ReportLayout />}>
+          <Route index element={<ReportDashboard />} />
           {ReportRouteList}
         </Route>
         <Route path="admin" element={<AdminLayout />}>

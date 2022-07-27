@@ -1,6 +1,7 @@
 import { AppProvider } from '@dotars/di-core';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { AppRoutes } from './app/appRoutes';
-import { env } from './env'
+import { env } from './env';
 export function App() {
   // const appSettings = {
   //   baseApiurl: 'https://localhost:44320/brds/v1',
@@ -19,12 +20,14 @@ export function App() {
     oidc_responseType: 'id_token token',
     oidc_scope: 'openid profile boardsapi',
   };
-
+  const queryClient = new QueryClient();
 
   return (
-    <AppProvider settings={appSettings} title="Boards">
-      <AppRoutes />
-    </AppProvider>
+    <QueryClientProvider client={queryClient}>
+      <AppProvider settings={appSettings} title="Boards">
+        <AppRoutes />
+      </AppProvider>
+    </QueryClientProvider>
   );
 }
 

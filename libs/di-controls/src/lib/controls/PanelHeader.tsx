@@ -12,6 +12,7 @@ export interface PanelHeaderProps {
   desc?: string;
   renderStatus?: () => ReactNode;
   renderCmds?: () => ReactNode;
+  hideNavbtn?: boolean;
 }
 
 export const PanelHeader: React.FC<PanelHeaderProps> = (rx) => {
@@ -20,11 +21,12 @@ export const PanelHeader: React.FC<PanelHeaderProps> = (rx) => {
   const  ct = useNavigationType();
   const { navClose, showNav } = useAppContext();
   const { toggle, fullscreen } = useFullscreen();
-  
+  const showNavBtn = (rx.hideNavbtn !== undefined? !rx.hideNavbtn:true)
   return (
     <Card.Section className={classes.Header}>
       <Group spacing={0} position="apart">
         <Group spacing={0} position="left">
+         {showNavBtn &&(
           <ActionIcon
             size="lg"
             variant="hover"
@@ -35,7 +37,7 @@ export const PanelHeader: React.FC<PanelHeaderProps> = (rx) => {
           >
            {navClose && <ArrowAutofitLeft />}
            {!navClose && <ArrowAutofitRight />}
-          </ActionIcon>
+          </ActionIcon>)}
           <ActionIcon
             size="lg"
             variant="hover"

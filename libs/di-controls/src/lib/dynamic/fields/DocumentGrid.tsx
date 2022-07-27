@@ -32,11 +32,11 @@ const useStyles = createStyles((theme) => ({
     height: '83vh',
   },
   card: {
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+    backgroundColor: theme.white,
   },
   cardHeader: {
     padding: 6,
-    borderBottom: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]}`,
+    borderBottom: `1px solid ${theme.colors['gray'][3]}`,
   },
   rowSelected: {
     backgroundColor: theme.colors[theme.primaryColor][1],
@@ -45,7 +45,7 @@ const useStyles = createStyles((theme) => ({
   cardContent: {},
   form: {
     padding: 8,
-    borderBottom: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[3] : theme.colors.gray[2]}`,
+    borderBottom:`1px solid ${theme.colors['gray'][3]}`,
   },
 }));
 

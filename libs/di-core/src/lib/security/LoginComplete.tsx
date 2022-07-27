@@ -69,34 +69,15 @@ const SiteMapLoader: React.FC = (rx) => {
     </Async>
   );
 
-  //   const { isLoading, error, data, isSuccess } = useQuery('sitemap', async () => await getSitemap(), { retry: 3, keepPreviousData: false, staleTime: Infinity });
-  //   if (isLoading) return <Notification loading title="Loading site data. please wait ..." disallowClose></Notification>;
-
-  //   if (error)
-  //     return (
-  //       <Notification title="Failed loading site data" disallowClose>
-  //         <Group position="left">
-  //           <AlertCircle size={32} color="red" />
-  //           <Text color="red" size="lg">
-  //             {getErrorMsg(error)}
-  //           </Text>
-  //         </Group>
-  //       </Notification>
-  //     );
-  //   if (isSuccess && data) {
-  //     if(data.navigation)
-  //     setRootNav(data.navigation);
-  // //    SiteUi.Initialize(data);
-  //      return <Navigate to={redirectTo} />;
-  //   }
-  //   return <>..</>;
 };
 
 export const LoginComplete: React.FC<SecurityCtx> = (rx) => {
+
   const completeLogin = useCallback(async () => {
     await removeBearerToken();
     const user = await rx.manager.signinCallback();
     if (!user) {
+      
       throw new Error('login failed');
     }
     await rx.manager.storeUser(user);
