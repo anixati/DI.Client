@@ -1,8 +1,12 @@
 import { Select } from '@mantine/core';
 import { FLDWIDTH, ISchemaFieldProps } from './SchemaFieldFactory';
+import kvJson from '../data/lists.json';
 
-export const PicklistControl = (rx: ISchemaFieldProps) => {
+export type KeyValType = typeof kvJson;
+
+export const TextlistControl = (rx: ISchemaFieldProps) => {
   const { field, fieldChanged, values, errors } = rx;
+  const data = kvJson.find((x) => x.key === field.viewId);
   return (
     <Select
       required={field.required ? field.required : false}
@@ -14,15 +18,13 @@ export const PicklistControl = (rx: ISchemaFieldProps) => {
       clearable={!rx.disabled}
       disabled={rx.disabled}
       placeholder={`Select one option`}
-      style={{ marginTop: 10, width: `${rx.width ? rx.width  : FLDWIDTH}%` }}
+      style={{ marginTop: 10, width: `${rx.width ? rx.width : FLDWIDTH}%` }}
       value={values[rx.field.key]}
       error={errors[rx.field.key]}
       onChange={(v) => fieldChanged(rx.field.key, v)}
       size="xs"
-      data={field.options ? field.options : []}
+      data={data ? data.values : []}
+      defaultValue={field.options}
     />
   );
 };
-
-
-

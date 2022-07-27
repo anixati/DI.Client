@@ -2,11 +2,12 @@ import { IFormSchemaField } from '@dotars/di-core';
 import { NumberInput, Select, Textarea, TextInput } from '@mantine/core';
 import { LookupControl } from './LookupControl';
 import { PicklistControl } from './PicklistControl';
-import { DecimalControl, NumericControl } from "./DecimalControl";
-import { RadioGroupControl } from "./RadioGroupControl";
-import { DatePickerControl } from "./DatePickerControl";
+import { DecimalControl, NumericControl } from './DecimalControl';
+import { RadioGroupControl } from './RadioGroupControl';
+import { DatePickerControl } from './DatePickerControl';
+import { TextlistControl } from './TextlistControl';
 
-export const FLDWIDTH=100;
+export const FLDWIDTH = 100;
 export interface ISchemaFieldProps {
   field: IFormSchemaField;
   fieldChanged: (key: string, value: any) => void;
@@ -14,7 +15,7 @@ export interface ISchemaFieldProps {
   errors: Record<string, any>;
   disabled: boolean;
   readonly?: boolean;
-  width?:number;
+  width?: number;
 }
 
 export const SchemaFieldFactory = (rx: ISchemaFieldProps) => {
@@ -35,7 +36,7 @@ export const SchemaFieldFactory = (rx: ISchemaFieldProps) => {
           //style={{ marginTop: 10 }}
           value={values[rx.field.key]}
           error={errors[rx.field.key]}
-          style={{ marginTop: 10, width: `${rx.width ? rx.width  : 100}%` }}
+          style={{ marginTop: 10, width: `${rx.width ? rx.width : 100}%` }}
           onChange={(e) => fieldChanged(rx.field.key, e.currentTarget.value)}
           size="xs"
           autosize
@@ -43,7 +44,7 @@ export const SchemaFieldFactory = (rx: ISchemaFieldProps) => {
         />
       );
     case 2:
-      return <NumericControl {...rx}/>;
+      return <NumericControl {...rx} />;
     case 3:
       return <RadioGroupControl {...rx} />;
     case 6:
@@ -62,7 +63,7 @@ export const SchemaFieldFactory = (rx: ISchemaFieldProps) => {
           disabled={rx.disabled}
           label={field.title}
           placeholder={`Select one option`}
-          style={{ marginTop: 10, width: `${rx.width ? rx.width  : 100}%` }}
+          style={{ marginTop: 10, width: `${rx.width ? rx.width : 100}%` }}
           value={values[rx.field.key]}
           error={errors[rx.field.key]}
           onChange={(v) => fieldChanged(rx.field.key, v)}
@@ -74,6 +75,8 @@ export const SchemaFieldFactory = (rx: ISchemaFieldProps) => {
       return <LookupControl {...rx} />;
     case 9:
       return <PicklistControl {...rx} />;
+    case 12:
+      return <TextlistControl {...rx} />;
     default:
       return (
         <TextInput
@@ -84,7 +87,7 @@ export const SchemaFieldFactory = (rx: ISchemaFieldProps) => {
           styles={{
             disabled: { opacity: '0.9 !important', color: 'black !important', backgroundColor: '#f9fafb !important' },
           }}
-          style={{ marginTop: 10, width: `${rx.width ? rx.width  : 100}%` }}
+          style={{ marginTop: 10, width: `${rx.width ? rx.width : 100}%` }}
           error={errors[rx.field.key]}
           value={values[rx.field.key]}
           onChange={(e) => fieldChanged(rx.field.key, e.currentTarget.value)}
