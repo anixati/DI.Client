@@ -1,9 +1,9 @@
 import { useAppContext } from '@dotars/di-core';
-import { ActionIcon, Avatar, Button, Card, Group, Text } from '@mantine/core';
+import { ActionIcon, Card, Group, Text } from '@mantine/core';
 import { useFullscreen } from '@mantine/hooks';
 import { ReactNode } from 'react';
 import { useNavigate, useNavigationType } from 'react-router-dom';
-import { ArrowAutofitLeft, ArrowAutofitRight, ArrowLeft, AspectRatio, Maximize, MaximizeOff } from 'tabler-icons-react';
+import { ArrowLeft, LayoutSidebarLeftExpand, LayoutSidebarRightExpand, Maximize, MaximizeOff } from 'tabler-icons-react';
 import { panelStyles } from '../styles';
 
 export interface PanelHeaderProps {
@@ -35,8 +35,8 @@ export const PanelHeader: React.FC<PanelHeaderProps> = (rx) => {
               if (showNav) showNav(!navClose);
             }}
           >
-           {navClose && <ArrowAutofitLeft />}
-           {!navClose && <ArrowAutofitRight />}
+           {navClose && <LayoutSidebarRightExpand />}
+           {!navClose && <LayoutSidebarLeftExpand />}
           </ActionIcon>)}
           <ActionIcon
             size="lg"

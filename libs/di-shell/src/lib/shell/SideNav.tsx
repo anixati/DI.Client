@@ -1,8 +1,8 @@
 import { NavLink, useAppContext } from '@dotars/di-core';
 import { Box, ChevronIcon, Collapse, Group, Navbar, ScrollArea, Text, ThemeIcon, UnstyledButton } from '@mantine/core';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Bookmark, FileAnalytics } from 'tabler-icons-react';
+import { Bookmark, Components } from 'tabler-icons-react';
 import { shellStyles } from './ShellStyles';
 
 export function SideNavGroup(item: NavLink) {
@@ -52,7 +52,7 @@ export function SideNavGroup(item: NavLink) {
                 },
               })}
             >
-              <Bookmark size={16} />
+              <Components size={16} />
             </ThemeIcon>
             <Box ml="md">{item.label}</Box>
           </Box>

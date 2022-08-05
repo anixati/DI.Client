@@ -18,6 +18,14 @@ export const SchemaFieldGroup = (rx: ISchemaFieldProps) => {
       width =24;
       break;
     }
+    case 5: {
+      width =18;
+      break;
+    }
+    case 6: {
+      width =14;
+      break;
+    }
     default: {
       width = 100;
       break;

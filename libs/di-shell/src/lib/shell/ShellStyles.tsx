@@ -40,7 +40,7 @@ export const shellStyles = createStyles((theme) => ({
   },
 
   navbar: {
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.white,
+    backgroundColor: theme.colors['gray'][1],
     paddingBottom: 0,
   },
   navbar_header: {
