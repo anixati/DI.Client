@@ -392,7 +392,7 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
                           case 5:
                             return <SubgridControl key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} disabled={entity.locked || entity.disabled} />;
                           default:
-                            return <SchemaFieldItem key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} disabled={entity.locked || entity.disabled} />;
+                            return <SchemaFieldItem key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} disabled={entity.locked || entity.disabled } />;
                         }
                       })}
                   </div>

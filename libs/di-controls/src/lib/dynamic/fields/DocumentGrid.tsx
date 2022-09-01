@@ -313,6 +313,9 @@ export const DocumentGrid = (rx: ISchemaFieldProps) => {
           ShowError('Failed to change state', `${data.messages}`);
         } else {
           ShowInfo('Success', `Deleted Succesfully`);
+          setOriginal(undefined);
+          form.reset();
+          setEditorVal('');
           refetch();
         }
       }

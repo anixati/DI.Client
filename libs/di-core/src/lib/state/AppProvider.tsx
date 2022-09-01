@@ -15,7 +15,7 @@ export const AppProvider: React.FC<AppProviderProps> = (rx) => {
   const [loading, setLoading] = useState(defaultAppState.loading);
   const [settings] = useState<AppSettings>({ ...rx.settings });
   const [sideNav, setSideNav] = useState<NavLink | undefined>(undefined);
-
+console.log('----',rx.settings)
   axios.defaults.baseURL = rx.settings.baseApiurl;
   const changeTheme = (name: string) => {
     setTheme(name);

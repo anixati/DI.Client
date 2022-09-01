@@ -81,7 +81,7 @@ export const SchemaFieldFactory = (rx: ISchemaFieldProps) => {
       return (
         <TextInput
           required={field.required ? field.required : false}
-          disabled={rx.disabled}
+          disabled={rx.disabled || field.disabled}
           label={field.title}
           placeholder={ph}
           styles={{

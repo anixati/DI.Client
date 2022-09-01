@@ -21,7 +21,7 @@ export const shellStyles = createStyles((theme) => ({
     padding: '8px 12px',
     borderRadius: 0,
     textDecoration: 'none',
-    color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[0],
+    color: 'cyan',
     fontSize: theme.fontSizes.sm,
     fontWeight: 500,
 

@@ -44,7 +44,10 @@
       "executor": "@nrwl/web:dev-server",
       "options": {
         "buildTarget": "di-boards:build",
-        "hmr": true
+        "hmr": true,
+        "ssl": true,
+        "sslKey": "C:\\Temp\\Certs\\local-key.pem",
+        "sslCert": "C:\\Temp\\Certs\\local-cert.pem"
       },
       "configurations": {
         "production": {
