@@ -12,6 +12,7 @@ export const DatePickerControl = (rx: ISchemaFieldProps) => {
       fieldChanged(field.key, dtStr);
     }
   };
+  
   return (
     <DatePicker
       required={field.required ? field.required : false}
@@ -19,7 +20,7 @@ export const DatePickerControl = (rx: ISchemaFieldProps) => {
         disabled: { opacity: '0.9 !important', color: 'black !important', backgroundColor: '#f9fafb !important' },
       }}
       label={field.title}
-      disabled={rx.disabled}
+      disabled={rx.disabled || field.disabled}
       placeholder={field.title}
       style={{ marginTop: 10, width: `${rx.width ? rx.width  : FLDWIDTH}%` }}
       value={values[rx.field.key] ? new Date(Date.parse(values[rx.field.key])) : null}

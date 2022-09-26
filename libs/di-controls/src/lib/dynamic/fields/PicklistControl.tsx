@@ -12,7 +12,7 @@ export const PicklistControl = (rx: ISchemaFieldProps) => {
       label={field.title}
       nothingFound="No options"
       clearable={!rx.disabled}
-      disabled={rx.disabled}
+      disabled={rx.disabled || field.disabled}
       placeholder={`Select one option`}
       style={{ marginTop: 10, width: `${rx.width ? rx.width  : FLDWIDTH}%` }}
       value={values[rx.field.key]}

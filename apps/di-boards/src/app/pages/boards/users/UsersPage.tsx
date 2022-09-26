@@ -6,5 +6,5 @@ export const UsersPage: React.FC = () => {
   const { entityId } = useParams();
 
   return <SchemaForm title="User Details"  listUrl="/boards/appusers"
-  schema="appuser" entityId={entityId} icon={<Receipt />} canEdit={true} />;
+  schema="user" entityId={entityId} icon={<Receipt />} canEdit={true} />;
 };

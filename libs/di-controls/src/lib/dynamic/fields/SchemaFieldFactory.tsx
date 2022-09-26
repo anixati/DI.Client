@@ -31,7 +31,7 @@ export const SchemaFieldFactory = (rx: ISchemaFieldProps) => {
           styles={{
             disabled: { opacity: '0.9 !important', color: 'black !important', backgroundColor: '#f9fafb !important' },
           }}
-          disabled={rx.disabled}
+          disabled={rx.disabled || field.disabled}
           placeholder={ph}
           //style={{ marginTop: 10 }}
           value={values[rx.field.key]}
@@ -60,7 +60,7 @@ export const SchemaFieldFactory = (rx: ISchemaFieldProps) => {
           styles={{
             disabled: { opacity: '0.9 !important', color: 'black !important', backgroundColor: '#f9fafb !important' },
           }}
-          disabled={rx.disabled}
+          disabled={rx.disabled || field.disabled}
           label={field.title}
           placeholder={`Select one option`}
           style={{ marginTop: 10, width: `${rx.width ? rx.width : 100}%` }}
