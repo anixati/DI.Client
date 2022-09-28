@@ -1,7 +1,6 @@
 import { ISchemaDef, ISelectedItem } from '@dotars/di-core';
 import { ActionIcon, Center, Group, NativeSelect, Table, Text, TextInput } from '@mantine/core';
 import React, { forwardRef, ReactNode, useCallback, useContext, useEffect, useImperativeHandle, useMemo, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 import { usePagination, useRowSelect, useSortBy, useTable } from 'react-table';
 import { ChevronDown, ChevronUp, Refresh, Search, Selector } from 'tabler-icons-react';
 import { getTableData, SortInfo } from './api';
@@ -17,6 +16,7 @@ export interface RenderTableProps {
   entityId?: string;
   showHeader: boolean;
   cols: ColList;
+  selectedIds:string[];
 }
 
 export const RenderDataGrid = forwardRef<SchemaListRef, RenderTableProps>((rx, ref) => {
@@ -54,35 +54,18 @@ export const RenderDataGrid = forwardRef<SchemaListRef, RenderTableProps>((rx, r
     [schemaKey, pgSort, pgSearch]
   );
 
-  const location = useLocation();
   const memoizedColumns = useMemo(() => {
-    // let colList = rx.schema.columns.map((x) => {
-    //   if (x.type === 1) hiddenColumns.push(x.accessor);
-    //   if (x.type === 2) {
-    //     hiddenColumns.push(x.accessor);
-    //     return LinkCol(x, location.pathname);
-    //   }
-    //   if (x.type === 3) {
-    //     hiddenColumns.push(x.accessor);
-    //     return DateCol(x);
-    //   }
-    //   return { Header: x.Header, accessor: x.accessor, width: x.width };
-    // });
-    // //TODO: --- fix duplicate issue
-    // if (mode === 'LOOKUP') {
-    //   colList = [
-    //     {
-    //       id: 'selection',
-    //       accessor: `id`,
-    //       Header: '', //({ getToggleAllRowsSelectedProps }) => <div></div>,
-    //       Cell: ({ row }) => <SelectBox name={''} {...row.getToggleRowSelectedProps()} />,
-    //     },
-    //     ...colList,
-    //   ];
-    // }
-    // return colList;
-    return rx.cols.cols
+    return rx.cols.cols;
   }, [rx.cols.cols]);
+
+  const handlePreselect = () => {
+    const rval: Record<string, boolean> = {} as Record<string, boolean>;
+    if(rx.selectedIds && rx.selectedIds.length > 0)
+    rx.selectedIds.forEach((val) => {
+      rval[val] = true;
+    });
+    return rval;
+  };
 
   const {
     getTableProps,
@@ -115,7 +98,10 @@ export const RenderDataGrid = forwardRef<SchemaListRef, RenderTableProps>((rx, r
         }
         return newState;
       },
-      initialState: { pageIndex: pgIndex, pageSize: pgSize, sortBy: pgSort, hiddenColumns:rx.cols.hc },
+      initialState: { pageIndex: pgIndex, pageSize: pgSize, sortBy: pgSort, hiddenColumns: rx.cols.hc, selectedRowIds:handlePreselect() },
+      getRowId: (row) => {
+        return row.Id;
+      },
       manualPagination: true,
       pageCount: pgCount,
     },
@@ -160,6 +146,7 @@ export const RenderDataGrid = forwardRef<SchemaListRef, RenderTableProps>((rx, r
     if (value && value.length > 0) setPgSearch(value);
     else setPgSearch('');
   };
+
   const refresh = () => {
     fetchData(pageIndex, pageSize);
   };
@@ -211,7 +198,7 @@ export const RenderDataGrid = forwardRef<SchemaListRef, RenderTableProps>((rx, r
         </Group>
       </div>
       <div className={classes.dgContent}>
-        <Table sx={{ padding:5}} {...getTableProps()} verticalSpacing={6} fontSize="xs" horizontalSpacing={10} striped highlightOnHover>
+        <Table sx={{ padding: 5 }} {...getTableProps()} verticalSpacing={6} fontSize="xs" horizontalSpacing={10} striped highlightOnHover>
           <thead className={classes.tableheader}>
             {headerGroups.map((headerGroup) => {
               return (
@@ -224,7 +211,7 @@ export const RenderDataGrid = forwardRef<SchemaListRef, RenderTableProps>((rx, r
                             {column.render('Header')}
                           </Group>
                           <Group position="right" spacing={4}>
-                            {column.Header !== '' && <Center className={classes.tableicon}>{column.isSorted ? column.isSortedDesc ? <ChevronUp size={14} color="blue" /> : <ChevronDown size={14} color="blue"/> :''}</Center>}
+                            {column.Header !== '' && <Center className={classes.tableicon}>{column.isSorted ? column.isSortedDesc ? <ChevronUp size={14} color="blue" /> : <ChevronDown size={14} color="blue" /> : ''}</Center>}
                           </Group>
                         </Group>
                       </th>

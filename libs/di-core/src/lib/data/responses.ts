@@ -122,9 +122,17 @@ export interface IFormSchemaResult {
 }
 export interface IFormSchema {
   formType:number;
+  actions?: Array<IFormAction>;
   options?: Array<SelectItem>;
   name: string;
   fields: IFormSchemaField[];
+}
+
+export interface IFormAction {
+  visible:boolean;
+  label: string;
+  schema: string;
+  description?: string;
 }
 export interface IRule {
   type: string;

@@ -10,6 +10,7 @@ export interface SchemaListTableProps {
   renderCmds?: () => ReactNode;
   mode?: RenderMode;
   showHeader?: boolean;
+  selectedIds?:string[];
 }
 export const SchemaListTable = forwardRef<SchemaListRef, SchemaListTableProps>((rx, ref) => {
   const [schema, setSchema] = useState<string>(rx.schemas[0].value);
@@ -25,7 +26,10 @@ export const SchemaListTable = forwardRef<SchemaListRef, SchemaListTableProps>((
   };
   return (
     <SchemaContext.Provider value={{ mode, schema, schemas, changeSchema }}>
-      <SchemaTable ref={ref} schemaName={schema} renderCmds={rx.renderCmds} entityId={entityId} showHeader={rx.showHeader !== undefined ? rx.showHeader : true} />
+      <SchemaTable ref={ref} schemaName={schema} renderCmds={rx.renderCmds} entityId={entityId} 
+      showHeader={rx.showHeader !== undefined ? rx.showHeader : true} 
+      selectedIds={rx.selectedIds !== undefined?rx.selectedIds:[] as string[]}
+      />
     </SchemaContext.Provider>
   );
 });

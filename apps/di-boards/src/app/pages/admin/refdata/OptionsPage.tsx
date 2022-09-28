@@ -14,7 +14,7 @@ function renderForm(form: UseFormReturnType<ICodeRecord>): ReactNode {
     <Grid justify="space-between" className={classes.grid}>
       <Grid.Col span={6} className={classes.firstGrid}>
         <TextInput label="Name" required placeholder="Option set name" {...form.getInputProps('name')} />
-        <TextInput label="Code" variant="unstyled" disabled {...form.getInputProps('code')} />
+        <TextInput label="Code" variant="unstyled" {...form.getInputProps('code')} />
       </Grid.Col>
       <Grid.Col span={6}>
         <Textarea label="Description" placeholder="Description" {...form.getInputProps('description')} autosize minRows={3} maxRows={6} />
@@ -68,7 +68,7 @@ const OptionDetails: React.FC = () => {
       code: '',
     },
     validate: {
-      name: (value: string) => (value.length < 10 ? 'Name must have at least 10 letters' : null),
+      name: (value: string) => (value.length < 5 ? 'Name must have at least 5 letters' : null),
     },
   };
   const getConfig = (parentId: number): UseFormInput<OptionValue> => {

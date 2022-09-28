@@ -19,5 +19,5 @@ export const myTheme: MantineThemeOverride = {
     dotars: ['#071E3E', '#071E3E', '#071E3E', '#071E3E', '#071E3E', '#071E3E', '#071E3E', '#071E3E', '#071E3E', '#071E3E'],
   },
   primaryColor: 'blue',
-  defaultRadius: 3,
+  defaultRadius: 3
 };

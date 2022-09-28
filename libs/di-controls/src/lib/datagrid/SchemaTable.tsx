@@ -14,6 +14,7 @@ export interface SchemaTableProps {
   renderCmds?: () => ReactNode;
   entityId?: string;
   showHeader: boolean;
+  selectedIds:string[];
 }
 
 export const SchemaTable = forwardRef<SchemaListRef, SchemaTableProps>((rx, ref) => {
@@ -58,7 +59,10 @@ export const SchemaTable = forwardRef<SchemaListRef, SchemaTableProps>((rx, ref)
           {getErrorMsg(error)}{' '}
         </Alert>
       )}
-      {isSuccess && data && <RenderDataGrid ref={ref} queryKey={rx.schemaName} cols={createCols(data)} schema={data} renderCmds={rx.renderCmds} entityId={rx.entityId} showHeader={rx.showHeader} />}
+      {isSuccess && data && <RenderDataGrid ref={ref} queryKey={rx.schemaName} cols={createCols(data)}
+       schema={data} renderCmds={rx.renderCmds} 
+       selectedIds={rx.selectedIds}
+       entityId={rx.entityId} showHeader={rx.showHeader} />}
     </>
   );
 });

@@ -25,6 +25,7 @@ export const MultiSelectForm: React.FC<MultiSelectFormProps> = (rx) => {
     modals.closeModal(modalId);
   };
 
+
   const submitData = useCallback(async (values: ISelectedItem[]) => {
     try {
       setLoading(true);
@@ -55,6 +56,7 @@ export const MultiSelectForm: React.FC<MultiSelectFormProps> = (rx) => {
       }
     }
   };
+
   return (
     <>
       <LoadingOverlay visible={loading} />
@@ -63,11 +65,12 @@ export const MultiSelectForm: React.FC<MultiSelectFormProps> = (rx) => {
           mode="MULTISELECT"
           ref={listRef}
           schemas={rx.options}
+          selectedIds={rx.initialValues?Object.keys(rx.initialValues):[] as string[]}
           renderCmds={() => {
             return (
               <Group spacing={2}>
                 <Button compact color="dotars" onClick={onSelect}>
-                  Select
+                  Update
                 </Button>
                 <Button compact color="red" onClick={() => closeModal()}>
                   Close

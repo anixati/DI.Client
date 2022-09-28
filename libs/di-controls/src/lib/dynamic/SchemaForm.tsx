@@ -1,9 +1,9 @@
-import { getErrorMsg, IEntityState, IFormSchemaField } from '@dotars/di-core';
-import { Avatar, Badge, Button, Card, Divider, Group, LoadingOverlay, Notification, Tabs, Text } from '@mantine/core';
+import { getErrorMsg, IEntityState, IFormAction, IFormSchemaField } from '@dotars/di-core';
+import { Avatar, Badge, Button, Card, Divider, Group, LoadingOverlay, Notification, Tabs, Text, Tooltip } from '@mantine/core';
 import * as jpatch from 'fast-json-patch';
 import { hasOwnProperty } from 'fast-json-patch/module/helpers';
 import { yupToFormErrors } from 'formik';
-import { ReactNode, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, ReactNode, useEffect, useMemo, useState } from 'react';
 import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import { AlertCircle, Bookmark, FileDescription } from 'tabler-icons-react';
@@ -68,7 +68,7 @@ const SchemaFormView: React.FC<ISchemaFormViewProps> = (rx) => {
       </Notification>
     );
   if (isSuccess && data) {
-    return <RenderSchemaForm title={rx.title} schema={rx.schema} tabs={data.schema.fields.filter((x) => x.layout === 3)} headers={data.schema.fields.filter((x) => x.layout === 6)} entity={data.entity} initialValues={data.initialValues} hdrValues={data.hdrValues} canEdit={rx.canEdit} onRefresh={refresh} goToList={backToList} />;
+    return <RenderSchemaForm title={rx.title} schema={rx.schema} actions={data.schema.actions} tabs={data.schema.fields.filter((x) => x.layout === 3)} headers={data.schema.fields.filter((x) => x.layout === 6)} entity={data.entity} initialValues={data.initialValues} hdrValues={data.hdrValues} canEdit={rx.canEdit} onRefresh={refresh} goToList={backToList} />;
   }
 
   return <>.</>;
@@ -84,6 +84,7 @@ interface RenderSchemaFormProps {
   canEdit: boolean;
   tabs: IFormSchemaField[];
   headers: IFormSchemaField[];
+  actions?: IFormAction[];
   initialValues?: Record<string, string>;
   hdrValues?: Record<string, string>;
   onRefresh: () => void;
@@ -293,42 +294,60 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
     );
   };
 
+  const handleAction = ( schema:string) => {
+        console.log(schema);
+  };
+
   const RenderButtons = () => {
     return (
       <PanelHeader
         title={rx.title}
         renderCmds={() => {
           return (
-            <Group spacing={0} position="right">
-              {!entity.disabled && !entity.locked && (
-                <Button color="dotars" className={classes.vwbutton} onClick={onClickUpdate} compact disabled={!canEdit}>
-                  Update
-                </Button>
-              )}
+            <>
+              <Group spacing={0} position="right">
+                {rx.actions && rx.actions.length > 0 &&
+                  rx.actions.filter((x) => x.visible === true).map((fd) => {
+                    return (
+                      <Tooltip label={fd.description}>
+                        <Button className={classes.vwbutton} onClick={() => handleAction(fd.schema)} compact>
+                          {fd.label}
+                        </Button>
+                      </Tooltip>
+                    );
+                  })}
+              </Group>
+              <Group spacing={0} position="right">
+                {!entity.disabled && !entity.locked && (
+                  <Button color="dotars" className={classes.vwbutton} onClick={onClickUpdate} compact disabled={!canEdit}>
+                    Update
+                  </Button>
+                )}
 
-              {!entity.disabled && !entity.locked && (
-                <Button variant="outline" color="dotars" className={classes.vwbutton} compact onClick={onClickLock} disabled={!canEdit}>
-                  Lock
-                </Button>
-              )}
-              {entity.locked === true && (
-                <Button variant="outline" color="dotars" className={classes.vwbutton} compact onClick={onClickUnlock} disabled={!canEdit}>
-                  Un-lock
-                </Button>
-              )}
+                {!entity.disabled && !entity.locked && (
+                  <Button variant="outline" color="dotars" className={classes.vwbutton} compact onClick={onClickLock} disabled={!canEdit}>
+                    Lock
+                  </Button>
+                )}
+                {entity.locked === true && (
+                  <Button variant="outline" color="dotars" className={classes.vwbutton} compact onClick={onClickUnlock} disabled={!canEdit}>
+                    Un-lock
+                  </Button>
+                )}
 
-              {!entity.disabled && !entity.locked && (
-                <Button variant="outline" color="dotars" className={classes.vwbutton} compact onClick={onClickDisable} disabled={!canEdit}>
-                  Disable
-                </Button>
-              )}
-              {entity.disabled && (
-                <Button variant="outline" className={classes.vwbutton} onClick={onClickEnable} compact disabled={!canEdit}>
-                  Enable
-                </Button>
-              )}
-              {!entity.disabled && !entity.locked && <ConfirmBtn color="red" className={classes.vwbutton} style={{ marginLeft: 10 }} compact OnOk={onClickDelete} disabled={!canEdit} btnTxt="Delete" confirmTxt="Are you sure you want to delete?" />}
-            </Group>
+                {!entity.disabled && !entity.locked && (
+                  <Button variant="outline" color="dotars" className={classes.vwbutton} compact onClick={onClickDisable} disabled={!canEdit}>
+                    Disable
+                  </Button>
+                )}
+                {entity.disabled && (
+                  <Button variant="outline" className={classes.vwbutton} onClick={onClickEnable} compact disabled={!canEdit}>
+                    Enable
+                  </Button>
+                )}
+                {!entity.disabled && !entity.locked && <ConfirmBtn color="red" className={classes.vwbutton} style={{ marginLeft: 10 }} compact OnOk={onClickDelete} disabled={!canEdit} btnTxt="Delete" confirmTxt="Are you sure you want to delete?" />}
+              </Group>
+            </>
           );
         }}
       />
@@ -392,7 +411,7 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
                           case 5:
                             return <SubgridControl key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} disabled={entity.locked || entity.disabled} />;
                           default:
-                            return <SchemaFieldItem key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} disabled={entity.locked || entity.disabled } />;
+                            return <SchemaFieldItem key={field.key} field={field} fieldChanged={onFieldChange} values={values} errors={errors} disabled={entity.locked || entity.disabled} />;
                         }
                       })}
                   </div>
