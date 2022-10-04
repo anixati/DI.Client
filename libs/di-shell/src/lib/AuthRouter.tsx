@@ -18,10 +18,11 @@ export const AuthRouter: React.FC = (rx) => {
       client_id: `${ctx.settings?.oidc_clientId}`,
       redirect_uri: `${ctx.settings?.clientBase}/login_complete`,
       response_type: `${ctx.settings?.oidc_responseType}`,
-      //response_mode: 'fragment',
+      response_mode: 'fragment',
       scope: `${ctx.settings?.oidc_scope}`, // add other scopes here
-      //post_logout_redirect_uri: `${ctx.settings?.clientBase}/logout`,
+     // post_logout_redirect_uri: `${ctx.settings?.clientBase}/logout`,
     };
+    console.log(oidc_config);
     const usm = createUserManager(oidc_config);
     if (usm) setUserManager(usm);
     return usm;

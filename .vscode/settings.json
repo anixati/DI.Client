@@ -1,7 +1,6 @@
 {
     "hide-files.files": [
         ".vscode",
-        "dist/apps/di-boards",
         "node_modules",
         ".gitignore",
         "package-lock.json",
@@ -61,7 +60,6 @@
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
         ".vscode": true,
-        "dist/apps/di-boards": true,
         "node_modules": true,
         ".gitignore": true,
         "package-lock.json": true,

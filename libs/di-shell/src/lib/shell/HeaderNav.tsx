@@ -118,8 +118,8 @@ export const HeaderNav: React.FC<HeaderNavProps> = (rx) => {
             >
               <Menu.Label> {rx.userName}</Menu.Label>
               <Divider />
-              <Menu.Item icon={<Settings size={14} />}>Settings</Menu.Item>
-              <Menu.Item icon={<SwitchHorizontal size={14} />}>My Profile</Menu.Item>
+              {/* <Menu.Item icon={<Settings size={14} />}>Settings</Menu.Item>
+              <Menu.Item icon={<SwitchHorizontal size={14} />}>My Profile</Menu.Item> */}
               <Divider />
               <Menu.Item
                 color="red"

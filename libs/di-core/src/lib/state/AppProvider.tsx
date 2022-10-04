@@ -2,6 +2,7 @@ import { useLocalStorage } from '@mantine/hooks';
 import axios from 'axios';
 import { useCallback, useState } from 'react';
 import { NavLink } from '../data';
+import { removeBearerToken } from '../security';
 import { AppSettings } from './AppSettings';
 import { AppContext, defaultAppState } from './IAppContext';
 
@@ -55,7 +56,8 @@ console.log('----',rx.settings)
   }, []);
 
   const logout = () => {
-    console.log('logging out ');
+    console.log('logging out..... ');
+    removeBearerToken();
     setSiteMap([]);
   };
 

@@ -17,11 +17,17 @@ export const ShellPage: React.FC<SecurityCtx> = (rx) => {
   const onLogout = useCallback(async () => {
   
     const user = await rx.manager?.getUser();
-    await rx.manager.clearStaleState();
-    await rx.manager.revokeAccessToken();
-    await rx.manager.removeUser();
-    await rx.manager.signoutRedirect({ 'id_token_hint': user?.id_token });
-    if (logout) logout();
+    //await rx.manager.clearStaleState();
+   // await rx.manager.revokeAccessToken();
+    
+    console.log('signout redirecting....')
+     rx.manager.signoutRedirect({ 'id_token_hint': user?.id_token})
+     .then(()=>{
+       console.log('signout redirecting.... done')
+       if (logout) logout();
+     });
+    //await rx.manager.removeUser();
+   
   }, [rx.manager, logout]);
 
   /* #endregion */
