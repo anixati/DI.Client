@@ -9,8 +9,6 @@ export function ProtectedArea({ children }: { children: JSX.Element }) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   } else {
      getAppToken().then((tk)=>{
-      // console.log('tk->',tk)
-       //if(tk.length<=0)
       setAuthHeader(tk);
     })
     

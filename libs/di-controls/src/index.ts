@@ -1,3 +1,4 @@
+export * from './lib/controls';
 export * from './lib/panels';
 export * from './lib/composite';
 export * from './lib/fields';

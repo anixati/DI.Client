@@ -131,7 +131,6 @@ export const RenderDataGrid = forwardRef<SchemaListRef, RenderTableProps>((rx, r
   );
 
   useEffect(() => {
-    //  console.log('callling fetch')
     fetchData(pageIndex, pageSize);
   }, [fetchData, pageIndex, pageSize, pgSearch, pgSort]);
 

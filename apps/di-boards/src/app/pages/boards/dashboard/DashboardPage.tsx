@@ -1,27 +1,54 @@
 import { PageView } from '@dotars/di-controls';
-import { Container, Grid, Skeleton } from '@mantine/core';
-import { Receipt } from 'tabler-icons-react';
-import { StatsGrid, StatsGridProps } from './charts/StatsGrid';
-
-const stats: StatsGridProps = {
-  data: [
-    { title: 'Active Boards', icon: 'receipt', value: '786', diff: 34 },
-    { title: 'Current Vacancies', icon: 'coin', value: '345', diff: -13 },
-    { title: 'Upcoming Vacancies', icon: 'discount', value: '24', diff: 18 },
-    { title: 'Female ratio', icon: 'user', value: '23%', diff: -30 },
-  ],
-};
-
-const child = <Skeleton height={140} radius="md" animate={false} />;
+import { getErrorMsg } from '@dotars/di-core';
+import { ActionIcon, Grid, Group, Notification, Skeleton, Text } from '@mantine/core';
+import { useQuery } from 'react-query';
+import { AlertCircle, Receipt, Refresh } from 'tabler-icons-react';
+import { getDashboardData, RenderStatsGrid } from './controls';
 
 export const DashboardPage: React.FC = () => {
-  return (
-    <PageView title="Dashboard" desc="" icon={<Receipt />}>
-      <Grid grow>
-        <Grid.Col xs={12}>
-          <StatsGrid {...stats} />
-        </Grid.Col>
-      </Grid>
-    </PageView>
-  );
+  const { isLoading, error, data, isSuccess, refetch } = useQuery('dashboard1', () => getDashboardData(100), { keepPreviousData: false });
+  const refresh = () => {
+    refetch();
+  };
+  if (isLoading) return <Skeleton height={140} radius="md" animate={false} />;
+  if (error)
+    return (
+      <Notification title="Failed loading site data" disallowClose>
+        <Group position="left">
+          <AlertCircle size={32} color="red" />
+          <Text color="red" size="lg">
+            {getErrorMsg(error)}
+          </Text>
+        </Group>
+      </Notification>
+    );
+
+  if (isSuccess && data) {
+    return (
+      <PageView
+        title="Dashboard"
+        desc=""
+        icon={<Receipt />}
+        renderCmds={() => (
+          <ActionIcon
+            size="lg"
+            variant="hover"
+            color="cyan"
+            onClick={() => {
+              refresh();
+            }}
+          >
+            <Refresh />
+          </ActionIcon>
+        )}
+      >
+        <Grid grow>
+          <Grid.Col xs={12}>
+            <RenderStatsGrid items={data} />
+          </Grid.Col>
+        </Grid>
+      </PageView>
+    );
+  }
+  return <>.</>;
 };

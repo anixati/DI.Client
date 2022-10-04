@@ -27,7 +27,6 @@ export const ReportVwr: React.FC = () => {
     if (item) {
       const rp = item as IReportDef;
       if (rp) {
-        console.log(rp.url);
         setReport(rp);
         setUrl(rp.url);
       }

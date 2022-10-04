@@ -1,9 +1,9 @@
 import { getErrorMsg, IEntityState, IFormAction, IFormSchemaField } from '@dotars/di-core';
-import { Avatar, Badge, Button, Card, Divider, Group, LoadingOverlay, Notification, Tabs, Text, Tooltip } from '@mantine/core';
+import { Avatar, Badge, Button, Divider, Group, LoadingOverlay, Notification, Tabs, Text, Tooltip } from '@mantine/core';
 import * as jpatch from 'fast-json-patch';
 import { hasOwnProperty } from 'fast-json-patch/module/helpers';
 import { yupToFormErrors } from 'formik';
-import { ChangeEvent, ReactNode, useEffect, useMemo, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import { AlertCircle, Bookmark, FileDescription } from 'tabler-icons-react';
@@ -13,7 +13,6 @@ import { panelStyles } from '../styles';
 import { getViewSchemaData, submitChangeForm, submiUpdateForm } from './api';
 import { PageInfo } from './Context';
 import { HeaderFieldFactory } from './fields/HeaderFieldFactory';
-import { SchemaFieldFactory } from './fields/SchemaFieldFactory';
 import { SchemaFieldGroup, SchemaFieldItem } from './fields/SchemaFieldGroup';
 import { SubgridControl } from './fields/Subgrid';
 import { buildYupObj } from './Validation';
@@ -163,7 +162,6 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
   }, [tab, tabs]);
 
   // useEffect(() => {
-  //   console.log(values, '--');
   // }, [values]);
 
   /* #endregion */
@@ -295,7 +293,6 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
   };
 
   const handleAction = ( schema:string) => {
-        console.log(schema);
   };
 
   const RenderButtons = () => {

@@ -22,7 +22,7 @@ export const AuthRouter: React.FC = (rx) => {
       scope: `${ctx.settings?.oidc_scope}`, // add other scopes here
      // post_logout_redirect_uri: `${ctx.settings?.clientBase}/logout`,
     };
-    console.log(oidc_config);
+   // console.log(oidc_config);
     const usm = createUserManager(oidc_config);
     if (usm) setUserManager(usm);
     return usm;
