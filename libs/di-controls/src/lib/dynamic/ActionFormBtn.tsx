@@ -8,6 +8,7 @@ import { MultiSelectForm, WizardForm } from '.';
 import { dataUiStyles } from '../styles/Styles';
 import { getCreateSchemaData } from './api';
 import { IActionFormBtnProps, MdlContext } from './Context';
+import { DialogForm } from './DialogForm';
 
 export const ActionFormBtn: React.FC<IActionFormBtnProps> = (rx) => {
   const { classes } = dataUiStyles();
@@ -19,8 +20,8 @@ export const ActionFormBtn: React.FC<IActionFormBtnProps> = (rx) => {
   const openWizard = () => {
     const mid = modals.openModal({
       title: `${rx.title}`,
-     // centered: true,
-      size: '85%',
+      // centered: true,
+      size: rx.size ? rx.size : '85%',
       overflow: 'outside',
       withCloseButton: false,
       closeOnClickOutside: false,
@@ -49,7 +50,7 @@ export const ActionFormBtn: React.FC<IActionFormBtnProps> = (rx) => {
 };
 
 const FormSelector: React.FC<IActionFormBtnProps> = (rx) => {
-  const { isLoading, error, data, isSuccess } = useQuery([rx.schema], () => getCreateSchemaData(rx.action?rx.action:"create",rx.schema, rx.entityId), { keepPreviousData: false, staleTime: Infinity });
+  const { isLoading, error, data, isSuccess } = useQuery([rx.schema], () => getCreateSchemaData(rx.action ? rx.action : 'create', rx.schema, rx.entityId), { keepPreviousData: false, staleTime: Infinity });
   if (isLoading) return <LoadingOverlay visible={true} />;
   if (error)
     return (
@@ -62,7 +63,9 @@ const FormSelector: React.FC<IActionFormBtnProps> = (rx) => {
       case 1:
         return <WizardForm schemaKey={rx.schema} schema={data.schema} initialValues={data.initialValues} title={rx.title} entityId={rx.entityId} />;
       case 2:
-        return <MultiSelectForm schemaKey={rx.schema} options={data.schema?.options} initialValues={data.initialValues} title={rx.title} entityId={rx.entityId}/>
+        return <MultiSelectForm schemaKey={rx.schema} options={data.schema?.options} initialValues={data.initialValues} title={rx.title} entityId={rx.entityId} />;
+      case 3:
+        return <DialogForm schemaKey={rx.schema} initialValues={data.initialValues} title={rx.title} entityId={rx.entityId} schema={data.schema} />;
       default:
         return <>..TODO.</>;
     }

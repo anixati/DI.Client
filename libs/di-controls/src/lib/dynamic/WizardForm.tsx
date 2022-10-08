@@ -143,7 +143,7 @@ export const WizardForm: React.FC<WizardFormProps> = (rx) => {
         setProcessState('SUCCESS');
       }
     } catch (err) {
-      setApiError(`${getErrorMsg(err)}}`);
+      setApiError(`${getErrorMsg(err)}`);
       setProcessState('ERROR');
     } finally {
       setLoading(false);

@@ -10,7 +10,11 @@ export const UsersPage: React.FC = () => {
   };
   return (
     <PageView title="User Management" desc="Manage application Users" icon={<Receipt />} renderCmds={() => <ActionFormBtn title="New User" schema="appuser" onClose={onClose} />}>
-      <SchemaListTable ref={listRef} schemas={[{ label: 'Current Users', value: 'UserList' }]} />
+      <SchemaListTable ref={listRef} 
+       schemas={[
+        { label: 'Current Users', value: 'UserList' },
+        { label: 'Previous Users', value: 'InactiveUserList' },
+      ]}/>
     </PageView>
   );
 };

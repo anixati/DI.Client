@@ -1,5 +1,6 @@
 import React from 'react';
 import { Outlet, Route } from 'react-router-dom';
+import { AdminPage } from './admin';
 import { AuditsPage } from './audit/AuditsPage';
 import { OptionsPage } from './refdata';
 import { RoleDetailsPage, RolesPage, TeamDetailsPage, TeamsPage, UserDetailsPage, UsersPage } from './security';
@@ -14,6 +15,7 @@ export const AdminLayout: React.FC = () => {
 
 export const AdminRouteList = (
   <>
+    <Route path="dashboard" element={<AdminPage />} />
     <Route path="options" element={<OptionsPage />} />
     <Route path="logs" element={<AuditsPage />} />
 

@@ -9,6 +9,7 @@ export interface IActionFormBtnProps {
   onClose?: () => void;
   entityId?: string;
   action?: string;
+  size?:string;
 }
 
 

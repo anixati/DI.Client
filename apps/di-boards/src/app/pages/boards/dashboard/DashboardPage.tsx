@@ -6,7 +6,7 @@ import { AlertCircle, Receipt, Refresh } from 'tabler-icons-react';
 import { getDashboardData, RenderStatsGrid } from './controls';
 
 export const DashboardPage: React.FC = () => {
-  const { isLoading, error, data, isSuccess, refetch } = useQuery('dashboard1', () => getDashboardData(100), { keepPreviousData: false });
+  const { isLoading, error, data, isSuccess, refetch } = useQuery('dashboard1', () => getDashboardData(100), { keepPreviousData: false, staleTime: 0  });
   const refresh = () => {
     refetch();
   };

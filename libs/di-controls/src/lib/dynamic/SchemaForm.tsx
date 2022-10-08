@@ -10,6 +10,7 @@ import { AlertCircle, Bookmark, FileDescription } from 'tabler-icons-react';
 import * as Yup from 'yup';
 import { ConfirmBtn, PanelHeader, ShowError, ShowWarn } from '../controls';
 import { panelStyles } from '../styles';
+import { ActionFormBtn } from './ActionFormBtn';
 import { getViewSchemaData, submitChangeForm, submiUpdateForm } from './api';
 import { PageInfo } from './Context';
 import { HeaderFieldFactory } from './fields/HeaderFieldFactory';
@@ -42,10 +43,14 @@ export interface ISchemaFormViewProps {
 
 const SchemaFormView: React.FC<ISchemaFormViewProps> = (rx) => {
   const navigate = useNavigate();
+
   const viewSchema = useMemo<string>(() => `${rx.schema}`, [rx]);
-  const { isLoading, error, data, isSuccess, refetch } = useQuery([viewSchema], () => getViewSchemaData(viewSchema, rx.entityId), { keepPreviousData: false });
+  const [KeyName, SetKeyName] = useState(rx.schema);
+  const { isLoading, error, data, isSuccess, refetch } = useQuery([viewSchema], () => getViewSchemaData(viewSchema, rx.entityId), { keepPreviousData: false, staleTime: 0 });
   const refresh = () => {
+    SetKeyName(`${rx.schema}${Math.random()}`);
     refetch();
+    console.log('refresh called', KeyName);
   };
   const backToList = () => {
     navigate(rx.listUrl, {});
@@ -67,7 +72,7 @@ const SchemaFormView: React.FC<ISchemaFormViewProps> = (rx) => {
       </Notification>
     );
   if (isSuccess && data) {
-    return <RenderSchemaForm title={rx.title} schema={rx.schema} actions={data.schema.actions} tabs={data.schema.fields.filter((x) => x.layout === 3)} headers={data.schema.fields.filter((x) => x.layout === 6)} entity={data.entity} initialValues={data.initialValues} hdrValues={data.hdrValues} canEdit={rx.canEdit} onRefresh={refresh} goToList={backToList} />;
+    return <RenderSchemaForm key={KeyName} title={rx.title} schema={rx.schema} actions={data.schema.actions} tabs={data.schema.fields.filter((x) => x.layout === 3)} headers={data.schema.fields.filter((x) => x.layout === 6)} entity={data.entity} initialValues={data.initialValues} hdrValues={data.hdrValues} canEdit={rx.canEdit} onRefresh={refresh} goToList={backToList} />;
   }
 
   return <>.</>;
@@ -94,20 +99,19 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
   /* #region  vars */
   const { classes } = panelStyles();
   const [loading, setLoading] = useState(false);
-  const [canEdit, setcanEdit] = useState<boolean>(rx.canEdit);
+  const [canEdit] = useState<boolean>(rx.canEdit);
   const [tab, setTab] = useState<number>(0);
   const [current, setCurrent] = useState<PageInfo | undefined>(undefined);
   const [errors, setErrors] = useState<Record<string, any>>({});
   const [valSchema, setValSchema] = useState({});
 
-  const [pageData, setPageData] = useState<IFormSchemaField>(() => {
-    //const list = rx.result.schema.fields.filter((x) => x.layout === 3);
+  const [, setPageData] = useState<IFormSchemaField>(() => {
     return rx.tabs[tab];
   });
-  const initVals = useMemo<Record<string, string>>(() => {
-    if (rx.initialValues) return rx.initialValues;
-    return {};
-  }, [rx]);
+  // const initVals = useMemo<Record<string, string>>(() => {
+  //   if (rx.initialValues) return rx.initialValues;
+  //   return {};
+  // }, [rx]);
   const [values, setValues] = useState<Record<string, string>>({});
   const entity = useMemo<IEntityState>(() => {
     return rx.entity;
@@ -115,16 +119,14 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
   const tabs = useMemo<Array<PageInfo>>(() => {
     const pages = rx.tabs.map((x) => ({ id: x.key, title: x.title, desc: x.description, state: 'INIT' } as PageInfo));
     return [...pages];
-    //    return [...pages, { id: 'documents', title: 'Documents', desc: 'documents & links', state: 'INIT' }];
   }, [rx]);
   /* #endregion */
 
   /* #region  Effects */
-
   const getVal = (fd: IFormSchemaField, vs: any) => {
     buildYupObj(fd, vs);
-    if (hasOwnProperty(initVals, fd.key)) {
-      return `${initVals[fd.key]}`;
+    if (rx.initialValues && hasOwnProperty(rx.initialValues, fd.key)) {
+      return `${rx.initialValues[fd.key]}`;
     }
     return '';
   };
@@ -252,7 +254,7 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
   // --- update
   const execUpdate = async () => {
     try {
-      const changeSet = jpatch.compare(initVals, values);
+      const changeSet = jpatch.compare(rx.initialValues ? rx.initialValues : {}, values);
       if (Array.isArray(changeSet)) {
         if (changeSet.length > 0) {
           setLoading(true);
@@ -292,7 +294,9 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
     );
   };
 
-  const handleAction = ( schema:string) => {
+  const onDialogClose = () => {
+    console.log('refreshing closed');
+    rx.onRefresh();
   };
 
   const RenderButtons = () => {
@@ -303,16 +307,17 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
           return (
             <>
               <Group spacing={0} position="right">
-                {rx.actions && rx.actions.length > 0 &&
-                  rx.actions.filter((x) => x.visible === true).map((fd) => {
-                    return (
-                      <Tooltip label={fd.description}>
-                        <Button className={classes.vwbutton} onClick={() => handleAction(fd.schema)} compact>
-                          {fd.label}
-                        </Button>
-                      </Tooltip>
-                    );
-                  })}
+                {rx.actions &&
+                  rx.actions.length > 0 &&
+                  rx.actions
+                    .filter((x) => x.visible === true)
+                    .map((fd) => {
+                      return (
+                        <Tooltip label={fd.description}>
+                          <ActionFormBtn title={fd.label} schema={fd.schema} action="dialog" onClose={onDialogClose} size="50%" />
+                        </Tooltip>
+                      );
+                    })}
               </Group>
               <Group spacing={0} position="right">
                 {!entity.disabled && !entity.locked && (

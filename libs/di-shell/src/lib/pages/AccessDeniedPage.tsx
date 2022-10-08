@@ -18,7 +18,7 @@ export const AccessDeniedPage: React.FC<SecurityCtx> = (rx) => {
   }, [rx.manager, logout]);
 
   return (
-    <CenterPanel title="Access Denied!" desc="You need additional privileges in order to access.">
+    <CenterPanel title="Access Denied!" desc="You need additional privileges in order to access the application. Please contact administrator">
       <Button fullWidth style={{ marginTop: 14 }} variant="gradient" onClick={() => onLogout()}>
         Try Again
       </Button>

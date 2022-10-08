@@ -2,7 +2,7 @@
 import { Outlet, Route } from 'react-router-dom';
 import { LandingPage } from './LandingPage';
 import { AdminLayout, AdminRouteList, BoardRouteList, BoardsLayout, DashboardPage, ReportDashboard, ReportLayout, ReportRouteList } from './pages';
-import { OptionsPage } from './pages/admin/refdata';
+import { AdminPage } from './pages/admin/admin';
 
 const RootLayout: React.FC = () => {
   return <Outlet />;
@@ -22,7 +22,7 @@ export const AppRoutes: React.FC = () => {
           {ReportRouteList}
         </Route>
         <Route path="admin" element={<AdminLayout />}>
-          <Route index element={<OptionsPage />} />
+          <Route index element={<AdminPage />} />
           {AdminRouteList}
         </Route>
       </Route>
