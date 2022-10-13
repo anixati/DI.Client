@@ -107,12 +107,23 @@ export interface IPagedList<T extends IEntity> extends IListResponse {
 
 // ---- form Schema schema
 
+export enum CmdAcl {
+  Update = 1 << 0, // 1
+  Delete = 1 << 1, // 2
+  Lock = 1 << 2, // 4
+  UnLock = 1 << 3, // 8
+  Enable = 1 << 4, // 16
+  Disable = 1 << 5, // 32
+  Dialog = 1 << 6, // 64
+  //All = ~(~0 << 7),
+}
 export interface IEntityState {
   title: string;
   id: number;
   locked: boolean;
   disabled: boolean;
   deleted: boolean;
+  cmdAcl:number;
 }
 export interface IFormSchemaResult {
   entity: IEntityState;

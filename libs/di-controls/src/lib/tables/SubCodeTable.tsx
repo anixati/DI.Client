@@ -147,6 +147,8 @@ function RenderTableView<T extends IEntity>(rx: RenderTableProps<T>): ReactEleme
       </DialogForm>
 
       <DataTable<T> title={rx.title} OnRefresh={OnRefresh} OnCreate={createItem} canCreate={true} data={rx.data} columns={[...rx.columns, ...actionCol]} />
+
+      
     </>
   );
 }

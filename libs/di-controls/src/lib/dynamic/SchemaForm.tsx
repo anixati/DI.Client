@@ -1,4 +1,4 @@
-import { getErrorMsg, IEntityState, IFormAction, IFormSchemaField } from '@dotars/di-core';
+import { CmdAcl, getErrorMsg, IEntityState, IFormAction, IFormSchemaField } from '@dotars/di-core';
 import { Avatar, Badge, Button, Divider, Group, LoadingOverlay, Notification, Tabs, Text, Tooltip } from '@mantine/core';
 import * as jpatch from 'fast-json-patch';
 import { hasOwnProperty } from 'fast-json-patch/module/helpers';
@@ -41,6 +41,13 @@ export interface ISchemaFormViewProps {
   listUrl: string;
 }
 
+const getAcl =(acl:number)=>{
+  return Object.values(CmdAcl)
+  .filter(v => typeof v === "number" && (acl & v) !== 0)
+  .map(v => CmdAcl[v as number]);
+}
+
+
 const SchemaFormView: React.FC<ISchemaFormViewProps> = (rx) => {
   const navigate = useNavigate();
 
@@ -58,6 +65,7 @@ const SchemaFormView: React.FC<ISchemaFormViewProps> = (rx) => {
   useEffect(() => {
     refetch();
   }, [rx.entityId]);
+
   if (isLoading) return <Notification loading title="Loading schema. please wait ..." disallowClose></Notification>;
 
   if (error)
@@ -72,7 +80,8 @@ const SchemaFormView: React.FC<ISchemaFormViewProps> = (rx) => {
       </Notification>
     );
   if (isSuccess && data) {
-    return <RenderSchemaForm key={KeyName} title={rx.title} schema={rx.schema} actions={data.schema.actions} tabs={data.schema.fields.filter((x) => x.layout === 3)} headers={data.schema.fields.filter((x) => x.layout === 6)} entity={data.entity} initialValues={data.initialValues} hdrValues={data.hdrValues} canEdit={rx.canEdit} onRefresh={refresh} goToList={backToList} />;
+    return <RenderSchemaForm key={KeyName} title={rx.title} schema={rx.schema} 
+    acl={getAcl(data.entity.cmdAcl)} actions={data.schema.actions} tabs={data.schema.fields.filter((x) => x.layout === 3)} headers={data.schema.fields.filter((x) => x.layout === 6)} entity={data.entity} initialValues={data.initialValues} hdrValues={data.hdrValues} canEdit={rx.canEdit} onRefresh={refresh} goToList={backToList} />;
   }
 
   return <>.</>;
@@ -93,6 +102,7 @@ interface RenderSchemaFormProps {
   hdrValues?: Record<string, string>;
   onRefresh: () => void;
   goToList: () => void;
+  acl: Array<string>;
 }
 
 const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
@@ -306,48 +316,50 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
         renderCmds={() => {
           return (
             <>
+             {/* // {(rx.acl & CmdAcl.Dialog) && ( */}
+                <Group spacing={0} position="right">
+                  {rx.actions &&
+                    rx.actions.length > 0 &&
+                    rx.actions
+                      .filter((x) => x.visible === true)
+                      .map((fd) => {
+                        return (
+                          <Tooltip label={fd.description}>
+                            <ActionFormBtn title={fd.label} schema={fd.schema} action="dialog" onClose={onDialogClose} size="50%" />
+                          </Tooltip>
+                        );
+                      })}
+                </Group>
+              {/* )} */}
               <Group spacing={0} position="right">
-                {rx.actions &&
-                  rx.actions.length > 0 &&
-                  rx.actions
-                    .filter((x) => x.visible === true)
-                    .map((fd) => {
-                      return (
-                        <Tooltip label={fd.description}>
-                          <ActionFormBtn title={fd.label} schema={fd.schema} action="dialog" onClose={onDialogClose} size="50%" />
-                        </Tooltip>
-                      );
-                    })}
-              </Group>
-              <Group spacing={0} position="right">
-                {!entity.disabled && !entity.locked && (
+                {!entity.disabled && !entity.locked && ( rx.acl.some(x => x === CmdAcl[CmdAcl.Update])) && (
                   <Button color="dotars" className={classes.vwbutton} onClick={onClickUpdate} compact disabled={!canEdit}>
                     Update
                   </Button>
                 )}
 
-                {!entity.disabled && !entity.locked && (
+                {!entity.disabled && !entity.locked && ( rx.acl.some(x => x === CmdAcl[CmdAcl.Lock])) && (
                   <Button variant="outline" color="dotars" className={classes.vwbutton} compact onClick={onClickLock} disabled={!canEdit}>
                     Lock
                   </Button>
                 )}
-                {entity.locked === true && (
+                {entity.locked === true  && ( rx.acl.some(x => x === CmdAcl[CmdAcl.UnLock])) && (
                   <Button variant="outline" color="dotars" className={classes.vwbutton} compact onClick={onClickUnlock} disabled={!canEdit}>
                     Un-lock
                   </Button>
                 )}
 
-                {!entity.disabled && !entity.locked && (
+                {!entity.disabled && !entity.locked  && ( rx.acl.some(x => x === CmdAcl[CmdAcl.Disable])) && (
                   <Button variant="outline" color="dotars" className={classes.vwbutton} compact onClick={onClickDisable} disabled={!canEdit}>
                     Disable
                   </Button>
                 )}
-                {entity.disabled && (
+                {entity.disabled  && ( rx.acl.some(x => x === CmdAcl[CmdAcl.Enable])) && (
                   <Button variant="outline" className={classes.vwbutton} onClick={onClickEnable} compact disabled={!canEdit}>
                     Enable
                   </Button>
                 )}
-                {!entity.disabled && !entity.locked && <ConfirmBtn color="red" className={classes.vwbutton} style={{ marginLeft: 10 }} compact OnOk={onClickDelete} disabled={!canEdit} btnTxt="Delete" confirmTxt="Are you sure you want to delete?" />}
+                {!entity.disabled && !entity.locked  && ( rx.acl.some(x => x === CmdAcl[CmdAcl.Delete])) && <ConfirmBtn color="red" className={classes.vwbutton} style={{ marginLeft: 10 }} compact OnOk={onClickDelete} disabled={!canEdit} btnTxt="Delete" confirmTxt="Are you sure you want to delete?" />}
               </Group>
             </>
           );
