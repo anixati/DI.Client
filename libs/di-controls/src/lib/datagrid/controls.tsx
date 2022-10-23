@@ -44,6 +44,7 @@ export const DateCol = (def: IColumnDef): Column<any> => {
     id: `${def.accessor}-date`,
     accessor: `${def.accessor}`,
     Cell: (props) => {
+      if(props.value === null) return '';
       return moment(props.value).local().format('DD/MM/YYYY');
     },
   };

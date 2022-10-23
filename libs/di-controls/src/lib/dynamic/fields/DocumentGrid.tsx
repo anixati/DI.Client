@@ -9,7 +9,7 @@ import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 import { ConfirmBtn, SearchCmdBar, ShowError, ShowInfo } from '../../controls';
 import { ISchemaFieldProps } from './SchemaFieldFactory';
-
+import { AlertCircle } from 'tabler-icons-react';
 const useStyles = createStyles((theme) => ({
   docMain: {
     backgroundColor: `${theme.colors['gray'][1]}`,
@@ -23,7 +23,7 @@ const useStyles = createStyles((theme) => ({
   docContent: {},
 
   listView: {
-    padding:5,
+    padding: 5,
     //borderRight: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]}`,
     height: '83vh',
   },
@@ -45,7 +45,7 @@ const useStyles = createStyles((theme) => ({
   cardContent: {},
   form: {
     padding: 8,
-    borderBottom:`1px solid ${theme.colors['gray'][3]}`,
+    borderBottom: `1px solid ${theme.colors['gray'][3]}`,
   },
 }));
 
@@ -329,10 +329,15 @@ export const DocumentGrid = (rx: ISchemaFieldProps) => {
         <Group position="left">
           <SearchCmdBar title="" searchStr={search} OnSearch={(v) => setSearch(v)} OnRefresh={() => refetch()} OnCreate={() => selectRow(undefined)} canCreate={false} />
         </Group>
+        <Group position="center">
+        
+
+          {/* <Text color="dotars" size="sm">  </Text> */}
+        </Group>
         <Group position="left" spacing={1}>
-        <Button color="dotars" compact onClick={() => selectRow(undefined)} disabled={selection === undefined}>
-              New
-            </Button>
+          <Button color="dotars" compact onClick={() => selectRow(undefined)} disabled={selection === undefined}>
+            New
+          </Button>
           {isNew && (
             <Button color="dotars" compact onClick={onCreate}>
               Save
@@ -351,6 +356,7 @@ export const DocumentGrid = (rx: ISchemaFieldProps) => {
       <Grid className={classes.docContent}>
         <Grid.Col span={3} style={{ minHeight: 280, padding: 10 }}>
           <>
+         
             {isLoading && <LoadingOverlay visible={true} />}
             {error && (
               <Alert title="Error!" color="red">
@@ -358,10 +364,13 @@ export const DocumentGrid = (rx: ISchemaFieldProps) => {
               </Alert>
             )}
             {isSuccess && data && (
-              <div className={classes.listView}>
+              <div className={classes.listView}> 
+              <Alert  >
+           <Text align="center" size="xs"> Add signed instruments here <br/>or relevant letters of appointment</Text>
+          </Alert>
                 <div className={classes.cardContent}>
                   <ScrollArea sx={{ height: '76vh' }} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
-                    <Table sx={{backgroundColor:'white'}} verticalSpacing={1}>
+                    <Table sx={{ backgroundColor: 'white' }} verticalSpacing={1}>
                       <tbody>{rows}</tbody>
                     </Table>
                   </ScrollArea>
@@ -372,9 +381,8 @@ export const DocumentGrid = (rx: ISchemaFieldProps) => {
         </Grid.Col>
         <Grid.Col span={9}>
           <div>
-            
             <form onSubmit={form.onSubmit(handleSubmit)} className={classes.form}>
-            <LoadingOverlay visible={loading} />
+              <LoadingOverlay visible={loading} />
               <button hidden={true} ref={refSub} type={'submit'} />
               <TextInput required label="Title" placeholder="Title" {...form.getInputProps('title')} />
               <RichTextEditor ref={editorRef} value={notes} onChange={onNoteChange} sx={{ marginTop: 10, height: 650 }} controls={[['clean'], ['bold', 'italic', 'underline', 'link'], ['h1', 'h2', 'h3']]} />
