@@ -13,8 +13,8 @@ export const AppointeeList: React.FC = () => {
       <SchemaListTable
         ref={listRef}
         schemas={[
-          { label: 'Active Appointees', value: 'ActiveAppointees' },
-          { label: 'Inactive Appointees', value: 'InActiveAppointees' },
+          { label: 'Active List', value: 'ActiveAppointees' },
+          { label: 'Inactive List', value: 'InActiveAppointees' },
         ]}
       />
     </PageView>

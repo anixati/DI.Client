@@ -14,8 +14,8 @@ export const BoardsList: React.FC = () => {
       <SchemaListTable
         ref={listRef}
         schemas={[
-          { label: 'Active Boards', value: 'ActiveBoards' },
-          { label: 'Inactive Boards', value: 'InActiveBoards' },
+          { label: 'Active List', value: 'ActiveBoards' },
+          { label: 'Inactive List', value: 'InActiveBoards' },
         ]}
       />
     </PageView>

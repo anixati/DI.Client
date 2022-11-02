@@ -6,6 +6,7 @@ import { DecimalControl, NumericControl } from './DecimalControl';
 import { RadioGroupControl } from './RadioGroupControl';
 import { DatePickerControl } from './DatePickerControl';
 import { TextlistControl } from './TextlistControl';
+import { HyperLinkControl } from "./HyperLinkControl";
 
 export const FLDWIDTH = 100;
 export interface ISchemaFieldProps {
@@ -77,6 +78,24 @@ export const SchemaFieldFactory = (rx: ISchemaFieldProps) => {
       return <PicklistControl {...rx} />;
     case 12:
       return <TextlistControl {...rx} />;
+    case 13:
+      return (
+        <TextInput
+          required={false}
+          variant="unstyled"
+          disabled={true}
+          label=" "
+          placeholder=" "
+          styles={{
+            disabled: { opacity: '0.9 !important', color: 'black !important', backgroundColor: '#f9fafb !important' },
+          }}
+          style={{ marginTop: 10, width: `${rx.width ? rx.width : 100}%` }}
+          value=""
+          size="xs"
+        />
+      );
+      case 25:
+        return <HyperLinkControl {...rx}/>
     default:
       return (
         <TextInput

@@ -23,8 +23,8 @@ export const SkillsList: React.FC = () => {
         <SchemaListTable
           ref={listRef}
           schemas={[
-            { label: 'Active Skills', value: 'ActiveSkills' },
-            { label: 'Inactive Skills', value: 'InactiveSkills' },
+            { label: 'Active List', value: 'ActiveSkills' },
+            { label: 'Inactive List', value: 'InactiveSkills' },
           ]}
         />
       </PageView>

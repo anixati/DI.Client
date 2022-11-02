@@ -8,13 +8,13 @@ export const SecretaryList: React.FC = () => {
     listRef.current?.refresh();
   };
   return (
-    <PageView title="Appointees" desc="" icon={<Receipt />} renderCmds={() => <ActionFormBtn title="New Secretary"
+    <PageView title="Assistant Secretaries" desc="" icon={<Receipt />} renderCmds={() => <ActionFormBtn title="New Secretary"
      schema="secretary" onClose={onClose}  />}>
       <SchemaListTable
         ref={listRef}
         schemas={[
-          { label: 'Active Secretaries', value: 'ActiveSecretaries' },
-          { label: 'Inactive Secretaries', value: 'InActiveSecretaries' },
+          { label: 'Active List', value: 'ActiveSecretaries' },
+          { label: 'Inactive List', value: 'InActiveSecretaries' },
         ]}
       />
     </PageView>

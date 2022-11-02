@@ -45,7 +45,8 @@
     "./src/lib/datagrid/SchemaTable.tsx",
     "./src/lib/datagrid/SchemaListTable.tsx",
     "./src/lib/dynamic/fields/FieldStyles.tsx",
-    "./src/lib/dynamic/fields/TextlistControl.tsx"
+    "./src/lib/dynamic/fields/TextlistControl.tsx",
+    "./src/lib/dynamic/fields/HyperLinkControl.tsx"
   ],
   "exclude": [
     "**/*.spec.ts",

@@ -16,7 +16,7 @@ export const BoardAppointmentList: React.FC = () => {
       <SchemaListTable
         ref={listRef}
         schemas={[
-          { label: 'Active Appointments', value: 'RoleAppointmentsView' }
+          { label: 'Active List', value: 'RoleAppointmentsView' }
         ]} />
     </PageView>
   );
