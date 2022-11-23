@@ -18,8 +18,6 @@ export const buildYupObj = (fd: IFormSchemaField, vs: any) => {
     fd.rules.forEach((vd) => {
       const { type, data } = vd;
       if (type === 'regex') {
-        //const rexp = new RegExp(`${data[0]}`);
-        //console.log(type,data[0], data[1], '------');
         const rexp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 
         vdr = vdr.matches(rexp,{message:`${data[1]}`,excludeEmptyString:fd.required?false:true} );

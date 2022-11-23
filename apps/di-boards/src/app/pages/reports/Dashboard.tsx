@@ -4,9 +4,9 @@ import { Alert, Avatar, Card, createStyles, Group, LoadingOverlay, SimpleGrid, T
 import axios from 'axios';
 import { ShowError } from 'libs/di-controls/src/lib/controls';
 import { useCallback, useEffect } from 'react';
-import { QueryClientProvider, useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
-import { FileReport, Receipt, Star } from 'tabler-icons-react';
+import { FileReport, Receipt } from 'tabler-icons-react';
 
 // ---- table schema
 export interface IReportConfig {
@@ -67,7 +67,6 @@ export const ReportDashboard: React.FC = () => {
   
   const navigate = useNavigate();
   const handleClick = useCallback((item: IReportDef) => {
-    console.log(item);
     navigate(`/reports/view/${item.id}`,{state:{item}});
 
   }, []);

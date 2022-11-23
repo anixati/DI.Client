@@ -24,7 +24,6 @@ export function getErrorMsg(error: unknown) {
     // Access to config, request, and response
     const rx = error.response.data as IApiResponse;
     if (rx && rx.messages) {
-      console.log(rx, '-----');
       return rx.messages.toString();
     }
   }

@@ -18,7 +18,6 @@ export interface IDbData {
 export const getDashboardData = async (dbId: number) => {
   try {
     setBearerToken();
-    console.log('set token');
     const rsp = await axios.get<IDataResponse<IDbData>>(`/dashboard/${dbId}`);
     if (rsp.data.failed) throw new Error(`Failed to get ${rsp.data.messages} `);
     if (rsp.data?.result?.data) return rsp.data.result.data;

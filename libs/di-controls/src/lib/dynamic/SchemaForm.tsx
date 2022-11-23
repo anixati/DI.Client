@@ -41,23 +41,24 @@ export interface ISchemaFormViewProps {
   listUrl: string;
 }
 
-const getAcl =(acl:number)=>{
+const getAcl = (acl: number) => {
   return Object.values(CmdAcl)
-  .filter(v => typeof v === "number" && (acl & v) !== 0)
-  .map(v => CmdAcl[v as number]);
-}
-
+    .filter((v) => typeof v === 'number' && (acl & v) !== 0)
+    .map((v) => CmdAcl[v as number]);
+};
 
 const SchemaFormView: React.FC<ISchemaFormViewProps> = (rx) => {
   const navigate = useNavigate();
 
   const viewSchema = useMemo<string>(() => `${rx.schema}`, [rx]);
   const [KeyName, SetKeyName] = useState(rx.schema);
+  //const [InitVals, SetInitVals] = useState<Record<string,string>|undefined>(undefined);
+
   const { isLoading, error, data, isSuccess, refetch } = useQuery([viewSchema], () => getViewSchemaData(viewSchema, rx.entityId), { keepPreviousData: false, staleTime: 0 });
   const refresh = () => {
+    //SetInitVals(undefined);
     SetKeyName(`${rx.schema}${Math.random()}`);
     refetch();
-    console.log('refresh called', KeyName);
   };
   const backToList = () => {
     navigate(rx.listUrl, {});
@@ -65,6 +66,10 @@ const SchemaFormView: React.FC<ISchemaFormViewProps> = (rx) => {
   useEffect(() => {
     refetch();
   }, [rx.entityId]);
+
+  // useEffect(() => {
+  //   SetInitVals(data?.initialValues)
+  // }, [data]);
 
   if (isLoading) return <Notification loading title="Loading schema. please wait ..." disallowClose></Notification>;
 
@@ -80,8 +85,7 @@ const SchemaFormView: React.FC<ISchemaFormViewProps> = (rx) => {
       </Notification>
     );
   if (isSuccess && data) {
-    return <RenderSchemaForm key={KeyName} title={rx.title} schema={rx.schema} 
-    acl={getAcl(data.entity.cmdAcl)} actions={data.schema.actions} tabs={data.schema.fields.filter((x) => x.layout === 3)} headers={data.schema.fields.filter((x) => x.layout === 6)} entity={data.entity} initialValues={data.initialValues} hdrValues={data.hdrValues} canEdit={rx.canEdit} onRefresh={refresh} goToList={backToList} />;
+    return <RenderSchemaForm key={KeyName} title={rx.title} schema={rx.schema} acl={getAcl(data.entity.cmdAcl)} actions={data.schema.actions} tabs={data.schema.fields.filter((x) => x.layout === 3)} headers={data.schema.fields.filter((x) => x.layout === 6)} entity={data.entity} initialValues={data.initialValues} hdrValues={data.hdrValues} canEdit={rx.canEdit} onRefresh={refresh} goToList={backToList} />;
   }
 
   return <>.</>;
@@ -123,9 +127,11 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
   //   return {};
   // }, [rx]);
   const [values, setValues] = useState<Record<string, string>>({});
+
   const entity = useMemo<IEntityState>(() => {
     return rx.entity;
   }, [rx]);
+
   const tabs = useMemo<Array<PageInfo>>(() => {
     const pages = rx.tabs.map((x) => ({ id: x.key, title: x.title, desc: x.description, state: 'INIT' } as PageInfo));
     return [...pages];
@@ -133,16 +139,20 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
   /* #endregion */
 
   /* #region  Effects */
-  const getVal = (fd: IFormSchemaField, vs: any) => {
-    buildYupObj(fd, vs);
-    if (rx.initialValues && hasOwnProperty(rx.initialValues, fd.key)) {
-      return `${rx.initialValues[fd.key]}`;
-    }
-    return '';
-  };
 
   useEffect(() => {
     const vs = {};
+    //---loopend
+    setValSchema(vs);
+    setValues({});
+
+    const getVal = (fd: IFormSchemaField, vs: any) => {
+      buildYupObj(fd, vs);
+      if (rx.initialValues && hasOwnProperty(rx.initialValues, fd.key)) {
+        return `${rx.initialValues[fd.key]}`;
+      }
+      return '';
+    };
     for (let i = 0; i < rx.tabs.length; i++) {
       const fdList = rx.tabs[i];
       setValues((cv) => {
@@ -161,7 +171,7 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
       //---loopend
       setValSchema(vs);
     }
-  }, [rx.entity]);
+  }, [rx]);
 
   useEffect(() => {
     if (tab < tabs.length - 1) {
@@ -316,50 +326,50 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
         renderCmds={() => {
           return (
             <>
-             {/* // {(rx.acl & CmdAcl.Dialog) && ( */}
-                <Group spacing={0} position="right">
-                  {rx.actions &&
-                    rx.actions.length > 0 &&
-                    rx.actions
-                      .filter((x) => x.visible === true)
-                      .map((fd) => {
-                        return (
-                          <Tooltip label={fd.description}>
-                            <ActionFormBtn title={fd.label} schema={fd.schema} action="dialog" onClose={onDialogClose} size="50%" />
-                          </Tooltip>
-                        );
-                      })}
-                </Group>
+              {/* // {(rx.acl & CmdAcl.Dialog) && ( */}
+              <Group spacing={0} position="right">
+                {rx.actions &&
+                  rx.actions.length > 0 &&
+                  rx.actions
+                    .filter((x) => x.visible === true)
+                    .map((fd) => {
+                      return (
+                        <Tooltip label={fd.description}>
+                          <ActionFormBtn title={fd.label} schema={fd.schema} action="dialog" onClose={onDialogClose} size="50%" />
+                        </Tooltip>
+                      );
+                    })}
+              </Group>
               {/* )} */}
               <Group spacing={0} position="right">
-                {!entity.disabled && !entity.locked && ( rx.acl.some(x => x === CmdAcl[CmdAcl.Update])) && (
+                {!entity.disabled && !entity.locked && rx.acl.some((x) => x === CmdAcl[CmdAcl.Update]) && (
                   <Button color="dotars" className={classes.vwbutton} onClick={onClickUpdate} compact disabled={!canEdit}>
                     Update
                   </Button>
                 )}
 
-                {!entity.disabled && !entity.locked && ( rx.acl.some(x => x === CmdAcl[CmdAcl.Lock])) && (
+                {!entity.disabled && !entity.locked && rx.acl.some((x) => x === CmdAcl[CmdAcl.Lock]) && (
                   <Button variant="outline" color="dotars" className={classes.vwbutton} compact onClick={onClickLock} disabled={!canEdit}>
                     Lock
                   </Button>
                 )}
-                {entity.locked === true  && ( rx.acl.some(x => x === CmdAcl[CmdAcl.UnLock])) && (
+                {entity.locked === true && rx.acl.some((x) => x === CmdAcl[CmdAcl.UnLock]) && (
                   <Button variant="outline" color="dotars" className={classes.vwbutton} compact onClick={onClickUnlock} disabled={!canEdit}>
                     Un-lock
                   </Button>
                 )}
 
-                {!entity.disabled && !entity.locked  && ( rx.acl.some(x => x === CmdAcl[CmdAcl.Disable])) && (
+                {!entity.disabled && !entity.locked && rx.acl.some((x) => x === CmdAcl[CmdAcl.Disable]) && (
                   <Button variant="outline" color="dotars" className={classes.vwbutton} compact onClick={onClickDisable} disabled={!canEdit}>
                     Disable
                   </Button>
                 )}
-                {entity.disabled  && ( rx.acl.some(x => x === CmdAcl[CmdAcl.Enable])) && (
+                {entity.disabled && rx.acl.some((x) => x === CmdAcl[CmdAcl.Enable]) && (
                   <Button variant="outline" className={classes.vwbutton} onClick={onClickEnable} compact disabled={!canEdit}>
                     Enable
                   </Button>
                 )}
-                {!entity.disabled && !entity.locked  && ( rx.acl.some(x => x === CmdAcl[CmdAcl.Delete])) && <ConfirmBtn color="red" className={classes.vwbutton} style={{ marginLeft: 10 }} compact OnOk={onClickDelete} disabled={!canEdit} btnTxt="Delete" confirmTxt="Are you sure you want to delete?" />}
+                {!entity.disabled && !entity.locked && rx.acl.some((x) => x === CmdAcl[CmdAcl.Delete]) && <ConfirmBtn color="red" className={classes.vwbutton} style={{ marginLeft: 10 }} compact OnOk={onClickDelete} disabled={!canEdit} btnTxt="Delete" confirmTxt="Are you sure you want to delete?" />}
               </Group>
             </>
           );
