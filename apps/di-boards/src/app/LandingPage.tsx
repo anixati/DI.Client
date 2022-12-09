@@ -19,7 +19,7 @@ export const LandingPage: React.FC = () => {
 
         <Container p={0} size={600}>
           <Text size="lg" color="dimmed" className={classes.description}>
-            Build more reliable software with AI companion. AI is also trained to detect lazy developers who do nothing and just complain on Twitter.
+           ..
           </Text>
         </Container>
 
