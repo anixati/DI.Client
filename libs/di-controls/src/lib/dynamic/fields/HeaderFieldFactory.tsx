@@ -1,5 +1,4 @@
 import { LabelControl, LinkControl } from './LinkControl';
-import { LookupControl } from './LookupControl';
 import { ISchemaFieldProps } from './SchemaFieldFactory';
 
 
