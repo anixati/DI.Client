@@ -1,4 +1,4 @@
-import { Group } from '@mantine/core';
+import { Group, SelectItem } from '@mantine/core';
 import { createRef } from 'react';
 import { ISchemaFieldProps } from './SchemaFieldFactory';
 import { ActionFormBtn } from '../ActionFormBtn';
@@ -32,8 +32,14 @@ export const SubgridControl = (rx: ISchemaFieldProps) => {
   };
   switch (field.fieldType) {
     case 24:
-      return <DocumentGrid {... rx}/>;
-    default:
-      return <SchemaListTable mode="SUBGRID" ref={listRef} schemas={[{ label: '', value: `${field.viewId}` }]} renderCmds={() => <Actions />} />;
+      return <DocumentGrid {...rx} />;
+    default: {
+      const scl: Array<SelectItem> = [];
+      const options: Partial<Array<SelectItem>> = JSON.parse(String(field.options));
+      for (const opt of options) {
+        if (opt) scl.push({ label: opt.label, value: opt.value });
+      }
+      return <SchemaListTable mode="SUBGRID" ref={listRef} schemas={scl} renderCmds={() => <Actions />} />;
+    }
   }
 };

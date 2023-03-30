@@ -179,11 +179,16 @@ export const RenderDataGrid = forwardRef<SchemaListRef, RenderTableProps>((rx, r
     <div className={classes.datagrid}>
       <div className={classes.dgHeader}>
         <Group spacing="sm" position="apart">
-          <Group position="left">
+          <Group position="left" p={3}>
             {rx.showHeader === true && (
               <>
-                {mode === 'DEFAULT' && <NativeSelect data={schemas} variant="unstyled" value={schema} onChange={handleSelectChange} style={{ width: 310 }} />}
-                {mode !== 'DEFAULT' && <Text weight={500}>{rx.schema.title}</Text>}
+                {/* {mode === 'DEFAULT' && <NativeSelect data={schemas} variant="unstyled" value={schema} onChange={handleSelectChange} style={{ width: 310 }} />}
+                {mode !== 'DEFAULT' && <Text weight={500}>{rx.schema.title}</Text>} */}
+
+
+                {schemas.length>1 && <NativeSelect data={schemas} 
+                variant="filled" size="xs" value={schema} onChange={handleSelectChange} style={{ width: 310 }} />}
+                {schemas.length===1  && <Text weight={500}>{rx.schema.title}</Text>}
               </>
             )}
           </Group>

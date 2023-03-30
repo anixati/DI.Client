@@ -418,7 +418,7 @@ const RenderSchemaForm: React.FC<RenderSchemaFormProps> = (rx) => {
         </Group>
       </div>
       <div className={classes.Content}>
-        <Tabs position="left" color="cyan" tabPadding="sm" active={tab} onTabChange={setTab} style={{ fontWeight: 500, minHeight: 550 }}>
+        <Tabs position="left" color="cyan" tabPadding={5} active={tab} onTabChange={setTab} style={{ fontWeight: 500, minHeight: 550 }}>
           {tabs &&
             tabs.length > 0 &&
             tabs.map((tb) => {

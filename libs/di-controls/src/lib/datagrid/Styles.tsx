@@ -5,7 +5,7 @@ export const dataGridStyles = createStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     height:'80vh',
-    padding:'5px 15px'
+    
   },
   dgHeader: {
     flex: '0 0 auto',

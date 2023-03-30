@@ -10,6 +10,8 @@ export const DatePickerControl = (rx: ISchemaFieldProps) => {
     if (val !== null) {
       const dtStr = moment(val).format('LLLL');
       fieldChanged(field.key, dtStr);
+    } else {
+      fieldChanged(field.key, null);
     }
   };
   

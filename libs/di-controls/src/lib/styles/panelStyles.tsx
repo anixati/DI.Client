@@ -26,8 +26,8 @@ export const panelStyles = createStyles((theme) => ({
     flexBasis: '50px',
   },
   TabPane:{  
-    paddingLeft:30,
-    paddingRight:30
+    paddingLeft:3,
+    paddingRight:3
   },
   Content: {
     background: 'white',
